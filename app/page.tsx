@@ -8,12 +8,7 @@ const projects = [
   {
     title: "Beacon - Orchestro Suite",
     description: "Idea to venture, powered by agentic AI",
-    overlayLabel: "Beacon",
-    images: [
-      { src: "/images/projects/beacon/flowers.jpg", alt: "Beacon brand cover", width: 424 },
-      { src: "/images/projects/beacon/phone-mockup.jpg", alt: "Beacon app screen mockup", width: 424 },
-      { src: "/images/projects/beacon/lake-dock.jpg", alt: "Beacon product screen mockup", width: 512 },
-    ],
+    images: [{ width: 424 }, { width: 424 }, { width: 512 }],
   },
   {
     title: "Revolution Robotics",

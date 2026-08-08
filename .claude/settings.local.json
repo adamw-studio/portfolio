@@ -23,7 +23,8 @@
       "Bash(sips -Z 300 card3_raw2.png --out card3_raw2_thumb.png)",
       "Bash(ls -ld /usr/local/bin 2>&1; test -w /usr/local/bin && echo WRITABLE || echo NOT_WRITABLE)",
       "Bash(git add *)",
-      "mcp__393ccdef-4be6-484b-94c6-4ccb7f2e41ce__get_design_context"
+      "mcp__393ccdef-4be6-484b-94c6-4ccb7f2e41ce__get_design_context",
+      "Bash(git commit -q -m 'Fix header and nav type sizes to match Figma tokens exactly *)"
     ]
   }
 }

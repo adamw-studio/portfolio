@@ -18,7 +18,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`rounded-xs px-3 py-1.5 text-xs font-medium tracking-[-0.056px] backdrop-blur-md transition-colors ${
+              className={`rounded-xs px-3 py-1.5 text-[14px] font-medium leading-4 tracking-[-0.056px] backdrop-blur-md transition-colors ${
                 i === 0
                   ? "bg-bg-tertiary text-text-primary"
                   : "text-text-subtle hover:text-text-primary"
@@ -31,7 +31,7 @@ export default function Navbar() {
       </div>
       <Link
         href="/contact"
-        className="rounded-xs px-3 py-1.5 text-xs font-medium tracking-[-0.056px] text-text-subtle backdrop-blur-md transition-colors hover:text-text-primary"
+        className="rounded-xs px-3 py-1.5 text-[14px] font-medium leading-4 tracking-[-0.056px] text-text-subtle backdrop-blur-md transition-colors hover:text-text-primary"
       >
         Get in touch
       </Link>

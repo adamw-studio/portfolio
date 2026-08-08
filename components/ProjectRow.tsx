@@ -57,7 +57,7 @@ export default function ProjectRow({ title, description, images, overlayLabel }:
 
 function Header({ title, description }: { title: string; description: string }) {
   return (
-    <div className="flex w-full flex-col text-lg font-medium leading-6 tracking-[-0.28px]">
+    <div className="flex w-full flex-col text-[20px] font-medium leading-6 tracking-[-0.28px]">
       <p className="w-full text-text-primary">{title}</p>
       <p className="w-full text-text-subtle">{description}</p>
     </div>

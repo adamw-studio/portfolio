@@ -3,7 +3,26 @@
     "allow": [
       "Bash(gh --version)",
       "Bash(git --version)",
-      "Bash(npm -v)"
+      "Bash(npm -v)",
+      "Bash(git remote *)",
+      "Bash(mkdir -p /private/tmp/claude-501/-Users-test-2026-Portfolio/d7895ee8-57f8-4c50-ba1d-73020a738f69/scratchpad/figma-assets)",
+      "Bash(curl -sL -o raw_1.png \"https://www.figma.com/api/mcp/asset/c0b53faf-a4eb-4ab3-b120-ecdc1016d668\")",
+      "Bash(curl -sL -o raw_2.png \"https://www.figma.com/api/mcp/asset/56bd45bc-911e-4354-b1fb-897b3c5cbfe5\")",
+      "Bash(curl -sL -o raw_3.png \"https://www.figma.com/api/mcp/asset/a9f6444e-6b89-4655-99ea-f4e5fc3c5464\")",
+      "Bash(curl -sL -o raw_4.png \"https://www.figma.com/api/mcp/asset/9144677f-ef09-4054-9bfb-d251e583d04d\")",
+      "Bash(curl -sL -o full_screenshot.png \"https://www.figma.com/api/mcp/asset/d909cf83-e922-4e20-bdc6-d6dde9afd077.png\")",
+      "Bash(sips -g pixelWidth -g pixelHeight full_screenshot.png)",
+      "Bash(sips -c 300 500 -crop-offset 0 0 full_screenshot.png --out crop_third.png)",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -sL -o card3.png \"https://www.figma.com/api/mcp/asset/b6c171bf-2a76-403a-8bad-ae6db6822a34.png\")",
+      "mcp__393ccdef-4be6-484b-94c6-4ccb7f2e41ce__download_assets",
+      "Bash(curl -sL -o card3_raw1.png \"https://www.figma.com/api/mcp/asset/32f2fda0-6dd9-400a-9fcd-2ec9dfef5382\")",
+      "Bash(curl -sL -o card3_raw2.png \"https://www.figma.com/api/mcp/asset/e41eb114-9bd8-421a-86b6-e772c9835394\")",
+      "Bash(sips -g pixelWidth -g pixelHeight card3_raw1.png card3_raw2.png)",
+      "Bash(sips -Z 300 card3_raw1.png --out card3_raw1_thumb.png)",
+      "Bash(sips -Z 300 card3_raw2.png --out card3_raw2_thumb.png)",
+      "Bash(ls -ld /usr/local/bin 2>&1; test -w /usr/local/bin && echo WRITABLE || echo NOT_WRITABLE)",
+      "Bash(git add *)"
     ]
   }
 }

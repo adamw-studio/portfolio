@@ -1,52 +1,43 @@
 import Image from "next/image";
 
 export type ProjectImage = {
-  src: string;
-  alt: string;
-  /** relative width weight within the row (matches Figma's mixed 424/512px columns) */
-  weight?: number;
+  /** omit while the real asset isn't ready yet — renders a gray wireframe block instead */
+  src?: string;
+  alt?: string;
+  /** column width in px, from Figma's per-row 424/424/512 (order varies per row) */
+  width: number;
 };
 
 type ProjectRowProps = {
   title: string;
   description: string;
-  images?: ProjectImage[];
+  images: ProjectImage[];
   overlayLabel?: string;
 };
 
 export default function ProjectRow({ title, description, images, overlayLabel }: ProjectRowProps) {
-  // Wireframe placeholder: no real images yet, just three gray blocks.
-  if (!images || images.length === 0) {
-    return (
-      <div className="flex w-full flex-col items-start gap-3">
-        <Header title={title} description={description} />
-        <div className="flex w-full items-center gap-4">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="h-[282px] flex-1 rounded-l bg-bg-tertiary" />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex w-full flex-col items-start gap-3">
       <Header title={title} description={description} />
       <div className="flex w-full items-center gap-4">
         {images.map((img, i) => (
           <div
-            key={img.src}
-            className="relative h-[282px] flex-1 overflow-hidden rounded-l bg-bg-tertiary"
-            style={{ flexGrow: img.weight ?? 1 }}
+            key={i}
+            className="relative h-[282px] overflow-hidden rounded-lg bg-bg-tertiary"
+            style={{ flexGrow: img.width, flexBasis: 0 }}
           >
-            <Image src={img.src} alt={img.alt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
-            {i === 0 && overlayLabel && (
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/42 px-8 py-4">
-                <span className="text-[40px] font-bold tracking-[-2px] text-white">{overlayLabel}</span>
-              </div>
-            )}
-            {i > 0 && (
-              <div className="absolute inset-8 rounded-[20px] bg-bg-default shadow-[0px_4px_5.7px_0px_rgba(0,0,0,0.25)]" />
+            {img.src && (
+              <>
+                <Image src={img.src} alt={img.alt ?? ""} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
+                {i === 0 && overlayLabel && (
+                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/42 px-8 py-4">
+                    <span className="text-[40px] font-bold tracking-[-2px] text-white">{overlayLabel}</span>
+                  </div>
+                )}
+                {i > 0 && (
+                  <div className="absolute inset-8 rounded-[20px] bg-bg-default shadow-[0px_4px_5.7px_0px_rgba(0,0,0,0.25)]" />
+                )}
+              </>
             )}
           </div>
         ))}

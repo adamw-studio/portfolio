@@ -8,7 +8,7 @@ const links = [
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-50 flex items-center justify-between px-6 py-6">
+    <header className="sticky top-0 z-50 flex items-center justify-between px-6 pt-6">
       <div className="flex items-center gap-36">
         <Link href="/" aria-label="Home">
           <Image src="/images/logo-mark.svg" alt="Adam Weber" width={48} height={16} priority />

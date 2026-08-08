@@ -24,7 +24,9 @@
       "Bash(ls -ld /usr/local/bin 2>&1; test -w /usr/local/bin && echo WRITABLE || echo NOT_WRITABLE)",
       "Bash(git add *)",
       "mcp__393ccdef-4be6-484b-94c6-4ccb7f2e41ce__get_design_context",
-      "Bash(git commit -q -m 'Fix header and nav type sizes to match Figma tokens exactly *)"
+      "Bash(git commit -q -m 'Fix header and nav type sizes to match Figma tokens exactly *)",
+      "Bash(git commit -q -m 'Fix Geist font not loading, causing wrong weights everywhere *)",
+      "mcp__393ccdef-4be6-484b-94c6-4ccb7f2e41ce__get_metadata"
     ]
   }
 }

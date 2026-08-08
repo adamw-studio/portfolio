@@ -8,8 +8,10 @@ const columns = [
 ];
 
 export default function Footer() {
+  // pt-[274px]: exact gap from Figma metadata between the last project row
+  // and the footer's info column text; pb-6 mirrors the page's 24px edge margin
   return (
-    <footer className="flex w-full flex-col items-start gap-11 px-6 pb-0 pt-24">
+    <footer className="flex w-full flex-col items-start gap-11 px-6 pb-6 pt-[274px]">
       <div className="flex w-full flex-wrap items-center gap-12 text-[12px] font-medium leading-4 tracking-[-0.048px] text-text-primary sm:gap-24 md:gap-48">
         {columns.map((col, i) => (
           <div key={i} className="flex w-40 flex-col items-start gap-1">

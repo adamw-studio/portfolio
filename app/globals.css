@@ -10,7 +10,12 @@
   --color-text-primary: #0d0d0d;
   --color-text-subtle: rgba(13, 13, 13, 0.4);
   --radius-xs: 6px;
-  --radius-l: 12px;
+  /* Note: Figma calls this token "radius/l", but naming a custom Tailwind
+     radius scale key "l" collides with Tailwind's built-in left-side-only
+     directional utility (rounded-l), silently breaking two of four corners.
+     Named --radius-lg instead to stay collision-free while keeping the same
+     12px value. */
+  --radius-lg: 12px;
 }
 
 @theme inline {
@@ -21,7 +26,7 @@
   --color-text-primary: var(--color-text-primary);
   --color-text-subtle: var(--color-text-subtle);
   --radius-xs: var(--radius-xs);
-  --radius-l: var(--radius-l);
+  --radius-lg: var(--radius-lg);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

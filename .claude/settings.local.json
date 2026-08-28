@@ -35,7 +35,8 @@
       "Bash(sips -g pixelWidth -g pixelHeight top_region.png)",
       "Bash(command -v magick convert)",
       "Bash(python3 -c \"import PIL\")",
-      "Bash(pip3 list *)"
+      "Bash(pip3 list *)",
+      "Bash(git restore *)"
     ]
   }
 }

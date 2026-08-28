@@ -52,15 +52,9 @@ export default function Home() {
             {shapesMe.map((item) => (
               <div
                 key={item.label}
-                className="group flex items-center gap-1 rounded-sm bg-bg-secondary px-2 py-1 text-[14px] font-medium leading-4 tracking-[-0.056px] text-text-primary transition-[background-color,transform] duration-150 ease-out hover:bg-bg-tertiary hover:[transform:scale(1.02)]"
+                className="flex items-center gap-1 rounded-sm bg-bg-secondary px-2 py-1 text-[14px] font-medium leading-4 tracking-[-0.056px] text-text-primary"
               >
-                <Image
-                  src={item.icon}
-                  alt=""
-                  width={16}
-                  height={16}
-                  className="transition-transform duration-150 ease-out group-hover:[transform:scale(1.15)]"
-                />
+                <Image src={item.icon} alt="" width={16} height={16} />
                 {item.label}
               </div>
             ))}

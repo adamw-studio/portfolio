@@ -27,7 +27,15 @@
       "Bash(git commit -q -m 'Fix header and nav type sizes to match Figma tokens exactly *)",
       "Bash(git commit -q -m 'Fix Geist font not loading, causing wrong weights everywhere *)",
       "mcp__393ccdef-4be6-484b-94c6-4ccb7f2e41ce__get_metadata",
-      "Bash(git commit -q -m 'Audit and fix spacing/radius against precise Figma metadata *)"
+      "Bash(git commit -q -m 'Audit and fix spacing/radius against precise Figma metadata *)",
+      "Bash(git commit -q -m 'Revert Beacon row to wireframe placeholder for now *)",
+      "Bash(mkdir -p /private/tmp/claude-501/-Users-test-2026-Portfolio/d7895ee8-57f8-4c50-ba1d-73020a738f69/scratchpad/figma-home-v2)",
+      "Bash(curl -sL -o full.png \"https://www.figma.com/api/mcp/asset/d20053dc-3a03-486f-ab87-1850ce6da336.png\")",
+      "Bash(sips -c 500 948 --out top_region.png full.png)",
+      "Bash(sips -g pixelWidth -g pixelHeight top_region.png)",
+      "Bash(command -v magick convert)",
+      "Bash(python3 -c \"import PIL\")",
+      "Bash(pip3 list *)"
     ]
   }
 }

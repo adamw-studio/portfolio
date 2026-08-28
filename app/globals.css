@@ -4,31 +4,55 @@
   --background: #f4f4f4;
   --foreground: #0d0d0d;
 
-  /* Design tokens synced from Figma */
+  /* Design tokens synced from Figma (light / Work page defaults) */
   --color-bg-default: #f4f4f4;
+  --color-bg-secondary: rgba(13, 13, 13, 0.05);
   --color-bg-tertiary: rgba(13, 13, 13, 0.05);
   --color-text-primary: #0d0d0d;
+  --color-text-secondary: rgba(13, 13, 13, 0.7);
   --color-text-subtle: rgba(13, 13, 13, 0.4);
+  --color-text-link: #007be5;
+  --color-border-disabled: rgba(13, 13, 13, 0.05);
   --radius-xs: 6px;
-  /* Note: Figma calls this token "radius/l", but naming a custom Tailwind
-     radius scale key "l" collides with Tailwind's built-in left-side-only
-     directional utility (rounded-l), silently breaking two of four corners.
-     Named --radius-lg instead to stay collision-free while keeping the same
-     12px value. */
+  /* Note: Figma calls these tokens "radius/s" and "radius/l", but naming a
+     custom Tailwind radius scale key "s" or "l" collides with Tailwind's
+     built-in logical/physical side-only directional utilities (rounded-s,
+     rounded-l), silently breaking corners. Named --radius-sm / --radius-lg
+     instead to stay collision-free while keeping the same px values. */
+  --radius-sm: 8px;
   --radius-lg: 12px;
+}
+
+/* Dark theme, scoped to the Home page (node 100:880) rather than global —
+   the Work page stays on the light tokens above. */
+.theme-dark {
+  --background: #0d0d0d;
+  --foreground: #f4f4f4;
+  --color-bg-default: #0d0d0d;
+  --color-bg-secondary: rgba(244, 244, 244, 0.05);
+  --color-bg-tertiary: rgba(244, 244, 244, 0.1);
+  --color-text-primary: #f4f4f4;
+  --color-text-secondary: rgba(244, 244, 244, 0.7);
+  --color-border-disabled: rgba(244, 244, 244, 0.05);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-bg-default: var(--color-bg-default);
+  --color-bg-secondary: var(--color-bg-secondary);
   --color-bg-tertiary: var(--color-bg-tertiary);
   --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
   --color-text-subtle: var(--color-text-subtle);
+  --color-text-link: var(--color-text-link);
+  --color-border-disabled: var(--color-border-disabled);
   --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
   --radius-lg: var(--radius-lg);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-instrument-serif);
 }
 
 body {

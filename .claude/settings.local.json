@@ -36,7 +36,15 @@
       "Bash(command -v magick convert)",
       "Bash(python3 -c \"import PIL\")",
       "Bash(pip3 list *)",
-      "Bash(git restore *)"
+      "Bash(git restore *)",
+      "Bash(curl -sIL --max-time 10 \"https://www.gust.org.pl/projects/e-foundry/tex-gyre/heros/qhv2.004otf.zip\")",
+      "Bash(curl -sIL --max-time 10 \"https://mirrors.ctan.org/fonts/tex-gyre/opentype/texgyreheros-regular.otf\")",
+      "Bash(python3 -c \"import fontTools; print\\('fonttools available'\\)\")",
+      "Bash(pip3 show *)",
+      "Bash(command -v woff2_compress)",
+      "Bash(pip3 install *)",
+      "Bash(SRC=/private/tmp/claude-501/-Users-test-2026-Portfolio/d7895ee8-57f8-4c50-ba1d-73020a738f69/scratchpad/fonts *)",
+      "Bash(sips -g pixelWidth -g pixelHeight frame49-bg.png example-screen.png)"
     ]
   }
 }

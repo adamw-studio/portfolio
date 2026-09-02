@@ -6,13 +6,23 @@ import "./globals.css";
 
 // Self-hosted (not next/font/google): this dev environment's sandboxed
 // process silently fails to fetch Google Fonts at build time (see the Geist
-// fix earlier), so the file is downloaded once into public/fonts and loaded
+// fix earlier), so files are downloaded once into public/fonts and loaded
 // locally instead — no runtime network dependency at all.
-const instrumentSerif = localFont({
-  src: "../public/fonts/InstrumentSerif-Regular.woff2",
-  variable: "--font-instrument-serif",
-  weight: "400",
-  style: "normal",
+const texGyreHeros = localFont({
+  src: [
+    { path: "../public/fonts/texgyreheros-regular.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/texgyreheros-italic.woff2", weight: "400", style: "italic" },
+  ],
+  variable: "--font-tex-gyre-heros",
+  display: "swap",
+});
+
+const texGyreHerosCn = localFont({
+  src: [
+    { path: "../public/fonts/texgyreheroscn-regular.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/texgyreheroscn-italic.woff2", weight: "400", style: "italic" },
+  ],
+  variable: "--font-tex-gyre-heros-cn",
   display: "swap",
 });
 
@@ -25,7 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable} h-full antialiased`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${texGyreHeros.variable} ${texGyreHerosCn.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

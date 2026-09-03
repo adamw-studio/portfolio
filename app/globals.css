@@ -33,8 +33,12 @@
   --background: #0d0d0d;
   --foreground: #f4f4f4;
   --color-bg-default: #0d0d0d;
-  --color-bg-secondary: rgba(244, 244, 244, 0.05);
-  --color-bg-tertiary: rgba(244, 244, 244, 0.1);
+  /* Verified against Figma's actual variable definitions (get_variable_defs)
+     rather than the inline code-gen fallbacks, which have been unreliable/
+     inconsistent between fetches: bg/bg-secondary = #f4f4f41a (~10% opacity),
+     bg/bg-tertiary = #f4f4f40d (~5% opacity). Previously had these swapped. */
+  --color-bg-secondary: rgba(244, 244, 244, 0.1);
+  --color-bg-tertiary: rgba(244, 244, 244, 0.05);
   --color-text-primary: #f4f4f4;
   --color-text-secondary: rgba(244, 244, 244, 0.7);
   --color-text-subtle: rgba(244, 244, 244, 0.4);
@@ -60,8 +64,7 @@
   --radius-lg: var(--radius-lg);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heros: var(--font-tex-gyre-heros);
-  --font-heros-cn: var(--font-tex-gyre-heros-cn);
+  --font-zalando: var(--font-zalando-sans);
 }
 
 body {

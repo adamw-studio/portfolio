@@ -1,119 +1,63 @@
 import Image from "next/image";
 import Link from "next/link";
 import FloatingNav from "@/components/FloatingNav";
-import LabeledRow from "@/components/LabeledRow";
+import { Chip } from "@/components/Chip";
+import {
+  TimeMark,
+  BrushMark,
+  SculptorMark,
+  CuriosityMark,
+  CraftsmanshipMark,
+  DeepRespectMark,
+  DesignerMark,
+  PrototypeAIMark,
+  BuildsDesignSystemsMark,
+  RethinksWorkflowsMark,
+  BelievesCreativeMark,
+  ObsessedDetailsMark,
+  ShipCodeMark,
+  LovesCritMark,
+} from "@/components/marks";
 
 const whatIDo = [
-  { icon: "/images/home/icons/group1-research.svg", label: "Research" },
-  { icon: "/images/home/icons/group2-systems.svg", label: "Systems thinking" },
-  { icon: "/images/home/icons/group3-strategy.svg", label: "Product & design strategy" },
-  { icon: "/images/home/icons/group4-designsystem.svg", label: "Design system" },
-  { icon: "/images/home/icons/group5-craft.svg", label: "Craft in canvas + code" },
-  { icon: "/images/home/icons/group6-branding.svg", label: "Branding" },
-  { icon: "/images/home/icons/group7-stakeholder.svg", label: "Stakeholder management" },
+  { icon: "/images/home/icons-v3/epic1-research.svg", label: "Research" },
+  { icon: "/images/home/icons-v3/epic2-systems.svg", label: "System thinking" },
+  { icon: "/images/home/icons-v3/epic3-strategy.svg", label: "Product & design strategy" },
+  { icon: "/images/home/icons-v3/epic4-designsystem.svg", label: "Design system" },
+  { icon: "/images/home/icons-v3/epic5-craft.svg", label: "Craft in canvas & code" },
+  { icon: "/images/home/icons-v3/epic6-brand.svg", label: "Brand identity" },
+  { icon: "/images/home/icons-v3/epic7-stakeholder.svg", label: "Stakeholder management" },
+];
+
+const aboutTraits: { label: string; icon: React.ReactNode }[] = [
+  { label: "prototype with AI", icon: <PrototypeAIMark /> },
+  { label: "builds design systems", icon: <BuildsDesignSystemsMark /> },
+  { label: "rethinks team’s workflows", icon: <RethinksWorkflowsMark /> },
+  { label: "believes in the power of creative thinking", icon: <BelievesCreativeMark /> },
+  { label: "obsessed about the smallest details", icon: <ObsessedDetailsMark /> },
+  { label: "...want to ship code", icon: <ShipCodeMark /> },
+  { label: "loves a good design crit session", icon: <LovesCritMark /> },
 ];
 
 // Body copy shares one style throughout: 16px/24px line-height, tracking
-// -0.128px, in TeX Gyre Heros (Figma's body/regular style).
-const bodyText = "font-heros text-[16px] leading-6 tracking-[-0.128px] text-text-primary";
-
-function Divider() {
-  return <Image src="/images/home/divider.svg" alt="" width={688} height={1} className="h-px w-full" unoptimized />;
-}
+// -0.128px, in Zalando Sans (Figma's body/regular style).
+const bodyText = "font-zalando text-[16px] leading-6 tracking-[-0.128px] text-text-primary";
+const heading = "font-zalando text-[20px] font-medium leading-6 tracking-[-0.8px] text-text-primary";
+// Inset shadow instead of a real border: Figma's stroke doesn't consume
+// layout space, but a CSS border always would on an explicitly-sized box
+// (see FloatingNav.tsx for the full story on this).
+const insetBorder = "shadow-[inset_0_0_0_1px_var(--color-border-subtle)]";
 
 function Tag({ icon, label }: { icon: string; label: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-m border border-border-subtle px-3 py-1.5">
+    <div className="flex items-center gap-1 rounded-xs bg-bg-tertiary px-1.5 py-0.5">
       <Image src={icon} alt="" width={20} height={20} />
-      <span className="whitespace-nowrap font-heros text-[16px] leading-[15px] tracking-[-0.128px] text-text-primary">
+      <span className="whitespace-nowrap font-zalando text-[16px] tracking-[-0.128px] text-text-primary">
         {label}
       </span>
     </div>
   );
 }
-
-/** Small decorative marks for the About traits — reproduced from Figma's
- * exact per-shape coordinates (these read as bespoke/generative glyphs
- * rather than a standard icon set, so faithfully copying the shapes is more
- * honest than substituting a real icon). */
-function TraitIcon({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="relative size-5 shrink-0 overflow-hidden bg-bg-tertiary">
-      {children}
-    </div>
-  );
-}
-
-const traits: { label: string; icon: React.ReactNode }[] = [
-  {
-    label: "prototypes with AI",
-    icon: (
-      <TraitIcon>
-        <div className="absolute left-0 top-0 size-2.5" style={{ backgroundColor: "#009951" }} />
-      </TraitIcon>
-    ),
-  },
-  {
-    label: "builds design systems",
-    icon: (
-      <TraitIcon>
-        <div className="absolute left-0 top-0 size-2.5" style={{ backgroundColor: "#00a2c2" }} />
-        <div className="absolute left-2.5 top-2.5 size-2.5" style={{ backgroundColor: "#00a2c2" }} />
-      </TraitIcon>
-    ),
-  },
-  {
-    label: "rethinks team’s workflows",
-    icon: (
-      <TraitIcon>
-        <div className="absolute left-[15px] top-0 flex h-[18px] w-[3px] items-center justify-center">
-          <div className="-rotate-90">
-            <div className="h-[3px] w-[18px]" style={{ backgroundColor: "#f24822" }} />
-          </div>
-        </div>
-        <div className="absolute left-[2px] top-[11px] flex h-[9px] w-[3px] items-center justify-center">
-          <div className="rotate-90">
-            <div className="h-[3px] w-[9px]" style={{ backgroundColor: "#f24822" }} />
-          </div>
-        </div>
-      </TraitIcon>
-    ),
-  },
-  {
-    label: "believes in the power of creative thinking",
-    icon: (
-      <TraitIcon>
-        <div className="absolute left-[5px] top-[5px] size-2.5" style={{ backgroundColor: "#0d99ff" }} />
-      </TraitIcon>
-    ),
-  },
-  {
-    label: "obsessed about the smallest details",
-    icon: (
-      <TraitIcon>
-        <div className="absolute left-[9px] top-[9px] size-0.5" style={{ backgroundColor: "#ffcd29" }} />
-      </TraitIcon>
-    ),
-  },
-  {
-    label: "..want to ship code",
-    icon: (
-      <TraitIcon>
-        <div className="absolute left-[2px] top-[3px] h-[14px] w-[2px]" style={{ backgroundColor: "#ebffee" }} />
-      </TraitIcon>
-    ),
-  },
-  {
-    label: "loves design crit sessions",
-    icon: (
-      <TraitIcon>
-        <div className="absolute left-[14px] top-[14px] size-1" style={{ backgroundColor: "#ebaff4" }} />
-        <div className="absolute left-[9px] top-[9px] size-0.5" style={{ backgroundColor: "#ebaff4" }} />
-        <div className="absolute left-[2px] top-[2px] size-1" style={{ backgroundColor: "#ebaff4" }} />
-      </TraitIcon>
-    ),
-  },
-];
 
 export default function Home() {
   return (
@@ -121,72 +65,89 @@ export default function Home() {
       <FloatingNav />
 
       {/* pt-[80px]: gap from Figma metadata between the nav (ends 60px from
-          page top) and the content column (starts at 140px). */}
-      <div className="mx-auto flex w-full max-w-[688px] flex-col gap-12 pb-24 pt-[80px]">
+          page top) and the content column (starts at 140px). pb-24: same
+          bottom breathing room requested on the previous version of this
+          page. */}
+      <div className="mx-auto flex w-full max-w-[688px] flex-col gap-[60px] pb-24 pt-[80px]">
         <div className="flex flex-col gap-10">
-          <LabeledRow label="Who am I">
-            <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
+            <h1 className={heading}>Hey, I’m Adam</h1>
+            <div className="flex flex-col gap-4">
               <p className={bodyText}>
-                A Senior Product Designer with <span className="italic">5 years - 4 months</span> of experience
-                across banking, education and enterprise tech at McKinsey&Company, and now building 0 → 1 B2B
-                products.
+                A Senior Product Designer with{" "}
+                <Chip icon={<TimeMark />}>5 years &amp; 4 months</Chip> of experience across banking, media,
+                education and enterprise tech at McKinsey &amp; Company, and now building 0 → 1 B2B products.
               </p>
               <p className={bodyText}>
-                I currently <span className="italic">lead design for Beacon</span>, a B2B SaaS that helps businesses
-                ideate and validate new business ventures with the power of agentic AI. I also{" "}
-                <span className="italic">co-design Orchestro</span>, an AI organisational tracking tool for agile
-                teams that turns messy inputs into alignment.
+                I currently lead design for{" "}
+                <Chip icon={<Image src="/images/home/beacon-icon.svg" alt="" width={22} height={12} />}>
+                  Beacon
+                </Chip>
+                , a B2B SaaS that helps businesses ideate and validate new business ventures with the power of
+                agentic AI. I also co-design <Chip>Orchestro</Chip>, an AI organisational tracking tool for agile
+                teams that turns messy objectives, key results into alignment.
               </p>
             </div>
-          </LabeledRow>
+          </div>
 
-          <LabeledRow label="What shapes me">
-            <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
+            <h2 className={heading}>What shapes me</h2>
+            <div className="flex flex-col gap-4">
               <p className={bodyText}>
-                I was raised by a painter and a sculptor. I learned that craft matters. My first design education
-                didn&rsquo;t come from software, it came from watching a painter and a sculptor at work.
+                I was raised by a <Chip icon={<BrushMark />}>painter</Chip> and a{" "}
+                <Chip icon={<SculptorMark />}>sculptor</Chip>. I learned that craft matters. My first design
+                education didn’t come from software, it came from watching a painter and a sculptor at work.
               </p>
               <p className={bodyText}>
                 That foundation continues to shape how I approach designing today:{" "}
-                <span className="italic">curiosity</span>, <span className="italic">craftsmanship</span> and a{" "}
-                <span className="italic">deep respect for the people</span> who touch, feel or use the things I
-                design.
-              </p>
-              <p className={bodyText}>
-                As technology evolves, I believe the role of design is not just to build faster, but to create
-                products that feel thoughtful, useful and distinctly human.
+                <Chip icon={<CuriosityMark />}>curiosity</Chip>, <Chip icon={<CraftsmanshipMark />}>craftsmanship</Chip>{" "}
+                and a <Chip icon={<DeepRespectMark />}>deep respect</Chip> for the people who touch, feel or use the
+                things I design.
               </p>
             </div>
-          </LabeledRow>
+          </div>
 
-          <LabeledRow label="What I do">
+          <div className="flex flex-col gap-4">
+            <h2 className={heading}>What I do</h2>
             <div className="flex flex-col gap-4">
-              <p className={bodyText}>I own my work from concept to shipped product outcomes.</p>
+              <p className={bodyText}>
+                I own my work end to end, from early concepts to shipped outcomes. I’ve worked on large enterprise
+                products as well as smaller, ambitious ones, but I’m most energized when I’m close to the problem,
+                shaping ideas from the ground up and seeing my work make a real difference.
+              </p>
+              <p className={bodyText}>
+                That’s when design feels most meaningful to me: when a small team comes together around an existing
+                problem, cares deeply about solving it, and maybe, along the way, changes a little piece of the
+                world.
+              </p>
               <div className="flex flex-wrap items-center gap-2">
                 {whatIDo.map((item) => (
                   <Tag key={item.label} icon={item.icon} label={item.label} />
                 ))}
               </div>
             </div>
-          </LabeledRow>
+          </div>
         </div>
-
-        <Divider />
 
         <div className="flex flex-col gap-4">
           <div className="flex w-full items-center justify-between">
-            <p className="font-heros-cn text-[16px] leading-6 tracking-[-0.128px] text-text-primary">
-              Selected works
-            </p>
-            <div className="flex items-center justify-end gap-2">
-              <p className="font-heros-cn text-[16px] leading-6 tracking-[-0.128px] text-text-primary">2021-2026</p>
-              <Link
-                href="/work"
-                aria-label="View selected works"
-                className="flex items-center rounded-full border border-border-subtle p-1"
+            <h2 className={heading}>Selected works</h2>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                aria-label="Previous work"
+                disabled
+                className={`flex size-6 items-center justify-center rounded-full bg-bg-tertiary disabled:cursor-not-allowed ${insetBorder}`}
               >
-                <Image src="/images/home/arrow-up-right.svg" alt="" width={16} height={16} />
-              </Link>
+                <Image src="/images/home/arrow-left.svg" alt="" width={16} height={16} />
+              </button>
+              <button
+                type="button"
+                aria-label="Next work"
+                className={`flex size-6 items-center justify-center rounded-full bg-bg-tertiary ${insetBorder}`}
+              >
+                <Image src="/images/home/arrow-right.svg" alt="" width={16} height={16} />
+              </button>
             </div>
           </div>
 
@@ -214,37 +175,32 @@ export default function Home() {
             </div>
             <div className="flex flex-col gap-1">
               <p className={bodyText}>
-                Ideas don&rsquo;t become viable ventures by default. Designing how agentic AI helps founders
-                research, validate and turn ideas into ventures.
+                Ideas don’t become viable ventures by default. Designing how agentic AI helps founders research,
+                validate and turn ideas into ventures.
               </p>
               <div className="flex items-center justify-between text-text-secondary">
-                <p className="font-heros text-[16px] leading-6 tracking-[-0.128px]">Lead Designer</p>
-                <p className="font-heros text-[16px] leading-6 tracking-[-0.128px]">2026</p>
+                <p className="font-zalando text-[16px] leading-6 tracking-[-0.128px]">Lead Designer</p>
+                <p className="font-zalando text-[16px] leading-6 tracking-[-0.128px]">2026</p>
               </div>
             </div>
           </Link>
         </div>
 
-        <Divider />
-
-        <LabeledRow label="About">
+        <div className="flex flex-col gap-4">
+          <h2 className={heading}>About me</h2>
           <div className="flex flex-col gap-4">
-            <p className={bodyText}>I am a multidisciplinary designer who,</p>
-            <div className="flex flex-wrap items-center gap-2">
-              {traits.map((trait) => (
-                <div
-                  key={trait.label}
-                  className="flex items-center gap-2 rounded-m border border-border-subtle px-3 py-1.5"
-                >
-                  {trait.icon}
-                  <span className="whitespace-nowrap font-heros text-[16px] leading-[15px] tracking-[-0.128px] text-text-primary">
-                    {trait.label}
-                  </span>
-                </div>
+            <p className={bodyText}>
+              I am a <Chip icon={<DesignerMark />} medium>designer</Chip> who,
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              {aboutTraits.map((trait) => (
+                <Chip key={trait.label} icon={trait.icon}>
+                  {trait.label}
+                </Chip>
               ))}
             </div>
           </div>
-        </LabeledRow>
+        </div>
       </div>
     </div>
   );

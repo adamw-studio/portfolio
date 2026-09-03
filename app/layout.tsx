@@ -8,21 +8,15 @@ import "./globals.css";
 // process silently fails to fetch Google Fonts at build time (see the Geist
 // fix earlier), so files are downloaded once into public/fonts and loaded
 // locally instead — no runtime network dependency at all.
-const texGyreHeros = localFont({
-  src: [
-    { path: "../public/fonts/texgyreheros-regular.woff2", weight: "400", style: "normal" },
-    { path: "../public/fonts/texgyreheros-italic.woff2", weight: "400", style: "italic" },
-  ],
-  variable: "--font-tex-gyre-heros",
-  display: "swap",
-});
-
-const texGyreHerosCn = localFont({
-  src: [
-    { path: "../public/fonts/texgyreheroscn-regular.woff2", weight: "400", style: "normal" },
-    { path: "../public/fonts/texgyreheroscn-italic.woff2", weight: "400", style: "italic" },
-  ],
-  variable: "--font-tex-gyre-heros-cn",
+// Variable font, single file — Google's own weight-range endpoint only
+// serves 400 and 500 for this family (a 100-900 request 400s), and both
+// point at the same physical woff2, confirming that's the actual instance
+// range. Declaring "400 500" lets the browser interpolate within the file.
+const zalandoSans = localFont({
+  src: "../public/fonts/ZalandoSans-Variable.woff2",
+  weight: "400 500",
+  style: "normal",
+  variable: "--font-zalando-sans",
   display: "swap",
 });
 
@@ -35,7 +29,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${GeistSans.variable} ${GeistMono.variable} ${texGyreHeros.variable} ${texGyreHerosCn.variable} h-full antialiased`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${zalandoSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

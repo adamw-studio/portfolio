@@ -44,7 +44,11 @@
       "Bash(command -v woff2_compress)",
       "Bash(pip3 install *)",
       "Bash(SRC=/private/tmp/claude-501/-Users-test-2026-Portfolio/d7895ee8-57f8-4c50-ba1d-73020a738f69/scratchpad/fonts *)",
-      "Bash(sips -g pixelWidth -g pixelHeight frame49-bg.png example-screen.png)"
+      "Bash(sips -g pixelWidth -g pixelHeight frame49-bg.png example-screen.png)",
+      "Bash(git commit -q -m 'Add bottom padding to home page *)",
+      "Bash(curl -sL -A \"Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/605.1.15\" \"https://fonts.googleapis.com/css2?family=Zalando+Sans:ital,wght@0,400;0,500;1,400&display=swap\")",
+      "Bash(curl -sL -A \"Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/605.1.15\" \"https://fonts.googleapis.com/css2?family=Zalando+Sans:ital,wght@0,100..900;1,100..900&display=swap\")",
+      "Bash(curl -sL -o /Users/test/2026-Portfolio/public/fonts/ZalandoSans-Variable.woff2 https://fonts.gstatic.com/s/zalandosans/v3/FwZJ7-Asy1Em_lq_aK3hpr-RrktWHD54lnesO2lsTPTFcNSh.woff2)"
     ]
   }
 }

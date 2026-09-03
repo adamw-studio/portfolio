@@ -122,7 +122,7 @@ export default function Home() {
 
       {/* pt-[80px]: gap from Figma metadata between the nav (ends 60px from
           page top) and the content column (starts at 140px). */}
-      <div className="mx-auto flex w-full max-w-[688px] flex-col gap-12 pt-[80px]">
+      <div className="mx-auto flex w-full max-w-[688px] flex-col gap-12 pb-24 pt-[80px]">
         <div className="flex flex-col gap-10">
           <LabeledRow label="Who am I">
             <div className="flex flex-col gap-2">

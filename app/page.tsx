@@ -189,7 +189,7 @@ export default function Home() {
         <div className="flex flex-col gap-4">
           <h2 className={heading}>About me</h2>
           <div className="flex flex-col gap-4">
-            <p className={bodyText}>
+            <p className={`${bodyText} text-center`}>
               I am a <Chip icon={<DesignerMark />} medium>designer</Chip> who,
             </p>
             <div className="flex flex-wrap items-center justify-center gap-2">

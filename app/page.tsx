@@ -41,8 +41,8 @@ const aboutTraits: { label: string; icon: React.ReactNode }[] = [
 
 // Body copy shares one style throughout: 16px/24px line-height, tracking
 // -0.128px, in Geist (swapped from Figma's original Zalando Sans on request).
-const bodyText = "font-sans text-[16px] leading-6 tracking-[-0.128px] text-text-primary";
-const heading = "font-sans text-[20px] font-medium leading-6 tracking-[-0.8px] text-text-primary";
+const bodyText = "font-sans text-[14px] leading-6 tracking-[-0.128px] text-text-primary";
+const heading = "font-sans text-[16px] font-medium leading-6 tracking-[-0.8px] text-text-primary";
 // Inset shadow instead of a real border: Figma's stroke doesn't consume
 // layout space, but a CSS border always would on an explicitly-sized box
 // (see FloatingNav.tsx for the full story on this).
@@ -52,7 +52,7 @@ function Tag({ icon, label }: { icon: string; label: string }) {
   return (
     <div className="flex items-center gap-1 rounded-xs bg-bg-tertiary px-1.5 py-0.5">
       <Image src={icon} alt="" width={20} height={20} />
-      <span className="whitespace-nowrap font-sans text-[16px] tracking-[-0.128px] text-text-primary">
+      <span className="whitespace-nowrap font-sans text-[14px] tracking-[-0.128px] text-text-primary">
         {label}
       </span>
     </div>
@@ -179,8 +179,8 @@ export default function Home() {
                 validate and turn ideas into ventures.
               </p>
               <div className="flex items-center justify-between text-text-secondary">
-                <p className="font-sans text-[16px] leading-6 tracking-[-0.128px]">Lead Designer</p>
-                <p className="font-sans text-[16px] leading-6 tracking-[-0.128px]">2026</p>
+                <p className="font-sans text-[14px] leading-6 tracking-[-0.128px]">Lead Designer</p>
+                <p className="font-sans text-[14px] leading-6 tracking-[-0.128px]">2026</p>
               </div>
             </div>
           </Link>

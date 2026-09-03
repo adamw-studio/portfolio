@@ -4,16 +4,15 @@
  * "painter"). These aren't a standard icon set in Figma — each is a set of
  * absolutely-positioned rectangles inside a 20x20 box — so they're
  * reproduced here from Figma's exact per-shape coordinates rather than
- * substituted with generic icons.
+ * substituted with generic icons. No background box on the icon itself —
+ * only the fully-rounded (pill/circle) UI elements elsewhere on the page
+ * (nav buttons, selected-works arrows) keep a background.
  */
 type Rect = { x: number; y: number; w: number; h: number };
 
-function ShapeMark({ color, shapes, withBg = true }: { color: string; shapes: Rect[]; withBg?: boolean }) {
+function ShapeMark({ color, shapes }: { color: string; shapes: Rect[] }) {
   return (
-    <span
-      className={`relative inline-block size-5 shrink-0 overflow-hidden ${withBg ? "bg-bg-tertiary" : ""}`}
-      aria-hidden
-    >
+    <span className="relative inline-block size-5 shrink-0 overflow-hidden" aria-hidden>
       {shapes.map((s, i) => (
         <span
           key={i}
@@ -106,13 +105,10 @@ export const DesignerMark = () => (
 );
 
 // "About me" trait icons
-export const PrototypeAIMark = () => (
-  <ShapeMark withBg={false} color="#009951" shapes={[{ x: 0, y: 0, w: 10, h: 10 }]} />
-);
+export const PrototypeAIMark = () => <ShapeMark color="#009951" shapes={[{ x: 0, y: 0, w: 10, h: 10 }]} />;
 
 export const BuildsDesignSystemsMark = () => (
   <ShapeMark
-    withBg={false}
     color="#00a2c2"
     shapes={[
       { x: 10, y: 10, w: 10, h: 10 },
@@ -123,7 +119,6 @@ export const BuildsDesignSystemsMark = () => (
 
 export const RethinksWorkflowsMark = () => (
   <ShapeMark
-    withBg={false}
     color="#784da8"
     shapes={[
       { x: 0, y: 0, w: 6, h: 3 },
@@ -135,20 +130,17 @@ export const RethinksWorkflowsMark = () => (
 );
 
 export const BelievesCreativeMark = () => (
-  <ShapeMark withBg={false} color="#0d99ff" shapes={[{ x: 5, y: 5, w: 10, h: 10 }]} />
+  <ShapeMark color="#0d99ff" shapes={[{ x: 5, y: 5, w: 10, h: 10 }]} />
 );
 
 export const ObsessedDetailsMark = () => (
-  <ShapeMark withBg={false} color="#ffcd29" shapes={[{ x: 9, y: 9, w: 2, h: 2 }]} />
+  <ShapeMark color="#ffcd29" shapes={[{ x: 9, y: 9, w: 2, h: 2 }]} />
 );
 
-export const ShipCodeMark = () => (
-  <ShapeMark withBg={false} color="#ebffee" shapes={[{ x: 2, y: 3, w: 2, h: 14 }]} />
-);
+export const ShipCodeMark = () => <ShapeMark color="#ebffee" shapes={[{ x: 2, y: 3, w: 2, h: 14 }]} />;
 
 export const LovesCritMark = () => (
   <ShapeMark
-    withBg={false}
     color="#ebaff4"
     shapes={[
       { x: 14, y: 14, w: 4, h: 4 },

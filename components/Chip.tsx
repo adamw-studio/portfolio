@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
 export function Chip({ icon, children, medium = false }: { icon?: ReactNode; children: ReactNode; medium?: boolean }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-xs bg-bg-tertiary px-1.5 py-0.5 align-middle font-zalando text-[16px] leading-[normal] tracking-[-0.128px] text-text-primary ${
+      className={`inline-flex items-center gap-1 rounded-xs bg-bg-tertiary px-1.5 py-0.5 align-middle font-sans text-[16px] leading-[normal] tracking-[-0.128px] text-text-primary ${
         medium ? "font-medium" : "font-normal"
       }`}
     >

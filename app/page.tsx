@@ -70,7 +70,7 @@ export default function Home() {
           page. */}
       <div className="mx-auto flex w-full max-w-[688px] flex-col gap-[60px] pb-24 pt-[80px]">
         <div className="flex flex-col gap-10">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             <h1 className={heading}>Hey, I’m Adam</h1>
             <div className="flex flex-col gap-4">
               <p className={bodyText}>
@@ -90,7 +90,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             <h2 className={heading}>What shapes me</h2>
             <div className="flex flex-col gap-4">
               <p className={bodyText}>
@@ -107,7 +107,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             <h2 className={heading}>What I do</h2>
             <div className="flex flex-col gap-4">
               <p className={bodyText}>
@@ -129,7 +129,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           <div className="flex w-full items-center justify-between">
             <h2 className={heading}>Selected works</h2>
             <div className="flex items-center gap-2">
@@ -186,7 +186,7 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           <h2 className={heading}>About me</h2>
           <div className="flex flex-col gap-4">
             <p className={`${bodyText} text-center`}>

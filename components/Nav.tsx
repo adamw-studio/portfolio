@@ -12,11 +12,14 @@ const links = [
   { href: "/contact", label: "Get in touch", icon: "/images/home/edit.svg" },
 ];
 
-// Border stays a constant 1px all the way around at all times — only its
-// *color* animates (transparent when open, revealing the 1px gap to the
-// menu panel below) — so opening/closing never shifts layout the way
-// actually adding/removing a border would.
-const iconButton = "flex items-center justify-center rounded-full border border-border-subtle p-1";
+// Inset shadow instead of a real border: Figma's stroke doesn't consume
+// layout space, but a CSS border always would on an explicitly-sized box
+// (see typography.ts's insetBorder for the same fix applied elsewhere).
+// Explicit size-6 (24px) matches Figma's icon-button frame exactly:
+// p-1 (4px) + the 16px icon + p-1 (4px) = 24px, with zero extra from the
+// border since it's inset.
+const iconButton =
+  "flex size-6 items-center justify-center rounded-full p-1 shadow-[inset_0_0_0_1px_var(--color-border-subtle)]";
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
@@ -47,7 +50,7 @@ export default function Nav() {
     // opening/closing the menu never reflows the rest of the page.
     <div ref={rootRef} className="relative z-20 w-full">
       <div
-        className={`flex w-full items-center justify-between border border-border-subtle bg-bg-default p-1.5 transition-[border-radius,border-bottom-color] duration-300 ease-out ${
+        className={`flex w-full items-center justify-between border-b border-b-border-subtle bg-bg-default p-1.5 shadow-[inset_0_1px_0_0_var(--color-border-subtle),inset_1px_0_0_0_var(--color-border-subtle),inset_-1px_0_0_0_var(--color-border-subtle)] transition-[border-radius,border-bottom-color] duration-300 ease-out ${
           open ? "rounded-t-lg border-b-transparent" : "rounded-full"
         }`}
       >

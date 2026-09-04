@@ -33,12 +33,14 @@ export default function Home() {
   return (
     <div className="theme-dark flex flex-1 flex-col bg-bg-default px-4">
       {/* Nav: top offset 24px (Figma). Content column: starts at 140px, so
-          92px after the nav row ends (24 + 24 tall nav = 48; 140-48=92). */}
+          79px after the nav row ends (24 + 37 tall nav = 61; 140-61=79).
+          37px, not the old 24px, once the nav's own inset-shadow "border"
+          fix (matching Figma's non-layout-consuming stroke) landed. */}
       <div className="mx-auto w-full max-w-[688px] pt-6">
         <Nav />
       </div>
 
-      <div className="mx-auto w-full max-w-[688px] pt-[92px]">
+      <div className="mx-auto w-full max-w-[688px] pt-[79px]">
         <div className="flex flex-col gap-[60px]">
           <div className="flex flex-col gap-10">
             <div className="flex flex-col gap-3">

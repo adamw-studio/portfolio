@@ -102,8 +102,8 @@ function getStackOffset(stackIndex: number, layout: (typeof LAYOUT)["desktop"]) 
   const clusterH = layout.cardH + last.y * layout.scale.y;
   const baseX = layout.containerW / 2 - clusterW / 2;
   // Biased toward the top third of the container (not true vertical
-  // center) so the resting stack sits closer to the "About me" heading
-  // rather than in the middle of the viewport.
+  // center) so the resting stack sits closer to the "I'm a designer who,"
+  // heading rather than in the middle of the viewport.
   const baseY = layout.containerH * 0.32 - clusterH / 2;
   return { x: baseX + cascade.x * layout.scale.x, y: baseY + cascade.y * layout.scale.y };
 }

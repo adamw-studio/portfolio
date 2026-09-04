@@ -111,11 +111,12 @@ export default function Home() {
       </div>
 
       {/* Breaks out of the 688px column: the card composition is ~832px
-          wide on desktop, wider than the rest of the page's content. */}
+          wide on desktop, wider than the rest of the page's content. The
+          heading is centered across the full section width too (unlike
+          every other header on this page, which is left-aligned in the
+          688px column) — matches Figma's centered "before" state. */}
       <div className="mt-[60px] flex flex-col gap-3 pb-24">
-        <div className="mx-auto w-full max-w-[688px]">
-          <h2 className={heading}>About me</h2>
-        </div>
+        <h2 className={`${heading} text-center`}>I&apos;m a designer who,</h2>
         <AboutCardStack />
       </div>
     </div>

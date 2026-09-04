@@ -13,10 +13,6 @@ type CardData = {
 };
 
 // Card copy, color and *final* positions are exact (Figma node 217:12252).
-// Figma's stacked "before" state (217:12280) only specifies 3 of the 8 cards
-// explicitly, since the other 5 are fully hidden behind them — their
-// resting positions are extrapolated by continuing that same diagonal
-// cascade (see getStackOffset below), not guessed independently.
 const CARDS: CardData[] = [
   { id: "prototype", color: "#fff1b5", lines: ["prototype", "with AI"], final: { x: 168, y: 17 }, stackIndex: 0 },
   { id: "systems", color: "#00a2c2", lines: ["builds design", "systems"], final: { x: 336, y: 70 }, stackIndex: 1 },
@@ -88,19 +84,28 @@ function getFinalPosition(breakpoint: Breakpoint, card: CardData, index: number)
   return { x: card.final.x * layout.scale.x, y: card.final.y * layout.scale.y };
 }
 
-/** Resting-stack offset for a card, continuing Figma's own diagonal cascade
- * (front→middle ≈ +25x/-23.5y, middle→back ≈ +25x/-25y — averaged here)
- * outward symmetrically from the stack's center so all 8 cluster together. */
+// Figma's stacked "before" state (217:12280) only ever shows 3 distinct card
+// surfaces — front, middle, back — each offset from the last by the same
+// diagonal step. The remaining 5 cards aren't a continuation of that
+// cascade; they sit exactly where the back card sits, fully hidden beneath
+// it, so only 3 are ever visible at rest.
+const STACK_CASCADE = [
+  { x: 0, y: 47 },
+  { x: 25, y: 23.5 },
+  { x: 50, y: 0 },
+];
+
 function getStackOffset(stackIndex: number, layout: (typeof LAYOUT)["desktop"]) {
-  const dx = 25 * layout.scale.x;
-  const dy = -23.5 * layout.scale.y;
-  const baseX = layout.containerW / 2 - layout.cardW / 2;
+  const cascade = STACK_CASCADE[Math.min(stackIndex, STACK_CASCADE.length - 1)];
+  const last = STACK_CASCADE[STACK_CASCADE.length - 1];
+  const clusterW = layout.cardW + last.x * layout.scale.x;
+  const clusterH = layout.cardH + last.y * layout.scale.y;
+  const baseX = layout.containerW / 2 - clusterW / 2;
   // Biased toward the top third of the container (not true vertical
   // center) so the resting stack sits closer to the "About me" heading
   // rather than in the middle of the viewport.
-  const baseY = layout.containerH * 0.32 - layout.cardH / 2;
-  const t = stackIndex - 3.5;
-  return { x: baseX + t * dx, y: baseY + t * dy };
+  const baseY = layout.containerH * 0.32 - clusterH / 2;
+  return { x: baseX + cascade.x * layout.scale.x, y: baseY + cascade.y * layout.scale.y };
 }
 
 function lerp(a: number, b: number, t: number) {
@@ -116,11 +121,18 @@ function easeInOutSine(t: number) {
   return -(Math.cos(Math.PI * t) - 1) / 2;
 }
 
+const HOVER_TRANSITION = "transform 500ms cubic-bezier(0.4, 0, 0.2, 1)";
+
 export default function AboutCardStack() {
   const sectionRef = useRef<HTMLElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const isHoveringRef = useRef(false);
+  const applyProgressRef = useRef<() => void>(() => {});
+  const hoverTimeoutRef = useRef<number | null>(null);
   const [breakpoint, setBreakpoint] = useState<Breakpoint>("desktop");
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [fitScale, setFitScale] = useState(1);
 
   useEffect(() => {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -149,6 +161,23 @@ export default function AboutCardStack() {
     [breakpoint, layout],
   );
 
+  // Shrink the composition (via a single ancestor transform, not by
+  // recomputing every card's pixel offsets) whenever the available column is
+  // narrower than the layout's native container width, so cards never get
+  // clipped by the sticky wrapper's overflow-hidden on tighter viewports.
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    const update = () => {
+      const available = wrapper.clientWidth;
+      setFitScale(available > 0 ? Math.min(1, available / layout.containerW) : 1);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(wrapper);
+    return () => ro.disconnect();
+  }, [layout.containerW]);
+
   // Scroll-linked animation. Reads scroll position and writes transforms
   // directly to card DOM nodes inside a single rAF-throttled callback —
   // bypassing React state so continuous scrolling never triggers a
@@ -165,7 +194,11 @@ export default function AboutCardStack() {
       const rect = section.getBoundingClientRect();
       const viewportH = window.innerHeight;
       const scrollableDistance = section.offsetHeight - viewportH;
-      const progress = scrollableDistance > 0 ? clamp01(-rect.top / scrollableDistance) : 0;
+      const scrollProgress = scrollableDistance > 0 ? clamp01(-rect.top / scrollableDistance) : 0;
+      // Hovering the card area previews the full unfold immediately,
+      // independent of scroll position; scroll remains the primary driver
+      // once the pointer leaves.
+      const progress = isHoveringRef.current ? 1 : scrollProgress;
       const eased = easeInOutSine(progress);
 
       cardRefs.current.forEach((el, i) => {
@@ -176,6 +209,8 @@ export default function AboutCardStack() {
         el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       });
     };
+
+    applyProgressRef.current = applyProgress;
 
     const onScroll = () => {
       if (rafId === null) rafId = requestAnimationFrame(applyProgress);
@@ -192,25 +227,86 @@ export default function AboutCardStack() {
     };
   }, [positions, reducedMotion]);
 
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current !== null) window.clearTimeout(hoverTimeoutRef.current);
+    };
+  }, []);
+
+  const handleMouseEnter = () => {
+    if (reducedMotion) return;
+    isHoveringRef.current = true;
+    if (hoverTimeoutRef.current !== null) {
+      window.clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    cardRefs.current.forEach((el) => {
+      if (el) el.style.transition = HOVER_TRANSITION;
+    });
+    applyProgressRef.current();
+  };
+
+  const handleMouseLeave = () => {
+    if (reducedMotion) return;
+    isHoveringRef.current = false;
+    cardRefs.current.forEach((el) => {
+      if (el) el.style.transition = HOVER_TRANSITION;
+    });
+    applyProgressRef.current();
+    // Drop the transition once it's finished so scroll-scrubbing goes back
+    // to tracking the scroll position 1:1 with no lag.
+    hoverTimeoutRef.current = window.setTimeout(() => {
+      cardRefs.current.forEach((el) => {
+        if (el) el.style.transition = "none";
+      });
+      hoverTimeoutRef.current = null;
+    }, 500);
+  };
+
   // Reduced motion: no sticky pin, no scroll distance, no listeners — just
   // the static final composition.
   if (reducedMotion) {
     return (
-      <div
-        className="relative mx-auto"
-        style={{ width: layout.containerW, height: layout.containerH, maxWidth: "100%" }}
-      >
-        {CARDS.map((card, i) => (
-          <Card key={card.id} card={card} layout={layout} style={{ transform: `translate3d(${positions[i].final.x}px, ${positions[i].final.y}px, 0)` }} />
-        ))}
+      <div ref={wrapperRef} className="w-full overflow-hidden">
+        <div
+          className="relative mx-auto"
+          style={{
+            width: layout.containerW,
+            height: layout.containerH * fitScale,
+            transform: fitScale < 1 ? `scale(${fitScale})` : undefined,
+            transformOrigin: "top center",
+          }}
+        >
+          {CARDS.map((card, i) => (
+            <Card
+              key={card.id}
+              card={card}
+              layout={layout}
+              style={{ transform: `translate3d(${positions[i].final.x}px, ${positions[i].final.y}px, 0)` }}
+            />
+          ))}
+        </div>
       </div>
     );
   }
 
   return (
     <section ref={sectionRef} className="relative h-[190vh]">
-      <div className="sticky top-0 flex h-screen w-full items-start justify-center overflow-hidden pt-6">
-        <div className="relative" style={{ width: layout.containerW, height: layout.containerH, maxWidth: "100%" }}>
+      <div
+        ref={wrapperRef}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className="sticky top-0 flex h-screen w-full items-start justify-center overflow-hidden pt-6"
+      >
+        <div
+          className="relative"
+          style={{
+            width: layout.containerW,
+            height: layout.containerH,
+            transform: fitScale < 1 ? `scale(${fitScale})` : undefined,
+            transformOrigin: "top center",
+          }}
+        >
           {CARDS.map((card, i) => (
             <Card
               key={card.id}

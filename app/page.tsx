@@ -4,6 +4,7 @@ import { Chip } from "@/components/Chip";
 import { Tag } from "@/components/Tag";
 import AboutCardStack from "@/components/AboutCardStack";
 import SelectedWorks from "@/components/SelectedWorks";
+import { Divider } from "@/components/Divider";
 import { TimeMark, SculptorMark } from "@/components/marks";
 import BarChartIcon from "@/components/icons/BarChartIcon";
 import EqualsIcon from "@/components/icons/EqualsIcon";
@@ -104,10 +105,18 @@ export default function Home() {
             </div>
           </div>
 
+          <Divider />
+
           {/* gap-4 (16px): Figma keeps this section's header-to-content gap
               at 16px, unlike the 12px used everywhere else on this page. */}
           <SelectedWorks />
         </div>
+      </div>
+
+      {/* Divider stays constrained to the 688px content column (matches
+          Figma), even though the section below it breaks out wider. */}
+      <div className="mx-auto mt-[60px] w-full max-w-[688px]">
+        <Divider />
       </div>
 
       {/* Breaks out of the 688px column: the card composition is ~832px

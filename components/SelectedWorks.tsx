@@ -6,8 +6,8 @@ import { useState } from "react";
 import { bodyText, heading, insetBorder } from "@/components/typography";
 
 type Project = {
+  /** Also doubles as the /work/[id] case study route slug. */
   id: string;
-  href: string;
   description: string;
   role: string;
   year: string;
@@ -22,7 +22,6 @@ type Project = {
 const PROJECTS: Project[] = [
   {
     id: "beacon",
-    href: "/work",
     description:
       "Ideas don’t become viable ventures by default. Designing how agentic AI helps founders research, validate and turn ideas into ventures.",
     role: "Lead Designer",
@@ -40,7 +39,6 @@ const PROJECTS: Project[] = [
   },
   {
     id: "robotics",
-    href: "/work",
     description:
       "Building robots is complex. Learning to build them shouldn’t be. Redesigning the robotics experience to help kids confidently build, code and learn on their own.",
     role: "UX Lead, Product Designer",
@@ -50,7 +48,6 @@ const PROJECTS: Project[] = [
   },
   {
     id: "documentary",
-    href: "/work",
     description:
       "Translating an artist’s world from canvas to screen. Designing the poster and typography system for a documentary celebrating 40 years of creative work.",
     role: "Graphic Designer, Executive Producer",
@@ -60,7 +57,6 @@ const PROJECTS: Project[] = [
   },
   {
     id: "monday",
-    href: "/work",
     description:
       "A creative collective needs an identity, not a uniform. Designing a visual system that gives Monday a distinctive voice while leaving room for experimentation.",
     role: "Brand Designer",
@@ -102,7 +98,7 @@ export default function SelectedWorks() {
         </div>
       </div>
 
-      <Link href={project.href} className="flex flex-col gap-4">
+      <Link href={`/work/${project.id}`} className="flex flex-col gap-4">
         <div className="relative h-[400px] w-full overflow-hidden rounded-2xl bg-bg-secondary">
           <Image
             key={project.backdropSrc}

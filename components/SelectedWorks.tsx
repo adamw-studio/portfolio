@@ -58,6 +58,16 @@ const PROJECTS: Project[] = [
     backdropSrc: "/images/home/selected-work-3-cover.jpg",
     backdropAlt: "Black and white behind-the-scenes photo of a documentary film crew interviewing the artist on a residential street",
   },
+  {
+    id: "monday",
+    href: "/work",
+    description:
+      "A creative collective needs an identity, not a uniform. Designing a visual system that gives Monday a distinctive voice while leaving room for experimentation.",
+    role: "Brand Designer",
+    year: "2026",
+    backdropSrc: "/images/home/selected-work-4-cover.jpg",
+    backdropAlt: "Red tote bag printed with the Monday wordmark, held up against a blue sky",
+  },
 ];
 
 export default function SelectedWorks() {

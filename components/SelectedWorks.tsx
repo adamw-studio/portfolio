@@ -48,6 +48,16 @@ const PROJECTS: Project[] = [
     backdropSrc: "/images/home/selected-work-2-cover.jpg",
     backdropAlt: "Robotics companion app displayed on a phone, resting on a table",
   },
+  {
+    id: "documentary",
+    href: "/work",
+    description:
+      "Translating an artist’s world from canvas to screen. Designing the poster and typography system for a documentary celebrating 40 years of creative work.",
+    role: "Graphic Designer, Executive Producer",
+    year: "2025",
+    backdropSrc: "/images/home/selected-work-3-cover.jpg",
+    backdropAlt: "Black and white behind-the-scenes photo of a documentary film crew interviewing the artist on a residential street",
+  },
 ];
 
 export default function SelectedWorks() {

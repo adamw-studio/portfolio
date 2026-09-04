@@ -335,33 +335,44 @@ export default function AboutCardStack() {
       <section ref={sectionRef} className="relative h-[calc(90vh+520px)]">
         <div
           ref={wrapperRef}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
           className="sticky top-0 flex w-full items-start justify-center overflow-hidden pt-6 pb-8"
         >
+          {/* Hover-to-preview only triggers within the card composition
+              itself plus a 16px margin around it — not the whole sticky
+              area (which is as wide as the viewport). The padding grows
+              this element by 16px on every side without shifting the
+              cards inside it: the flex parent re-centers the now-larger
+              box, and the padding pushes the (unchanged-size) card
+              container back to the exact same spot. */}
           <div
-            className="relative"
-            style={{
-              width: layout.containerW,
-              height: layout.containerH,
-              transform: fitScale < 1 ? `scale(${fitScale})` : undefined,
-              transformOrigin: "top center",
-            }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            style={{ width: layout.containerW + 32, height: layout.containerH + 32, padding: 16 }}
           >
-            {CARDS.map((card, i) => (
-              <Card
-                key={card.id}
-                card={card}
-                layout={layout}
-                ref={(el) => {
-                  cardRefs.current[i] = el;
-                }}
-                style={{
-                  transform: `translate3d(${positions[i].stack.x}px, ${positions[i].stack.y}px, 0)`,
-                  zIndex: 8 - card.stackIndex,
-                }}
-              />
-            ))}
+            <div
+              className="relative"
+              style={{
+                width: layout.containerW,
+                height: layout.containerH,
+                transform: fitScale < 1 ? `scale(${fitScale})` : undefined,
+                transformOrigin: "top center",
+              }}
+            >
+              {CARDS.map((card, i) => (
+                <Card
+                  key={card.id}
+                  card={card}
+                  layout={layout}
+                  ref={(el) => {
+                    cardRefs.current[i] = el;
+                  }}
+                  style={{
+                    transform: `translate3d(${positions[i].stack.x}px, ${positions[i].stack.y}px, 0)`,
+                    zIndex: 8 - card.stackIndex,
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>

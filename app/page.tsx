@@ -1,9 +1,10 @@
 import Image from "next/image";
-import Link from "next/link";
 import Nav from "@/components/Nav";
 import { Chip } from "@/components/Chip";
 import AboutCardStack from "@/components/AboutCardStack";
+import SelectedWorks from "@/components/SelectedWorks";
 import { TimeMark, BrushMark, SculptorMark, CuriosityMark, CraftsmanshipMark, DeepRespectMark } from "@/components/marks";
+import { bodyText, heading } from "@/components/typography";
 
 const whatIDo = [
   { icon: "/images/home/icons-v3/epic1-research.svg", label: "Research" },
@@ -14,18 +15,6 @@ const whatIDo = [
   { icon: "/images/home/icons-v3/epic6-brand.svg", label: "Brand identity" },
   { icon: "/images/home/icons-v3/epic7-stakeholder.svg", label: "Stakeholder management" },
 ];
-
-// Body copy shares one style throughout: 14px/24px line-height, tracking
-// -0.128px, in Geist. Headings switched to Gentium Basic (serif) per this
-// design revision — kept at the 16px size requested earlier rather than
-// reverting to Figma's own 20px, and dropped font-medium since Gentium
-// Basic has no medium weight (and Figma doesn't call for one here either).
-const bodyText = "font-sans text-[14px] leading-6 tracking-[-0.128px] text-text-primary";
-const heading = "font-serif text-[16px] leading-6 tracking-[-0.8px] text-text-primary";
-// Inset shadow instead of a real border: Figma's stroke doesn't consume
-// layout space, but a CSS border always would on an explicitly-sized box
-// (see Nav.tsx for the full story on this).
-const insetBorder = "shadow-[inset_0_0_0_1px_var(--color-border-subtle)]";
 
 function Tag({ icon, label }: { icon: string; label: string }) {
   return (
@@ -116,62 +105,7 @@ export default function Home() {
 
           {/* gap-4 (16px): Figma keeps this section's header-to-content gap
               at 16px, unlike the 12px used everywhere else on this page. */}
-          <div className="flex flex-col gap-4">
-            <div className="flex w-full items-center justify-between">
-              <h2 className={heading}>Selected works</h2>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  aria-label="Previous work"
-                  disabled
-                  className={`flex size-6 items-center justify-center rounded-full bg-bg-tertiary disabled:cursor-not-allowed ${insetBorder}`}
-                >
-                  <Image src="/images/home/arrow-left.svg" alt="" width={16} height={16} />
-                </button>
-                <button
-                  type="button"
-                  aria-label="Next work"
-                  className={`flex size-6 items-center justify-center rounded-full bg-bg-tertiary ${insetBorder}`}
-                >
-                  <Image src="/images/home/arrow-right.svg" alt="" width={16} height={16} />
-                </button>
-              </div>
-            </div>
-
-            <Link href="/work" className="flex flex-col gap-4">
-              <div className="relative h-[400px] w-full overflow-hidden rounded-2xl bg-bg-secondary">
-                <Image
-                  src="/images/home/selected-work-backdrop.jpg"
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="688px"
-                />
-                <div
-                  className="absolute overflow-hidden rounded-lg blur-[1px]"
-                  style={{ left: 79, top: 86, width: 530, height: 358 }}
-                >
-                  <Image
-                    src="/images/home/selected-work-screen.jpg"
-                    alt="Beacon product screen"
-                    fill
-                    className="object-cover"
-                    sizes="530px"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col gap-1">
-                <p className={bodyText}>
-                  Ideas don’t become viable ventures by default. Designing how agentic AI helps founders research,
-                  validate and turn ideas into ventures.
-                </p>
-                <div className="flex items-center justify-between text-text-secondary">
-                  <p className="font-sans text-[14px] leading-6 tracking-[-0.128px]">Lead Designer</p>
-                  <p className="font-sans text-[14px] leading-6 tracking-[-0.128px]">2026</p>
-                </div>
-              </div>
-            </Link>
-          </div>
+          <SelectedWorks />
         </div>
       </div>
 

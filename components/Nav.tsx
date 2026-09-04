@@ -45,13 +45,17 @@ export default function Nav() {
   }, [open]);
 
   return (
-    // relative + z-20: the panel below is absolutely positioned and floats
-    // over whatever content follows the nav, rather than pushing it down —
-    // opening/closing the menu never reflows the rest of the page.
-    <div ref={rootRef} className="relative z-20 w-full">
+    // Nav is a small, self-sized pill — not a full-width bar. Figma
+    // centers it on the *page* (not the 688px content column) but the two
+    // centers coincide, so mx-auto within the 688px wrapper lands it in
+    // the same place. relative + z-20: the panel below is absolutely
+    // positioned and floats over whatever content follows the nav, rather
+    // than pushing it down — opening/closing the menu never reflows the
+    // rest of the page.
+    <div ref={rootRef} className="relative z-20 mx-auto w-fit">
       <div
-        className={`flex w-full items-center justify-between border-b border-b-border-subtle bg-bg-default p-1.5 shadow-[inset_0_1px_0_0_var(--color-border-subtle),inset_1px_0_0_0_var(--color-border-subtle),inset_-1px_0_0_0_var(--color-border-subtle)] transition-[border-radius,border-bottom-color] duration-300 ease-out ${
-          open ? "rounded-t-lg border-b-transparent" : "rounded-full"
+        className={`flex max-w-full items-center justify-between border-b border-b-border-subtle bg-bg-default p-1.5 shadow-[inset_0_1px_0_0_var(--color-border-subtle),inset_1px_0_0_0_var(--color-border-subtle),inset_-1px_0_0_0_var(--color-border-subtle)] transition-[width,border-radius,border-bottom-color] duration-300 ease-out ${
+          open ? "w-[336px] rounded-t-lg border-b-transparent" : "w-[160px] rounded-full"
         }`}
       >
         {/* Purely visual for now — no theme-switching wired up yet. */}

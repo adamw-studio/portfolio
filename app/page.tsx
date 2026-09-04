@@ -6,6 +6,8 @@ import AboutCardStack from "@/components/AboutCardStack";
 import SelectedWorks from "@/components/SelectedWorks";
 import HomeFooter from "@/components/HomeFooter";
 import { Divider } from "@/components/Divider";
+import { ThemeProvider } from "@/components/ThemeContext";
+import { themedIcon } from "@/components/themedIcon";
 import { TimeMark, SculptorMark } from "@/components/marks";
 import BarChartIcon from "@/components/icons/BarChartIcon";
 import EqualsIcon from "@/components/icons/EqualsIcon";
@@ -32,7 +34,7 @@ const whatIDo = [
 
 export default function Home() {
   return (
-    <div className="theme-dark flex flex-1 flex-col bg-bg-default px-4">
+    <ThemeProvider>
       {/* Nav: top offset 24px (Figma). Content column: starts at 140px, so
           79px after the nav row ends (24 + 37 tall nav = 61; 140-61=79).
           37px, not the old 24px, once the nav's own inset-shadow "border"
@@ -57,7 +59,10 @@ export default function Home() {
                 </p>
                 <p className={bodyText}>
                   I currently lead design for{" "}
-                  <Chip icon={<Image src="/images/home/beacon-icon.svg" alt="" width={22} height={12} />} radius="sm">
+                  <Chip
+                    icon={<Image src="/images/home/beacon-icon.svg" alt="" width={22} height={12} className={themedIcon} />}
+                    radius="sm"
+                  >
                     Beacon
                   </Chip>
                   , a B2B SaaS that helps businesses ideate and validate new business ventures with the power of
@@ -133,6 +138,6 @@ export default function Home() {
       </div>
 
       <HomeFooter />
-    </div>
+    </ThemeProvider>
   );
 }

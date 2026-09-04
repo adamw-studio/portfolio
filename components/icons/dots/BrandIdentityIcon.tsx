@@ -21,7 +21,7 @@ export default function BrandIdentityIcon() {
           <feGaussianBlur stdDeviation="1.75" />
         </filter>
       </defs>
-      <path fill="#f4f4f4" fillOpacity=".05" d={BADGE_D} />
+      <path fill="var(--color-bg-tertiary)" d={BADGE_D} />
       <circle
         cx="13.5"
         cy="10"

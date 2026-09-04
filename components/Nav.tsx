@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTheme } from "@/components/ThemeContext";
+import { themedIcon } from "@/components/themedIcon";
 
 // Menu Items component (Figma 239:12785) has three states — Default,
 // Hover and Selected — where Hover and Selected are visually identical
@@ -35,6 +37,7 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const rootRef = useRef<HTMLDivElement>(null);
+  const { theme, toggleTheme } = useTheme();
 
   // Close on outside click and on Escape — baseline behavior for any
   // dropdown menu, not just decoration.
@@ -68,11 +71,26 @@ export default function Nav() {
           open ? "w-[336px] rounded-t-lg border-b-transparent" : "w-[160px] rounded-full"
         }`}
       >
-        {/* Purely visual for now — no theme-switching wired up yet. */}
-        <button type="button" aria-label="Toggle theme" className={iconButton}>
-          <Image src="/images/home/small-lamp.svg" alt="" width={16} height={16} />
+        {/* Icon reflects the *current* theme (lamp = dark, bulb = light),
+            matching Figma's two states, rather than "what you'll switch
+            to". themedIcon inverts these single-color #F4F4F4 exports to
+            #0D0D0D-ish in light mode — see themedIcon.ts for why that's
+            more reliable than Figma's own per-theme icon exports here. */}
+        <button
+          type="button"
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          onClick={toggleTheme}
+          className={iconButton}
+        >
+          <Image
+            src={theme === "dark" ? "/images/home/small-lamp.svg" : "/images/home/light-bulb.svg"}
+            alt=""
+            width={16}
+            height={16}
+            className={themedIcon}
+          />
         </button>
-        <Image src="/images/home/logo-mark-small.svg" alt="Adam Weber" width={36} height={12} />
+        <Image src="/images/home/logo-mark-small.svg" alt="Adam Weber" width={36} height={12} className={themedIcon} />
         <button
           type="button"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -80,7 +98,7 @@ export default function Nav() {
           onClick={() => setOpen((o) => !o)}
           className={iconButton}
         >
-          <Image src="/images/home/menu.svg" alt="" width={16} height={16} />
+          <Image src="/images/home/menu.svg" alt="" width={16} height={16} className={themedIcon} />
         </button>
       </div>
 
@@ -115,13 +133,13 @@ export default function Nav() {
                     src={link.icon}
                     alt=""
                     fill
-                    className={`transition-opacity duration-150 ${active ? "opacity-0" : "opacity-100 group-hover:opacity-0"}`}
+                    className={`${themedIcon} transition-opacity duration-150 ${active ? "opacity-0" : "opacity-100 group-hover:opacity-0"}`}
                   />
                   <Image
                     src={link.activeIcon}
                     alt=""
                     fill
-                    className={`transition-opacity duration-150 ${active ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                    className={`${themedIcon} transition-opacity duration-150 ${active ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
                   />
                 </span>
                 {link.label}

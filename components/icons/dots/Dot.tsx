@@ -52,7 +52,10 @@ export function Dot({
 }) {
   return (
     <AnimatedIcon>
-      <path fill="#f4f4f4" fillOpacity=".05" d={BADGE_D} />
+      {/* bg-tertiary already encodes the right near-white/near-black-at-5%
+          fill for whichever theme is active — same token the rest of the
+          site uses, so this badge never needs its own light/dark logic. */}
+      <path fill="var(--color-bg-tertiary)" d={BADGE_D} />
       <g fill={color} className={`transition-transform ${MOTION_REDUCE} ${CHOREOGRAPHY_CLASSES[choreography]}`} style={FILL_BOX}>
         <path d={dotD} />
         <path d={textureD} />

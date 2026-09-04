@@ -2,7 +2,7 @@ import { AnimatedIcon } from "@/components/motion/AnimatedIcon";
 import { useHandDrawnFilter } from "@/components/motion/HandDrawnFilter";
 import { ICON_DURATION, EASE_SMOOTH, MOTION_REDUCE } from "@/components/motion/tokens";
 
-const COLOR = "#fff1b5";
+const COLOR = "var(--icon-cream)";
 
 /** "deep respect" chip icon — top and bottom strokes slide apart along the
  * horizontal axis in opposite directions, then settle smoothly back on

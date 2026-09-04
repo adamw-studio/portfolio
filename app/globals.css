@@ -14,6 +14,12 @@
   --color-text-link: #007be5;
   --color-border-disabled: rgba(13, 13, 13, 0.05);
   --color-border-subtle: rgba(13, 13, 13, 0.1);
+  /* The "cream" accent used by several About/shape/dot icons (#fff1b5 in
+     dark mode) has poor contrast on this light background — Figma swaps
+     it for a darker gold in light mode instead. The "teal" accent
+     (#00a2c2) has enough contrast in both themes, so it isn't a variable
+     at all — icons just hardcode it directly. */
+  --icon-cream: #d9a900;
   --radius-xs: 6px;
   /* Note: Figma calls these tokens "radius/s", "radius/m" and "radius/l",
      but naming a custom Tailwind radius scale key "s" or "l" collides with
@@ -44,6 +50,7 @@
   --color-text-subtle: rgba(244, 244, 244, 0.4);
   --color-border-disabled: rgba(244, 244, 244, 0.05);
   --color-border-subtle: rgba(244, 244, 244, 0.1);
+  --icon-cream: #fff1b5;
 }
 
 @theme inline {

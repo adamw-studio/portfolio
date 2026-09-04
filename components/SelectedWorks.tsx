@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { bodyText, heading, insetBorder } from "@/components/typography";
+import { themedIcon } from "@/components/themedIcon";
 
 type Project = {
   /** Also doubles as the /work/[id] case study route slug. */
@@ -84,7 +85,7 @@ export default function SelectedWorks() {
             onClick={() => setIndex((i) => Math.max(0, i - 1))}
             className={`flex size-6 items-center justify-center rounded-full bg-bg-tertiary disabled:cursor-not-allowed disabled:opacity-40 ${insetBorder}`}
           >
-            <Image src="/images/home/arrow-left.svg" alt="" width={16} height={16} />
+            <Image src="/images/home/arrow-left.svg" alt="" width={16} height={16} className={themedIcon} />
           </button>
           <button
             type="button"
@@ -93,7 +94,7 @@ export default function SelectedWorks() {
             onClick={() => setIndex((i) => Math.min(PROJECTS.length - 1, i + 1))}
             className={`flex size-6 items-center justify-center rounded-full bg-bg-tertiary disabled:cursor-not-allowed disabled:opacity-40 ${insetBorder}`}
           >
-            <Image src="/images/home/arrow-right.svg" alt="" width={16} height={16} />
+            <Image src="/images/home/arrow-right.svg" alt="" width={16} height={16} className={themedIcon} />
           </button>
         </div>
       </div>

@@ -5,11 +5,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+// Menu Items component (Figma 239:12785) has three states — Default,
+// Hover and Selected — where Hover and Selected are visually identical
+// (bg-tertiary pill, full-opacity everything) and only Default is dim.
+// Figma ships that dimming as two separate icon exports (not one icon
+// dimmed via CSS opacity), so each link carries both variants here.
 const links = [
-  { href: "/", label: "Home", icon: "/images/home/home-simple.svg" },
-  { href: "/work", label: "Selected works", icon: "/images/home/sparks.svg" },
-  { href: "/playground", label: "Playground", icon: "/images/home/bounce-right.svg" },
-  { href: "/contact", label: "Get in touch", icon: "/images/home/edit.svg" },
+  { href: "/", label: "Home", icon: "/images/home/home-simple.svg", activeIcon: "/images/home/home-simple-active.svg" },
+  { href: "/work", label: "Selected works", icon: "/images/home/sparks.svg", activeIcon: "/images/home/sparks-active.svg" },
+  {
+    href: "/playground",
+    label: "Playground",
+    icon: "/images/home/bounce-right.svg",
+    activeIcon: "/images/home/bounce-right-active.svg",
+  },
+  { href: "/contact", label: "Get in touch", icon: "/images/home/edit.svg", activeIcon: "/images/home/edit-active.svg" },
 ];
 
 // Inset shadow instead of a real border: Figma's stroke doesn't consume
@@ -92,14 +102,28 @@ export default function Nav() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className={`flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] ${
-                  active ? "bg-bg-tertiary text-text-primary" : "text-text-subtle"
+                className={`group flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-colors duration-150 ${
+                  active ? "bg-bg-tertiary text-text-primary" : "text-text-subtle hover:bg-bg-tertiary hover:text-text-primary"
                 }`}
               >
-                {/* Inactive icons already carry fill-opacity:0.4 baked into
-                    the SVG itself (matches Figma's icon/icon-subtle token)
-                    — no extra CSS opacity needed, that would double-dim them. */}
-                <Image src={link.icon} alt="" width={16} height={16} />
+                {/* Two stacked icons crossfade on hover rather than one
+                    icon whose opacity is toggled — the dim/full looks are
+                    separate Figma exports, not the same art at two
+                    opacities (see the `links` comment above). */}
+                <span className="relative size-4 shrink-0">
+                  <Image
+                    src={link.icon}
+                    alt=""
+                    fill
+                    className={`transition-opacity duration-150 ${active ? "opacity-0" : "opacity-100 group-hover:opacity-0"}`}
+                  />
+                  <Image
+                    src={link.activeIcon}
+                    alt=""
+                    fill
+                    className={`transition-opacity duration-150 ${active ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                  />
+                </span>
                 {link.label}
               </Link>
             );

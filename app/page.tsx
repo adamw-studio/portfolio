@@ -4,6 +4,7 @@ import { Chip } from "@/components/Chip";
 import { Tag } from "@/components/Tag";
 import AboutCardStack from "@/components/AboutCardStack";
 import SelectedWorks from "@/components/SelectedWorks";
+import HomeFooter from "@/components/HomeFooter";
 import { Divider } from "@/components/Divider";
 import { TimeMark, SculptorMark } from "@/components/marks";
 import BarChartIcon from "@/components/icons/BarChartIcon";
@@ -126,10 +127,12 @@ export default function Home() {
           heading is centered across the full section width too (unlike
           every other header on this page, which is left-aligned in the
           688px column) — matches Figma's centered "before" state. */}
-      <div className="mt-[60px] flex flex-col gap-3 pb-24">
+      <div className="mt-[60px] flex flex-col gap-3 pb-16">
         <h2 className={`${heading} text-center`}>I&apos;m a designer who,</h2>
         <AboutCardStack />
       </div>
+
+      <HomeFooter />
     </div>
   );
 }

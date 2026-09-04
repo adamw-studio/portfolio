@@ -95,7 +95,10 @@ function getStackOffset(stackIndex: number, layout: (typeof LAYOUT)["desktop"]) 
   const dx = 25 * layout.scale.x;
   const dy = -23.5 * layout.scale.y;
   const baseX = layout.containerW / 2 - layout.cardW / 2;
-  const baseY = layout.containerH / 2 - layout.cardH / 2;
+  // Biased toward the top third of the container (not true vertical
+  // center) so the resting stack sits closer to the "About me" heading
+  // rather than in the middle of the viewport.
+  const baseY = layout.containerH * 0.32 - layout.cardH / 2;
   const t = stackIndex - 3.5;
   return { x: baseX + t * dx, y: baseY + t * dy };
 }
@@ -205,8 +208,8 @@ export default function AboutCardStack() {
   }
 
   return (
-    <section ref={sectionRef} className="relative h-[260vh]">
-      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
+    <section ref={sectionRef} className="relative h-[190vh]">
+      <div className="sticky top-0 flex h-screen w-full items-start justify-center overflow-hidden pt-6">
         <div className="relative" style={{ width: layout.containerW, height: layout.containerH, maxWidth: "100%" }}>
           {CARDS.map((card, i) => (
             <Card

@@ -1,4 +1,5 @@
 import { AnimatedIcon } from "@/components/motion/AnimatedIcon";
+import { useHandDrawnFilter } from "@/components/motion/HandDrawnFilter";
 import { ICON_DURATION, EASE_POP, MOTION_REDUCE, STAGGER_STEP_MS } from "@/components/motion/tokens";
 
 const COLOR = "#fff1b5";
@@ -15,9 +16,11 @@ const BARS = [
 
 /** "painter" chip icon — bars grow upward sequentially from the baseline. */
 export default function BarChartIcon() {
+  const { filterId, filter } = useHandDrawnFilter(21);
   return (
     <AnimatedIcon>
-      <g fill={COLOR}>
+      <defs>{filter}</defs>
+      <g fill={COLOR} filter={`url(#${filterId})`}>
         {BARS.map((bar, i) => (
           <rect
             key={i}

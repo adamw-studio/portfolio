@@ -1,4 +1,5 @@
 import { AnimatedIcon } from "@/components/motion/AnimatedIcon";
+import { useHandDrawnFilter } from "@/components/motion/HandDrawnFilter";
 import { ICON_DURATION, EASE_SMOOTH, MOTION_REDUCE } from "@/components/motion/tokens";
 
 const COLOR = "#fff1b5";
@@ -7,9 +8,11 @@ const COLOR = "#fff1b5";
  * horizontal axis in opposite directions, then settle smoothly back on
  * mouse leave/blur. */
 export default function EqualsIcon() {
+  const { filterId, filter } = useHandDrawnFilter(22);
   return (
     <AnimatedIcon>
-      <g fill={COLOR}>
+      <defs>{filter}</defs>
+      <g fill={COLOR} filter={`url(#${filterId})`}>
         <rect
           x={2}
           y={4}

@@ -1,4 +1,5 @@
 import { AnimatedIcon } from "@/components/motion/AnimatedIcon";
+import { useHandDrawnFilter } from "@/components/motion/HandDrawnFilter";
 import { ICON_DURATION, EASE_POP, MOTION_REDUCE, STAGGER_STEP_MS } from "@/components/motion/tokens";
 
 const COLOR = "#fff1b5";
@@ -14,9 +15,11 @@ const SQUARES = [
  * stagger. Each scales from its own center (origin-center + fill-box
  * transform-box), so the 2x2 grid position never shifts. */
 export default function CuriosityIcon() {
+  const { filterId, filter } = useHandDrawnFilter(23);
   return (
     <AnimatedIcon>
-      <g fill={COLOR}>
+      <defs>{filter}</defs>
+      <g fill={COLOR} filter={`url(#${filterId})`}>
         {SQUARES.map((sq, i) => (
           <rect
             key={i}

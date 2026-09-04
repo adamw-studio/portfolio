@@ -1,4 +1,5 @@
 import { AnimatedIcon } from "@/components/motion/AnimatedIcon";
+import { useHandDrawnFilter } from "@/components/motion/HandDrawnFilter";
 import { ICON_DURATION, EASE_POP, MOTION_REDUCE, STAGGER_STEP_MS } from "@/components/motion/tokens";
 
 const COLOR = "#00a2c2";
@@ -12,9 +13,11 @@ const BARS = [
  * stagger. Each grows from its own bottom edge (origin-bottom), independent
  * of the other bar's vertical position. */
 export default function CraftsmanshipIcon() {
+  const { filterId, filter } = useHandDrawnFilter(24);
   return (
     <AnimatedIcon>
-      <g fill={COLOR}>
+      <defs>{filter}</defs>
+      <g fill={COLOR} filter={`url(#${filterId})`}>
         {BARS.map((bar, i) => (
           <rect
             key={i}

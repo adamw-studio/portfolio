@@ -42,7 +42,10 @@ export default function Nav() {
   }, [open]);
 
   return (
-    <div ref={rootRef} className="relative flex w-full flex-col gap-px">
+    // relative + z-20: the panel below is absolutely positioned and floats
+    // over whatever content follows the nav, rather than pushing it down —
+    // opening/closing the menu never reflows the rest of the page.
+    <div ref={rootRef} className="relative z-20 w-full">
       <div
         className={`flex w-full items-center justify-between border border-border-subtle bg-bg-default p-1.5 transition-[border-radius,border-bottom-color] duration-300 ease-out ${
           open ? "rounded-t-lg border-b-transparent" : "rounded-full"
@@ -64,11 +67,14 @@ export default function Nav() {
         </button>
       </div>
 
-      {/* grid-rows 0fr/1fr is what makes this animate smoothly to its
-          natural height instead of needing a JS-measured max-height. */}
+      {/* Absolutely positioned, 1px below the pill (matches Figma's gap-px
+          between the two boxes) so it floats over page content instead of
+          pushing it down. grid-rows 0fr/1fr is what makes it animate
+          smoothly to its natural height instead of needing a JS-measured
+          max-height. */}
       <div
-        className={`grid w-full overflow-hidden rounded-b-lg border-x border-b border-border-subtle bg-bg-tertiary backdrop-blur-[23px] transition-[grid-template-rows,opacity] duration-300 ease-out ${
-          open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        className={`absolute left-0 right-0 top-[calc(100%+1px)] grid overflow-hidden rounded-b-lg border-x border-b border-border-subtle bg-bg-tertiary backdrop-blur-[23px] transition-[grid-template-rows,opacity] duration-300 ease-out ${
+          open ? "grid-rows-[1fr] opacity-100" : "pointer-events-none grid-rows-[0fr] opacity-0"
         }`}
       >
         <nav className="flex flex-col gap-2 overflow-hidden p-2">

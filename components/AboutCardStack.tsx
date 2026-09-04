@@ -291,12 +291,21 @@ export default function AboutCardStack() {
   }
 
   return (
-    <section ref={sectionRef} className="relative h-[190vh]">
+    // Section height = scroll distance the pin holds for (unchanged from
+    // before, in vh so it scales with viewport) + the sticky wrapper's own
+    // height. The wrapper used to be a flat h-screen regardless of how
+    // tall the card composition actually is, so once the animation
+    // settled there was still up to ~240px of empty space to scroll
+    // through *inside* the still-pinned box before the section even
+    // ended — on top of whatever margin followed it. Sizing the wrapper
+    // to its content (pt-6 + the card container + a small pb) removes
+    // that dead zone.
+    <section ref={sectionRef} className="relative h-[calc(90vh+520px)]">
       <div
         ref={wrapperRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className="sticky top-0 flex h-screen w-full items-start justify-center overflow-hidden pt-6"
+        className="sticky top-0 flex w-full items-start justify-center overflow-hidden pt-6 pb-8"
       >
         <div
           className="relative"

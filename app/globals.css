@@ -44,6 +44,36 @@
   --color-text-subtle: rgba(244, 244, 244, 0.4);
   --color-border-disabled: rgba(244, 244, 244, 0.05);
   --color-border-subtle: rgba(244, 244, 244, 0.1);
+
+  /* Establishes a stacking context (no layout/visual side effects of its
+     own) so the fixed, negative-z-index paper-texture pseudo-element below
+     stacks behind this element's own near-black background and every
+     normal-flow child, without needing to touch any child's z-index. */
+  isolation: isolate;
+}
+
+/* Paper texture overlay for the dark background — see the pseudo-element
+   below. Extremely subtle by design: two layered SVG feTurbulence noise
+   fields (not a raster image), one very fine ("paper tooth"), one very
+   large-scale (irregular surface unevenness, not a gradient — think
+   uncoated paper under even studio light). Both are luminanceToAlpha'd
+   to a single warm-neutral gray fill, so the only thing that varies is
+   how much of that gray shows through the near-black background — never
+   a distinct white speck, never a color shift.
+   Fixed + pointer-events:none + generated content: no layout impact, no
+   interactivity, doesn't scroll with the page. */
+.theme-dark::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='5' stitchTiles='stitch' result='turb'/%3E%3CfeColorMatrix in='turb' type='luminanceToAlpha' result='a'/%3E%3CfeComponentTransfer in='a' result='a2'%3E%3CfeFuncA type='gamma' amplitude='1' exponent='1.6' offset='0'/%3E%3C/feComponentTransfer%3E%3CfeFlood flood-color='%23dcdcdc' result='color'/%3E%3CfeComposite in='color' in2='a2' operator='in'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='2' seed='11' stitchTiles='stitch' result='turb'/%3E%3CfeColorMatrix in='turb' type='luminanceToAlpha' result='a'/%3E%3CfeComponentTransfer in='a' result='a2'%3E%3CfeFuncA type='gamma' amplitude='1' exponent='1.3' offset='0'/%3E%3C/feComponentTransfer%3E%3CfeFlood flood-color='%23dcdcdc' result='color'/%3E%3CfeComposite in='color' in2='a2' operator='in'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat, repeat;
+  background-size: 180px 180px, 800px 800px;
+  opacity: 0.035;
 }
 
 @theme inline {

@@ -133,6 +133,7 @@ export default function AboutCardStack() {
   const [breakpoint, setBreakpoint] = useState<Breakpoint>("desktop");
   const [reducedMotion, setReducedMotion] = useState(false);
   const [fitScale, setFitScale] = useState(1);
+  const [trailingBuffer, setTrailingBuffer] = useState(0);
 
   useEffect(() => {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -178,6 +179,24 @@ export default function AboutCardStack() {
     return () => ro.disconnect();
   }, [layout.containerW]);
 
+  // Guarantees the scroll-driven animation can always reach progress=1.
+  // Once the sticky pin releases, that scroll position only exists on the
+  // page if there's at least one more viewport-height of content below it
+  // — browsers can't scroll past `document height - viewport height`.
+  // Shrinking the wrapper to its actual content (see the section below)
+  // means it's no longer automatically exactly one viewport tall, so this
+  // spacer makes up whatever's still short. Recomputed per breakpoint
+  // since the wrapper's content height varies a lot — mobile's stacked
+  // card layout is taller than a typical mobile viewport on its own.
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    const update = () => setTrailingBuffer(Math.max(0, window.innerHeight - wrapper.offsetHeight));
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [breakpoint, layout]);
+
   // Scroll-linked animation. Reads scroll position and writes transforms
   // directly to card DOM nodes inside a single rAF-throttled callback —
   // bypassing React state so continuous scrolling never triggers a
@@ -192,8 +211,16 @@ export default function AboutCardStack() {
     const applyProgress = () => {
       rafId = null;
       const rect = section.getBoundingClientRect();
-      const viewportH = window.innerHeight;
-      const scrollableDistance = section.offsetHeight - viewportH;
+      // The sticky child's own height, not the viewport's — sticky
+      // release happens when the *parent's* bottom reaches the *child's*
+      // bottom, and those stopped being the same thing once the wrapper
+      // was sized to its content instead of a flat h-screen. Using
+      // window.innerHeight here (i.e. assuming child height == viewport
+      // height) made the CSS unstick before this math ever reached
+      // progress 1, so the JS kept writing transforms for a scroll range
+      // that had already ended — reads as the animation getting stuck.
+      const stickyH = wrapperRef.current?.offsetHeight ?? window.innerHeight;
+      const scrollableDistance = section.offsetHeight - stickyH;
       const scrollProgress = scrollableDistance > 0 ? clamp01(-rect.top / scrollableDistance) : 0;
       // Hovering the card area previews the full unfold immediately,
       // independent of scroll position; scroll remains the primary driver
@@ -299,40 +326,47 @@ export default function AboutCardStack() {
     // through *inside* the still-pinned box before the section even
     // ended — on top of whatever margin followed it. Sizing the wrapper
     // to its content (pt-6 + the card container + a small pb) removes
-    // that dead zone.
-    <section ref={sectionRef} className="relative h-[calc(90vh+520px)]">
-      <div
-        ref={wrapperRef}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        className="sticky top-0 flex w-full items-start justify-center overflow-hidden pt-6 pb-8"
-      >
+    // that dead zone. The trailing spacer below restores just enough of
+    // that removed height back (see the effect that computes it) so the
+    // scroll-driven animation can still always reach progress=1 — without
+    // it, on any viewport taller than the wrapper's new content height,
+    // there simply isn't enough page left to scroll to that point.
+    <>
+      <section ref={sectionRef} className="relative h-[calc(90vh+520px)]">
         <div
-          className="relative"
-          style={{
-            width: layout.containerW,
-            height: layout.containerH,
-            transform: fitScale < 1 ? `scale(${fitScale})` : undefined,
-            transformOrigin: "top center",
-          }}
+          ref={wrapperRef}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          className="sticky top-0 flex w-full items-start justify-center overflow-hidden pt-6 pb-8"
         >
-          {CARDS.map((card, i) => (
-            <Card
-              key={card.id}
-              card={card}
-              layout={layout}
-              ref={(el) => {
-                cardRefs.current[i] = el;
-              }}
-              style={{
-                transform: `translate3d(${positions[i].stack.x}px, ${positions[i].stack.y}px, 0)`,
-                zIndex: 8 - card.stackIndex,
-              }}
-            />
-          ))}
+          <div
+            className="relative"
+            style={{
+              width: layout.containerW,
+              height: layout.containerH,
+              transform: fitScale < 1 ? `scale(${fitScale})` : undefined,
+              transformOrigin: "top center",
+            }}
+          >
+            {CARDS.map((card, i) => (
+              <Card
+                key={card.id}
+                card={card}
+                layout={layout}
+                ref={(el) => {
+                  cardRefs.current[i] = el;
+                }}
+                style={{
+                  transform: `translate3d(${positions[i].stack.x}px, ${positions[i].stack.y}px, 0)`,
+                  zIndex: 8 - card.stackIndex,
+                }}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+      {trailingBuffer > 0 && <div style={{ height: trailingBuffer }} aria-hidden />}
+    </>
   );
 }
 

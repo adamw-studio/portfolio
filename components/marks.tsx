@@ -4,9 +4,7 @@
  * "painter"). These aren't a standard icon set in Figma — each is a set of
  * absolutely-positioned rectangles inside a 20x20 box — so they're
  * reproduced here from Figma's exact per-shape coordinates rather than
- * substituted with generic icons. No background box on the icon itself —
- * only the fully-rounded (pill/circle) UI elements elsewhere on the page
- * (nav buttons, selected-works arrows) keep a background.
+ * substituted with generic icons.
  */
 type Rect = { x: number; y: number; w: number; h: number };
 
@@ -48,16 +46,20 @@ export const BrushMark = () => (
   />
 );
 
+// Replaced: was a solid brown/tan (#bf8c59) L-shaped block; now a blue
+// (#2e8cd1) mark with one rotated bar, reproduced with the same
+// wrapper-then-rotate structure Figma itself exports for rotated shapes.
 export const SculptorMark = () => (
-  <ShapeMark
-    color="#bf8c59"
-    shapes={[
-      { x: 2, y: 0, w: 12, h: 16 },
-      { x: 16, y: 2, w: 3, h: 4 },
-      { x: 15, y: 12, w: 4, h: 3 },
-      { x: 6, y: 17, w: 3, h: 2 },
-    ]}
-  />
+  <span className="relative inline-block size-5 shrink-0 overflow-hidden" aria-hidden>
+    <span
+      className="absolute flex items-center justify-center"
+      style={{ left: 2.82, top: 0.59, width: 9.368, height: 6.82 }}
+    >
+      <span className="block -rotate-[27.52deg]" style={{ width: 9, height: 3, backgroundColor: "#2e8cd1" }} />
+    </span>
+    <span className="absolute" style={{ left: 5, top: 8, width: 10, height: 3, backgroundColor: "#2e8cd1" }} />
+    <span className="absolute" style={{ left: 1, top: 14, width: 18, height: 3, backgroundColor: "#2e8cd1" }} />
+  </span>
 );
 
 export const CuriosityMark = () => (
@@ -88,64 +90,6 @@ export const DeepRespectMark = () => (
     shapes={[
       { x: 2, y: 4, w: 16, h: 4 },
       { x: 2, y: 12, w: 16, h: 4 },
-    ]}
-  />
-);
-
-export const DesignerMark = () => (
-  <ShapeMark
-    color="#8c61d9"
-    shapes={[
-      { x: 0, y: 0, w: 20, h: 2 },
-      { x: 0, y: 0, w: 2, h: 20 },
-      { x: 5, y: 5, w: 8, h: 8 },
-      { x: 16, y: 15, w: 3, h: 3 },
-    ]}
-  />
-);
-
-// "About me" trait icons
-export const PrototypeAIMark = () => <ShapeMark color="#009951" shapes={[{ x: 0, y: 0, w: 10, h: 10 }]} />;
-
-export const BuildsDesignSystemsMark = () => (
-  <ShapeMark
-    color="#00a2c2"
-    shapes={[
-      { x: 10, y: 10, w: 10, h: 10 },
-      { x: 0, y: 0, w: 10, h: 10 },
-    ]}
-  />
-);
-
-export const RethinksWorkflowsMark = () => (
-  <ShapeMark
-    color="#784da8"
-    shapes={[
-      { x: 0, y: 0, w: 6, h: 3 },
-      { x: 7, y: 6, w: 6, h: 3 },
-      { x: 14, y: 12, w: 6, h: 3 },
-      { x: 0, y: 17, w: 20, h: 3 },
-    ]}
-  />
-);
-
-export const BelievesCreativeMark = () => (
-  <ShapeMark color="#0d99ff" shapes={[{ x: 5, y: 5, w: 10, h: 10 }]} />
-);
-
-export const ObsessedDetailsMark = () => (
-  <ShapeMark color="#ffcd29" shapes={[{ x: 9, y: 9, w: 2, h: 2 }]} />
-);
-
-export const ShipCodeMark = () => <ShapeMark color="#ebffee" shapes={[{ x: 2, y: 3, w: 2, h: 14 }]} />;
-
-export const LovesCritMark = () => (
-  <ShapeMark
-    color="#ebaff4"
-    shapes={[
-      { x: 14, y: 14, w: 4, h: 4 },
-      { x: 9, y: 9, w: 2, h: 2 },
-      { x: 2, y: 2, w: 4, h: 4 },
     ]}
   />
 );

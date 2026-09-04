@@ -1,7 +1,20 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import localFont from "next/font/local";
 import "./globals.css";
+
+// Self-hosted (not next/font/google): this dev environment's sandboxed
+// process silently fails to fetch Google Fonts at build time (see the Geist
+// fix earlier), so the file is downloaded once into public/fonts and loaded
+// locally instead — no runtime network dependency at all.
+const gentiumBasic = localFont({
+  src: "../public/fonts/GentiumBasic-Regular.woff2",
+  weight: "400",
+  style: "normal",
+  variable: "--font-gentium-basic",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Adam Weber — Product Designer",
@@ -10,7 +23,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${GeistSans.variable} ${GeistMono.variable} ${gentiumBasic.variable} h-full antialiased`}
+    >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

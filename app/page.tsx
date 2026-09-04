@@ -1,31 +1,32 @@
 import Image from "next/image";
 import Nav from "@/components/Nav";
 import { Chip } from "@/components/Chip";
+import { Tag } from "@/components/Tag";
 import AboutCardStack from "@/components/AboutCardStack";
 import SelectedWorks from "@/components/SelectedWorks";
-import { TimeMark, BrushMark, SculptorMark, CuriosityMark, CraftsmanshipMark, DeepRespectMark } from "@/components/marks";
+import { TimeMark, SculptorMark } from "@/components/marks";
+import BarChartIcon from "@/components/icons/BarChartIcon";
+import EqualsIcon from "@/components/icons/EqualsIcon";
+import CuriosityIcon from "@/components/icons/CuriosityIcon";
+import CraftsmanshipIcon from "@/components/icons/CraftsmanshipIcon";
+import ResearchIcon from "@/components/icons/dots/ResearchIcon";
+import SystemThinkingIcon from "@/components/icons/dots/SystemThinkingIcon";
+import StrategyIcon from "@/components/icons/dots/StrategyIcon";
+import DesignSystemIcon from "@/components/icons/dots/DesignSystemIcon";
+import CraftCanvasCodeIcon from "@/components/icons/dots/CraftCanvasCodeIcon";
+import BrandIdentityIcon from "@/components/icons/dots/BrandIdentityIcon";
+import StakeholderIcon from "@/components/icons/dots/StakeholderIcon";
 import { bodyText, heading } from "@/components/typography";
 
 const whatIDo = [
-  { icon: "/images/home/icons-v3/epic1-research.svg", label: "Research" },
-  { icon: "/images/home/icons-v3/epic2-systems.svg", label: "System thinking" },
-  { icon: "/images/home/icons-v3/epic3-strategy.svg", label: "Product & design strategy" },
-  { icon: "/images/home/icons-v3/epic4-designsystem.svg", label: "Design system" },
-  { icon: "/images/home/icons-v3/epic5-craft.svg", label: "Craft in canvas & code" },
-  { icon: "/images/home/icons-v3/epic6-brand.svg", label: "Brand identity" },
-  { icon: "/images/home/icons-v3/epic7-stakeholder.svg", label: "Stakeholder management" },
+  { icon: <ResearchIcon />, label: "Research" },
+  { icon: <SystemThinkingIcon />, label: "System thinking" },
+  { icon: <StrategyIcon />, label: "Product & design strategy" },
+  { icon: <DesignSystemIcon />, label: "Design system" },
+  { icon: <CraftCanvasCodeIcon />, label: "Craft in canvas & code" },
+  { icon: <BrandIdentityIcon />, label: "Brand identity" },
+  { icon: <StakeholderIcon />, label: "Stakeholder management" },
 ];
-
-function Tag({ icon, label }: { icon: string; label: string }) {
-  return (
-    <div className="flex items-center gap-1 rounded-xs border border-border-subtle px-1.5 py-0.5">
-      <Image src={icon} alt="" width={20} height={20} />
-      <span className="whitespace-nowrap font-sans text-[14px] tracking-[-0.128px] text-text-primary">
-        {label}
-      </span>
-    </div>
-  );
-}
 
 export default function Home() {
   return (
@@ -67,15 +68,15 @@ export default function Home() {
               <h2 className={heading}>What shapes me</h2>
               <div className="flex flex-col gap-4">
                 <p className={bodyText}>
-                  I was raised by a <Chip icon={<BrushMark />}>painter</Chip> and a{" "}
+                  I was raised by a <Chip icon={<BarChartIcon />}>painter</Chip> and a{" "}
                   <Chip icon={<SculptorMark />}>sculptor</Chip>. I learned that craft matters. My first design
                   education didn’t come from software, it came from watching a painter and a sculptor at work.
                 </p>
                 <p className={bodyText}>
                   That foundation continues to shape how I approach designing today:{" "}
-                  <Chip icon={<CuriosityMark />}>curiosity</Chip>,{" "}
-                  <Chip icon={<CraftsmanshipMark />}>craftsmanship</Chip> and a{" "}
-                  <Chip icon={<DeepRespectMark />}>deep respect</Chip> for the people who touch, feel or use the
+                  <Chip icon={<CuriosityIcon />}>curiosity</Chip>,{" "}
+                  <Chip icon={<CraftsmanshipIcon />}>craftsmanship</Chip> and a{" "}
+                  <Chip icon={<EqualsIcon />}>deep respect</Chip> for the people who touch, feel or use the
                   things I design.
                 </p>
               </div>

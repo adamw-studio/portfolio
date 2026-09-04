@@ -1,0 +1,34 @@
+import { AnimatedIcon } from "@/components/motion/AnimatedIcon";
+import { ICON_DURATION, EASE_POP, MOTION_REDUCE, STAGGER_STEP_MS } from "@/components/motion/tokens";
+
+const COLOR = "#f59e0a";
+
+const SQUARES = [
+  { x: 4, y: 4, w: 4, h: 4 },
+  { x: 12, y: 4, w: 4, h: 4 },
+  { x: 4, y: 12, w: 4, h: 4 },
+  { x: 12, y: 12, w: 4, h: 4 },
+];
+
+/** "curiosity" chip icon — four squares pop/scale in with a subtle
+ * stagger. Each scales from its own center (origin-center + fill-box
+ * transform-box), so the 2x2 grid position never shifts. */
+export default function CuriosityIcon() {
+  return (
+    <AnimatedIcon>
+      <g fill={COLOR}>
+        {SQUARES.map((sq, i) => (
+          <rect
+            key={i}
+            x={sq.x}
+            y={sq.y}
+            width={sq.w}
+            height={sq.h}
+            className={`origin-center transition-transform ${ICON_DURATION} ${EASE_POP} ${MOTION_REDUCE} group-hover:scale-[1.15] group-focus:scale-[1.15]`}
+            style={{ transformBox: "fill-box", transitionDelay: `${i * STAGGER_STEP_MS}ms` }}
+          />
+        ))}
+      </g>
+    </AnimatedIcon>
+  );
+}

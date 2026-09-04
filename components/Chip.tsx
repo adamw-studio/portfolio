@@ -6,6 +6,13 @@ import type { ReactNode } from "react";
  * revision — previously had a bg-tertiary fill. Figma varies the radius by
  * section: the "Hey, I'm Adam" paragraph's three chips (Time/Beacon/
  * Orchestro) use radius-sm (8px), everywhere else uses radius-xs (6px).
+ *
+ * `group` + tabIndex: any animated icon passed as `icon` (see
+ * components/icons/) uses Tailwind's group-hover:/group-focus: variants
+ * to animate when *this* chip is hovered or focused — no JS needed here,
+ * the chip itself doesn't need to know which icon it's hosting. tabIndex
+ * makes the chip keyboard-focusable so the same animation triggers on
+ * focus, not just hover.
  */
 export function Chip({
   icon,
@@ -20,7 +27,8 @@ export function Chip({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 border border-border-subtle bg-transparent px-1.5 py-0.5 align-middle font-sans text-[14px] leading-[normal] tracking-[-0.128px] text-text-primary ${
+      tabIndex={0}
+      className={`group inline-flex items-center gap-1 border border-border-subtle bg-transparent px-1.5 py-0.5 align-middle font-sans text-[14px] leading-[normal] tracking-[-0.128px] text-text-primary ${
         radius === "sm" ? "rounded-sm" : "rounded-xs"
       } ${medium ? "font-medium" : "font-normal"}`}
     >

@@ -1,7 +1,7 @@
 import { AnimatedIcon } from "@/components/motion/AnimatedIcon";
 import { ICON_DURATION, EASE_POP, MOTION_REDUCE, STAGGER_STEP_MS } from "@/components/motion/tokens";
 
-const COLOR = "#6bc257";
+const COLOR = "#00a2c2";
 
 const BARS = [
   { x: 3, y: 0, w: 4, h: 14 },

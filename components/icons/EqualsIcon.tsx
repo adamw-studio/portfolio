@@ -1,7 +1,7 @@
 import { AnimatedIcon } from "@/components/motion/AnimatedIcon";
 import { ICON_DURATION, EASE_SMOOTH, MOTION_REDUCE } from "@/components/motion/tokens";
 
-const COLOR = "#0085db";
+const COLOR = "#fff1b5";
 
 /** "deep respect" chip icon — top and bottom strokes slide apart along the
  * horizontal axis in opposite directions, then settle smoothly back on

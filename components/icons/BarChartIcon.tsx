@@ -1,7 +1,7 @@
 import { AnimatedIcon } from "@/components/motion/AnimatedIcon";
 import { ICON_DURATION, EASE_POP, MOTION_REDUCE, STAGGER_STEP_MS } from "@/components/motion/tokens";
 
-const COLOR = "#e5522e";
+const COLOR = "#fff1b5";
 
 // Bottom edge of every bar sits at y=16, right above the baseline rect —
 // growing from origin-bottom (each bar's own bottom edge) keeps that

@@ -29,7 +29,7 @@ function ShapeMark({ color, shapes }: { color: string; shapes: Rect[] }) {
 
 export const TimeMark = () => (
   <ShapeMark
-    color="#0d99ff"
+    color="#00a2c2"
     shapes={[
       { x: 9, y: 9, w: 2, h: 2 },
       { x: 9, y: 1, w: 2, h: 8 },
@@ -38,18 +38,19 @@ export const TimeMark = () => (
   />
 );
 
-// Replaced: was a solid brown/tan (#bf8c59) L-shaped block; now a blue
-// (#2e8cd1) mark with one rotated bar, reproduced with the same
-// wrapper-then-rotate structure Figma itself exports for rotated shapes.
+// Reproduced with the same wrapper-then-rotate structure Figma itself
+// exports for rotated shapes. Color synced to Figma's current site-wide
+// two-tone palette (#fff1b5 cream / #00a2c2 teal, replacing what used to
+// be a wider per-icon color set).
 export const SculptorMark = () => (
   <span className="relative inline-block size-5 shrink-0 overflow-hidden" aria-hidden>
     <span
       className="absolute flex items-center justify-center"
       style={{ left: 2.82, top: 0.59, width: 9.368, height: 6.82 }}
     >
-      <span className="block -rotate-[27.52deg]" style={{ width: 9, height: 3, backgroundColor: "#2e8cd1" }} />
+      <span className="block -rotate-[27.52deg]" style={{ width: 9, height: 3, backgroundColor: "#00a2c2" }} />
     </span>
-    <span className="absolute" style={{ left: 5, top: 8, width: 10, height: 3, backgroundColor: "#2e8cd1" }} />
-    <span className="absolute" style={{ left: 1, top: 14, width: 18, height: 3, backgroundColor: "#2e8cd1" }} />
+    <span className="absolute" style={{ left: 5, top: 8, width: 10, height: 3, backgroundColor: "#00a2c2" }} />
+    <span className="absolute" style={{ left: 1, top: 14, width: 18, height: 3, backgroundColor: "#00a2c2" }} />
   </span>
 );

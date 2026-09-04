@@ -1,7 +1,7 @@
 import { AnimatedIcon } from "@/components/motion/AnimatedIcon";
 import { ICON_DURATION, EASE_POP, MOTION_REDUCE, STAGGER_STEP_MS } from "@/components/motion/tokens";
 
-const COLOR = "#f59e0a";
+const COLOR = "#fff1b5";
 
 const SQUARES = [
   { x: 4, y: 4, w: 4, h: 4 },

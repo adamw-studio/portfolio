@@ -1,5 +1,5 @@
-import CaseStudyPage from "@/components/CaseStudyPage";
+import RoboticsCaseStudy from "@/components/RoboticsCaseStudy";
 
 export default function RoboticsPage() {
-  return <CaseStudyPage />;
+  return <RoboticsCaseStudy />;
 }

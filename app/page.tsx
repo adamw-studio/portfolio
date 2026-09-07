@@ -13,37 +13,33 @@ import BarChartIcon from "@/components/icons/BarChartIcon";
 import EqualsIcon from "@/components/icons/EqualsIcon";
 import CuriosityIcon from "@/components/icons/CuriosityIcon";
 import CraftsmanshipIcon from "@/components/icons/CraftsmanshipIcon";
-import ResearchIcon from "@/components/icons/dots/ResearchIcon";
-import SystemThinkingIcon from "@/components/icons/dots/SystemThinkingIcon";
-import StrategyIcon from "@/components/icons/dots/StrategyIcon";
-import DesignSystemIcon from "@/components/icons/dots/DesignSystemIcon";
-import CraftCanvasCodeIcon from "@/components/icons/dots/CraftCanvasCodeIcon";
-import BrandIdentityIcon from "@/components/icons/dots/BrandIdentityIcon";
-import StakeholderIcon from "@/components/icons/dots/StakeholderIcon";
 import { bodyText, heading } from "@/components/typography";
 
-const whatIDo = [
-  { icon: <ResearchIcon />, label: "Research" },
-  { icon: <SystemThinkingIcon />, label: "System thinking" },
-  { icon: <StrategyIcon />, label: "Product & design strategy" },
-  { icon: <DesignSystemIcon />, label: "Design system" },
-  { icon: <CraftCanvasCodeIcon />, label: "Craft in canvas & code" },
-  { icon: <BrandIdentityIcon />, label: "Brand identity" },
-  { icon: <StakeholderIcon />, label: "Stakeholder management" },
+// Every "What I do" tag shares one identical icon shape (Figma 203:2034)
+// but its own fixed brand color, the same in both themes — except Brand
+// identity, which stays a theme-swapping neutral (see Tag.tsx's color
+// prop, omitted here on purpose for that one).
+const whatIDo: { label: string; color?: string }[] = [
+  { label: "Research", color: "#d9a900" },
+  { label: "System thinking", color: "#00a2c2" },
+  { label: "Product & design strategy", color: "#e5522e" },
+  { label: "Design system", color: "#0d99ff" },
+  { label: "Craft in canvas & code", color: "#d92100" },
+  { label: "Brand identity" },
+  { label: "Stakeholder management", color: "#46723c" },
 ];
 
 export default function Home() {
   return (
     <ThemeProvider>
-      {/* Nav: top offset 24px (Figma). Content column: starts at 140px, so
-          79px after the nav row ends (24 + 37 tall nav = 61; 140-61=79).
-          37px, not the old 24px, once the nav's own inset-shadow "border"
-          fix (matching Figma's non-layout-consuming stroke) landed. */}
-      <div className="mx-auto w-full max-w-[688px] pt-6">
-        <Nav />
-      </div>
+      {/* Nav is `fixed` (see Nav.tsx) — out of normal document flow, so it
+          no longer pushes this content down on its own. This column's own
+          top padding carries the *entire* offset now: 140px (Figma) =
+          24px nav top offset + 37px nav height + 79px gap after it,
+          previously split between a dedicated nav wrapper and this div. */}
+      <Nav />
 
-      <div className="mx-auto w-full max-w-[688px] pt-[79px]">
+      <div className="mx-auto w-full max-w-[688px] pt-[140px]">
         <div className="flex flex-col gap-[60px]">
           <div className="flex flex-col gap-10">
             <div className="flex flex-col gap-3">
@@ -105,8 +101,8 @@ export default function Home() {
                   of the world.
                 </p>
                 <div className="flex flex-wrap items-center gap-2">
-                  {whatIDo.map((item) => (
-                    <Tag key={item.label} icon={item.icon} label={item.label} />
+                  {whatIDo.map(({ label, color }) => (
+                    <Tag key={label} label={label} color={color} />
                   ))}
                 </div>
               </div>
@@ -132,7 +128,7 @@ export default function Home() {
           heading is centered across the full section width too (unlike
           every other header on this page, which is left-aligned in the
           688px column) — matches Figma's centered "before" state. */}
-      <div className="mt-[60px] flex flex-col gap-3 pb-16">
+      <div className="mt-[60px] flex flex-col gap-3 pb-9">
         <h2 className={`${heading} text-center`}>I&apos;m a designer who,</h2>
         <AboutCardStack />
       </div>

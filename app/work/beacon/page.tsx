@@ -1,5 +1,5 @@
-import CaseStudyPage from "@/components/CaseStudyPage";
+import BeaconCaseStudy from "@/components/BeaconCaseStudy";
 
 export default function BeaconPage() {
-  return <CaseStudyPage />;
+  return <BeaconCaseStudy />;
 }

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { bodyText, heading, insetBorder } from "@/components/typography";
+import { heading, insetBorder } from "@/components/typography";
 import { themedIcon } from "@/components/themedIcon";
 
 type Project = {
@@ -53,8 +53,8 @@ const PROJECTS: Project[] = [
       "Translating an artist’s world from canvas to screen. Designing the poster and typography system for a documentary celebrating 40 years of creative work.",
     role: "Graphic Designer, Executive Producer",
     year: "2025",
-    backdropSrc: "/images/home/selected-work-3-cover.jpg",
-    backdropAlt: "Black and white behind-the-scenes photo of a documentary film crew interviewing the artist on a residential street",
+    backdropSrc: "/images/home/documentary-poster-closeup.jpg",
+    backdropAlt: "Close-up of the \"Fekete Fehér Kék Zöld Piros\" film posters scattered together",
   },
   {
     id: "monday",
@@ -119,7 +119,15 @@ export default function SelectedWorks() {
           )}
         </div>
         <div className="flex flex-col gap-1">
-          <p className={bodyText}>{project.description}</p>
+          {/* 16px/medium, not the shared bodyText size — this line reads as
+              the project's title, not body copy, so it gets its own
+              explicit classes rather than changing bodyText (shared
+              sitewide) or appending a conflicting text-[16px] after it,
+              which would depend on Tailwind's generated stylesheet order
+              to win over bodyText's own text-[14px]. */}
+          <p className="font-sans text-[16px] font-medium leading-6 tracking-[-0.128px] text-text-primary">
+            {project.description}
+          </p>
           <div className="flex items-center justify-between text-text-secondary">
             <p className="font-sans text-[14px] leading-6 tracking-[-0.128px]">{project.role}</p>
             <p className="font-sans text-[14px] leading-6 tracking-[-0.128px]">{project.year}</p>

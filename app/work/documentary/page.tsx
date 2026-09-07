@@ -1,5 +1,5 @@
-import CaseStudyPage from "@/components/CaseStudyPage";
+import DocumentaryCaseStudy from "@/components/DocumentaryCaseStudy";
 
 export default function DocumentaryPage() {
-  return <CaseStudyPage />;
+  return <DocumentaryCaseStudy />;
 }

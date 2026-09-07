@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import DotFieldCanvas from "@/components/DotFieldCanvas";
 
 type Theme = "dark" | "light";
 
@@ -9,7 +10,7 @@ const ThemeContext = createContext<{ theme: Theme; toggleTheme: () => void } | n
 const STORAGE_KEY = "home-theme";
 
 /**
- * Wraps the home page so the nav's lamp/light-bulb button can toggle
+ * Wraps the home page so the nav's sun/moon button can toggle
  * between Figma's dark (default) and light (239:12856) designs. Renders
  * the actual `.theme-dark` (or not) class on its own root div — every
  * other component on the page already keys off that class via CSS custom
@@ -57,7 +58,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <div className={`flex flex-1 flex-col bg-bg-default px-4 ${theme === "dark" ? "theme-dark" : ""}`}>
+      <div className={`page-dots flex flex-1 flex-col bg-bg-default px-4 ${theme === "dark" ? "theme-dark" : ""}`}>
+        <DotFieldCanvas />
         {children}
       </div>
     </ThemeContext.Provider>

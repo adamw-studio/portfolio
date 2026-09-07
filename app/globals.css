@@ -12,14 +12,36 @@
   --color-text-secondary: rgba(13, 13, 13, 0.7);
   --color-text-subtle: rgba(13, 13, 13, 0.4);
   --color-text-link: #007be5;
+  /* Password-gate placeholder text (Figma 304:9017, "Enter password"),
+     fainter than text-subtle — same base-color-flip-per-theme formula as
+     text-subtle/border-subtle above, just at a lower 0.2 alpha (Figma's
+     own text/text-disabled is #f4f4f433, i.e. 0x33/255 ≈ 0.2). */
+  --color-text-disabled: rgba(13, 13, 13, 0.2);
   --color-border-disabled: rgba(13, 13, 13, 0.05);
   --color-border-subtle: rgba(13, 13, 13, 0.1);
+  /* Same numeric value as text-subtle — Figma just names this role
+     "icon/icon-subtle" when it's used as an icon/graphic fill rather than
+     text, e.g. the opened nav's MenuItemV2 decorative accent (239:13579). */
+  --color-icon-subtle: rgba(13, 13, 13, 0.4);
+  /* Page-wide dot-grid texture (body, below). Same "tinted toward
+     foreground, low alpha" formula as border-subtle/icon-subtle above —
+     it's what makes a single color read as "light gray" against both a
+     near-black and a near-white page background, just inverted per
+     theme, rather than one fixed gray that would wash out on one side. */
+  --dot-color: rgba(13, 13, 13, 0.12);
   /* The "cream" accent used by several About/shape/dot icons (#fff1b5 in
      dark mode) has poor contrast on this light background — Figma swaps
      it for a darker gold in light mode instead. The "teal" accent
      (#00a2c2) has enough contrast in both themes, so it isn't a variable
      at all — icons just hardcode it directly. */
   --icon-cream: #d9a900;
+  /* "Brand identity"'s box in Tag.tsx — the one "What I do" tag with no
+     fixed brand color of its own. Genuinely asymmetric per theme, not a
+     simple neutral-swap like icon-cream above: light is a plain gray
+     swatch (#e8e8e8), but dark is a real color (#a16ea9, a purple)
+     rather than dark gray — confirmed against every other tag's node in
+     Figma 270:5949 after this one was wrongly assumed to just be #191919. */
+  --tag-icon-bg: #e8e8e8;
   --radius-xs: 6px;
   /* Note: Figma calls these tokens "radius/s", "radius/m" and "radius/l",
      but naming a custom Tailwind radius scale key "s" or "l" collides with
@@ -48,9 +70,13 @@
   --color-text-primary: #f4f4f4;
   --color-text-secondary: rgba(244, 244, 244, 0.7);
   --color-text-subtle: rgba(244, 244, 244, 0.4);
+  --color-text-disabled: rgba(244, 244, 244, 0.2);
   --color-border-disabled: rgba(244, 244, 244, 0.05);
   --color-border-subtle: rgba(244, 244, 244, 0.1);
+  --color-icon-subtle: rgba(244, 244, 244, 0.4);
+  --dot-color: rgba(244, 244, 244, 0.12);
   --icon-cream: #fff1b5;
+  --tag-icon-bg: #a16ea9;
 }
 
 @theme inline {
@@ -62,9 +88,11 @@
   --color-text-primary: var(--color-text-primary);
   --color-text-secondary: var(--color-text-secondary);
   --color-text-subtle: var(--color-text-subtle);
+  --color-text-disabled: var(--color-text-disabled);
   --color-text-link: var(--color-text-link);
   --color-border-disabled: var(--color-border-disabled);
   --color-border-subtle: var(--color-border-subtle);
+  --color-icon-subtle: var(--color-icon-subtle);
   --radius-xs: var(--radius-xs);
   --radius-sm: var(--radius-sm);
   --radius-m: var(--radius-m);
@@ -78,4 +106,95 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Page-wide dot-grid texture. Lives on ThemeProvider's own root div, not
+   body — every route renders its content inside that div, and it paints
+   an opaque bg-bg-default over the full page, which would otherwise hide
+   anything set on body underneath it.
+
+   The dot pattern itself lives on a ::before, not directly as this
+   element's own background-image — the horizontal fade below is a CSS
+   mask, and a mask applies to everything the masked element paints,
+   including its own background-color and (were it applied here) every
+   child. Isolating the dots onto a separate absolutely-positioned layer
+   keeps the mask scoped to just the dots, so the actual page content
+   layered on top stays at full opacity regardless of its position.
+
+   isolation: isolate is required, not optional, for that layering to work
+   at all: position:relative alone doesn't make this element a stacking
+   context, so the ::before's z-index:-1 (below) would otherwise escape
+   *past* it and get compared against an ancestor context instead —
+   landing underneath this element's own opaque bg-bg-default background
+   rather than between that background and its content, hiding the dots
+   entirely rather than just fading them in the middle. */
+.page-dots {
+  position: relative;
+  isolation: isolate;
+}
+.page-dots::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  /* A single dot per 24px cell, not a full-bleed image — cheap (one
+     gradient, no extra paint layer or asset) and it tiles seamlessly at
+     any viewport size without a fixed source resolution. */
+  background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
+  background-size: 24px 24px;
+  /* Fades the dots out toward the horizontal center, where the page's
+     content column actually sits (it's always centered), and keeps them
+     at full strength in the wide side margins either side of it — so the
+     texture reads as background decoration in the margins without
+     competing with text readability in the column itself. Percentage-based
+     against the full viewport width rather than pixel-matched to the
+     688px column: it won't line up exactly at every viewport size, but a
+     content column is always centered, so a symmetric center-weighted
+     fade tracks it closely enough without needing JS to measure the
+     column itself. */
+  mask-image: linear-gradient(
+    to right,
+    black 0%,
+    black 12%,
+    rgba(0, 0, 0, 0.15) 30%,
+    rgba(0, 0, 0, 0.15) 70%,
+    black 88%,
+    black 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    black 0%,
+    black 12%,
+    rgba(0, 0, 0, 0.15) 30%,
+    rgba(0, 0, 0, 0.15) 70%,
+    black 88%,
+    black 100%
+  );
+}
+/* DotFieldCanvas (below) takes over drawing entirely — same grid, same
+   fade — for capable pointers, adding cursor-reactive displacement the
+   CSS version can't do. Only added once that component confirms (hover:
+   hover) and (pointer: fine) and no prefers-reduced-motion, so touch and
+   reduced-motion visitors keep this plain, zero-JS version untouched. */
+.page-dots.dots-canvas-active::before {
+  display: none;
+}
+
+/* Divider.tsx's dashed rule, drawn as a repeating gradient instead of
+   border-dashed — a real border-style can't set an exact dash/gap
+   length, only pick from the browser's own fixed dash patterns, so
+   there's no way to widen just the gap from there. 4px dash / 12px gap,
+   wider than Figma's literal "4 4" export, to read as a deliberate
+   sparse rule next to the page's own 24px dot-grid rather than a dense
+   line beside a sparse one. */
+.divider-dashed {
+  height: 1px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--color-border-subtle) 0,
+    var(--color-border-subtle) 4px,
+    transparent 4px,
+    transparent 16px
+  );
 }

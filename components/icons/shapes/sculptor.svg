@@ -1,0 +1,903 @@
+<svg id="sc-shape" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8855 8855" width="8855" height="8855">
+  <style>
+    #sc-shape {
+      --fill-color: #00a2c2;
+      --stroke-color: #cccccc;
+      --background-color: transparent;
+      --occlusion-color: #1a1a1a;
+    }
+  
+      #sc-f0 { transform: translate(3080.0px, -2502.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 440ms; }
+      .group:hover #sc-f0 { transform: translate(3611.3px, -2502.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f1 { transform: translate(4042.5px, 2502.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1210ms; }
+      .group:hover #sc-f1 { transform: translate(4573.8px, 2502.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f2 { transform: translate(1925.0px, 0.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 935ms; }
+      .group:hover #sc-f2 { transform: translate(1393.7px, 0.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f3 { transform: translate(1732.5px, 3272.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1430ms; }
+      .group:hover #sc-f3 { transform: translate(2263.8px, 3272.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f4 { transform: translate(1732.5px, -4042.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 55ms; }
+      .group:hover #sc-f4 { transform: translate(1201.2px, -4042.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f5 { transform: translate(1155.0px, -2310.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 495ms; }
+      .group:hover #sc-f5 { transform: translate(623.7px, -2310.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f6 { transform: translate(3657.5px, 4235.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1650ms; }
+      .group:hover #sc-f6 { transform: translate(4188.8px, 4235.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f7 { transform: translate(-2310.0px, 1732.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1100ms; }
+      .group:hover #sc-f7 { transform: translate(-1778.7px, 1732.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f8 { transform: translate(2310.0px, 1732.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1100ms; }
+      .group:hover #sc-f8 { transform: translate(2841.3px, 1732.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f9 { transform: translate(-770.0px, -2117.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 550ms; }
+      .group:hover #sc-f9 { transform: translate(-238.70000000000005px, -2117.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f10 { transform: translate(3657.5px, -4042.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 55ms; }
+      .group:hover #sc-f10 { transform: translate(3126.2px, -4042.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f11 { transform: translate(3465.0px, 3272.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1430ms; }
+      .group:hover #sc-f11 { transform: translate(3996.3px, 3272.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f12 { transform: translate(770.0px, 3850.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1595ms; }
+      .group:hover #sc-f12 { transform: translate(238.70000000000005px, 3850.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f13 { transform: translate(-2502.5px, -1155.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 825ms; }
+      .group:hover #sc-f13 { transform: translate(-3033.8px, -1155.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f14 { transform: translate(385.0px, 2502.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1210ms; }
+      .group:hover #sc-f14 { transform: translate(916.3px, 2502.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f15 { transform: translate(2887.5px, 3080.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1375ms; }
+      .group:hover #sc-f15 { transform: translate(2356.2px, 3080.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f16 { transform: translate(-2887.5px, -2117.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 550ms; }
+      .group:hover #sc-f16 { transform: translate(-2356.2px, -2117.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f17 { transform: translate(385.0px, 1540.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1045ms; }
+      .group:hover #sc-f17 { transform: translate(-146.29999999999995px, 1540.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f18 { transform: translate(577.5px, 4235.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1650ms; }
+      .group:hover #sc-f18 { transform: translate(1108.8px, 4235.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f19 { transform: translate(3850.0px, -1155.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 825ms; }
+      .group:hover #sc-f19 { transform: translate(3318.7px, -1155.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f20 { transform: translate(192.5px, -2117.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 550ms; }
+      .group:hover #sc-f20 { transform: translate(723.8px, -2117.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f21 { transform: translate(-2310.0px, -3850.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 110ms; }
+      .group:hover #sc-f21 { transform: translate(-1778.7px, -3850.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f22 { transform: translate(-4042.5px, -1732.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 660ms; }
+      .group:hover #sc-f22 { transform: translate(-3511.2px, -1732.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f23 { transform: translate(0.0px, -3657.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 165ms; }
+      .group:hover #sc-f23 { transform: translate(-531.3px, -3657.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f24 { transform: translate(192.5px, 3657.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1540ms; }
+      .group:hover #sc-f24 { transform: translate(723.8px, 3657.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f25 { transform: translate(-385.0px, -1347.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 770ms; }
+      .group:hover #sc-f25 { transform: translate(146.29999999999995px, -1347.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f26 { transform: translate(-385.0px, 2887.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1320ms; }
+      .group:hover #sc-f26 { transform: translate(146.29999999999995px, 2887.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f27 { transform: translate(-770.0px, -3465.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 220ms; }
+      .group:hover #sc-f27 { transform: translate(-238.70000000000005px, -3465.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f28 { transform: translate(-2310.0px, -2695.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 385ms; }
+      .group:hover #sc-f28 { transform: translate(-2841.3px, -2695.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f29 { transform: translate(-385.0px, -3080.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 330ms; }
+      .group:hover #sc-f29 { transform: translate(146.29999999999995px, -3080.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f30 { transform: translate(-1540.0px, -1925.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 605ms; }
+      .group:hover #sc-f30 { transform: translate(-2071.3px, -1925.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f31 { transform: translate(-4235.0px, 4235.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1650ms; }
+      .group:hover #sc-f31 { transform: translate(-3703.7px, 4235.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f32 { transform: translate(3850.0px, 1155.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 990ms; }
+      .group:hover #sc-f32 { transform: translate(4381.3px, 1155.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f33 { transform: translate(-1155.0px, -3272.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 275ms; }
+      .group:hover #sc-f33 { transform: translate(-1686.3px, -3272.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f34 { transform: translate(-1540.0px, -3272.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 275ms; }
+      .group:hover #sc-f34 { transform: translate(-2071.3px, -3272.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f35 { transform: translate(-2887.5px, -3657.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 165ms; }
+      .group:hover #sc-f35 { transform: translate(-3418.8px, -3657.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f36 { transform: translate(-3850.0px, -3272.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 275ms; }
+      .group:hover #sc-f36 { transform: translate(-4381.3px, -3272.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f37 { transform: translate(385.0px, -4235.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 0ms; }
+      .group:hover #sc-f37 { transform: translate(916.3px, -4235.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f38 { transform: translate(3850.0px, 3850.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1595ms; }
+      .group:hover #sc-f38 { transform: translate(3318.7px, 3850.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f39 { transform: translate(-770.0px, -1155.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 825ms; }
+      .group:hover #sc-f39 { transform: translate(-1301.3px, -1155.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f40 { transform: translate(-2117.5px, -1540.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 715ms; }
+      .group:hover #sc-f40 { transform: translate(-2648.8px, -1540.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f41 { transform: translate(3465.0px, 2695.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1265ms; }
+      .group:hover #sc-f41 { transform: translate(2933.7px, 2695.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f42 { transform: translate(-2310.0px, -3080.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 330ms; }
+      .group:hover #sc-f42 { transform: translate(-1778.7px, -3080.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f43 { transform: translate(-4235.0px, 1732.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1100ms; }
+      .group:hover #sc-f43 { transform: translate(-3703.7px, 1732.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f44 { transform: translate(0.0px, 4235.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1650ms; }
+      .group:hover #sc-f44 { transform: translate(531.3px, 4235.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f45 { transform: translate(-770.0px, -3850.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 110ms; }
+      .group:hover #sc-f45 { transform: translate(-238.70000000000005px, -3850.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f46 { transform: translate(-3465.0px, -4042.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 55ms; }
+      .group:hover #sc-f46 { transform: translate(-3996.3px, -4042.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f47 { transform: translate(-577.5px, -4235.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 0ms; }
+      .group:hover #sc-f47 { transform: translate(-46.200000000000045px, -4235.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f48 { transform: translate(2695.0px, -1155.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 825ms; }
+      .group:hover #sc-f48 { transform: translate(2163.7px, -1155.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f49 { transform: translate(-1925.0px, -1925.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 605ms; }
+      .group:hover #sc-f49 { transform: translate(-2456.3px, -1925.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f50 { transform: translate(4235.0px, -3850.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 110ms; }
+      .group:hover #sc-f50 { transform: translate(4766.3px, -3850.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f51 { transform: translate(-1155.0px, -1155.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 825ms; }
+      .group:hover #sc-f51 { transform: translate(-1686.3px, -1155.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f52 { transform: translate(2310.0px, -1155.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 825ms; }
+      .group:hover #sc-f52 { transform: translate(1778.7px, -1155.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f53 { transform: translate(1732.5px, 1155.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 990ms; }
+      .group:hover #sc-f53 { transform: translate(2263.8px, 1155.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f54 { transform: translate(385.0px, 1155.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 990ms; }
+      .group:hover #sc-f54 { transform: translate(916.3px, 1155.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f55 { transform: translate(4235.0px, -4235.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 0ms; }
+      .group:hover #sc-f55 { transform: translate(4766.3px, -4235.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f56 { transform: translate(-4042.5px, -4042.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 55ms; }
+      .group:hover #sc-f56 { transform: translate(-4573.8px, -4042.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f57 { transform: translate(3465.0px, 2310.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1155ms; }
+      .group:hover #sc-f57 { transform: translate(2933.7px, 2310.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f58 { transform: translate(-2695.0px, -1540.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 715ms; }
+      .group:hover #sc-f58 { transform: translate(-3226.3px, -1540.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f59 { transform: translate(-1347.5px, -3850.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 110ms; }
+      .group:hover #sc-f59 { transform: translate(-816.2px, -3850.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f60 { transform: translate(-4235.0px, -770.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 880ms; }
+      .group:hover #sc-f60 { transform: translate(-3703.7px, -770.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f61 { transform: translate(770.0px, 3465.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1485ms; }
+      .group:hover #sc-f61 { transform: translate(238.70000000000005px, 3465.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f62 { transform: translate(2887.5px, 3850.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1595ms; }
+      .group:hover #sc-f62 { transform: translate(2356.2px, 3850.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f63 { transform: translate(-1540.0px, -4235.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 0ms; }
+      .group:hover #sc-f63 { transform: translate(-1008.7px, -4235.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f64 { transform: translate(2695.0px, 4235.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1650ms; }
+      .group:hover #sc-f64 { transform: translate(3226.3px, 4235.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f65 { transform: translate(-1925.0px, -3080.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 330ms; }
+      .group:hover #sc-f65 { transform: translate(-1393.7px, -3080.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f66 { transform: translate(1925.0px, -1155.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 825ms; }
+      .group:hover #sc-f66 { transform: translate(1393.7px, -1155.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f67 { transform: translate(-1925.0px, -3465.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 220ms; }
+      .group:hover #sc-f67 { transform: translate(-1393.7px, -3465.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f68 { transform: translate(3080.0px, -1155.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 825ms; }
+      .group:hover #sc-f68 { transform: translate(2548.7px, -1155.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f69 { transform: translate(-770.0px, -1540.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 715ms; }
+      .group:hover #sc-f69 { transform: translate(-1301.3px, -1540.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f70 { transform: translate(3080.0px, -3850.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 110ms; }
+      .group:hover #sc-f70 { transform: translate(3611.3px, -3850.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f71 { transform: translate(2887.5px, 1155.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 990ms; }
+      .group:hover #sc-f71 { transform: translate(3418.8px, 1155.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f72 { transform: translate(-3080.0px, -1540.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 715ms; }
+      .group:hover #sc-f72 { transform: translate(-3611.3px, -1540.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f73 { transform: translate(-1925.0px, -4042.5px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 55ms; }
+      .group:hover #sc-f73 { transform: translate(-2456.3px, -4042.5px) scale(1.0) rotate(0.0deg); }
+      #sc-f74 { transform: translate(-1155.0px, -1540.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 715ms; }
+      .group:hover #sc-f74 { transform: translate(-1686.3px, -1540.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f75 { transform: translate(3080.0px, -4235.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 0ms; }
+      .group:hover #sc-f75 { transform: translate(3611.3px, -4235.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f76 { transform: translate(-1925.0px, -2310.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 495ms; }
+      .group:hover #sc-f76 { transform: translate(-2456.3px, -2310.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f77 { transform: translate(2887.5px, 2310.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 1155ms; }
+      .group:hover #sc-f77 { transform: translate(2356.2px, 2310.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f78 { transform: translate(2310.0px, 1155.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 990ms; }
+      .group:hover #sc-f78 { transform: translate(2841.3px, 1155.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f79 { transform: translate(-3465.0px, -1540.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 715ms; }
+      .group:hover #sc-f79 { transform: translate(-3996.3px, -1540.0px) scale(1.0) rotate(0.0deg); }
+      #sc-f80 { transform: translate(-770.0px, -3080.0px) scale(1.0) rotate(0.0deg); transition: transform 450ms cubic-bezier(0.4,0,0.2,1); transition-delay: 330ms; }
+      .group:hover #sc-f80 { transform: translate(-238.70000000000005px, -3080.0px) scale(1.0) rotate(0.0deg); }
+    </style>
+  <g transform="translate(4427.5, 4427.5)"><g transform="translate(0, 0)"><g id="sc-f0" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062114">
+            <rect x="-1347.5" y="-1155" width="2695" height="2310" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062114)">
+          <g transform="translate(2.2661246858845097, -10.851243204833587)">
+            <g transform="scale(82.0893821798329)"><g transform="rotate(15.106578150348078)"><path d="M16.66 26.19L-16.66 26.19L-16.66-26.19L-5.94-26.19L-5.94 17.30L16.66 17.30L16.66 26.19Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f1" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062115">
+            <rect x="-385" y="-1155" width="770" height="2310" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062115)">
+          <g transform="translate(-0.9278798037804101, 7.67331165991412)">
+            <g transform="scale(43.878620458411554)"><g transform="rotate(-9.346785540388332)"><path d="M-8.86 26.19L-19.58 26.19L-19.58-26.19L0.84-26.19Q6.82-26.19 11.00-23.92Q15.19-21.66 17.38-17.67Q19.58-13.68 19.58-8.51L19.58-8.51Q19.58-3.30 17.35 0.65Q15.12 4.61 10.86 6.84Q6.61 9.07 0.60 9.07L0.60 9.07L-8.86 9.07L-8.86 26.19ZM-8.86-17.33L-8.86 0.42L-1.13 0.42Q3.80 0.42 6.15-2.07Q8.51-4.57 8.51-8.51L8.51-8.51Q8.51-12.48 6.15-14.91Q3.80-17.33-1.16-17.33L-1.16-17.33L-8.86-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f2" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062116">
+            <rect x="-2502.5" y="-962.5" width="5005" height="1925" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062116)">
+          <g transform="translate(3.769719609417823, 10.242213259563883)">
+            <g transform="scale(102.12193147844829)"><g transform="rotate(18.961834925674758)"><path d="M-5.36-17.30L-21.39-17.30L-21.39-26.19L21.39-26.19L21.39-17.30L5.40-17.30L5.40 26.19L-5.36 26.19L-5.36-17.30Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f3" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062117">
+            <rect x="-770" y="-1155" width="1540" height="2310" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062117)">
+          <g transform="translate(8.723094474395314, -0.9594583459941006)">
+            <g transform="scale(62.053740150507174)"><g transform="rotate(13.634662643836187)"><path d="M0.88 26.89L0.88 26.89Q-6.12 26.89-11.60 23.73Q-17.09 20.57-20.27 14.55Q-23.45 8.54-23.45 0.04L-23.45 0.04Q-23.45-8.51-20.25-14.54Q-17.05-20.57-11.53-23.73Q-6.01-26.89 0.88-26.89L0.88-26.89Q6.82-26.89 11.64-24.70Q16.45-22.50 19.55-18.33Q22.64-14.17 23.41-8.30L23.41-8.30L12.55-8.30Q11.81-12.55 8.70-14.96Q5.59-17.37 1.09-17.37L1.09-17.37Q-5.03-17.37-8.79-12.83Q-12.55-8.30-12.55 0.04L-12.55 0.04Q-12.55 8.54-8.77 12.96Q-4.99 17.37 1.05 17.37L1.05 17.37Q5.52 17.37 8.67 14.96Q11.81 12.55 12.59 8.26L12.59 8.26L23.45 8.26Q22.85 13.15 20.00 17.38Q17.16 21.62 12.32 24.26Q7.49 26.89 0.88 26.89Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f4" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062118">
+            <rect x="-1155" y="-385" width="2310" height="770" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062118)">
+          <g transform="translate(3.8802123157681017, 2.5798215933981474)">
+            <g transform="scale(43.878620458411554)"><g transform="rotate(-9.378185267270629)"><path d="M16.66 26.19L-16.66 26.19L-16.66-26.19L-5.94-26.19L-5.94 17.30L16.66 17.30L16.66 26.19Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f5" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062119">
+            <rect x="-577.5" y="-1347.5" width="1155" height="2695" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062119)">
+          <g transform="translate(14.585158838697318, 10.203131686059354)">
+            <g transform="scale(58.04595880277397)"><g transform="rotate(-18.325481414015165)"><path d="M16.66 26.19L-16.66 26.19L-16.66-26.19L-5.94-26.19L-5.94 17.30L16.66 17.30L16.66 26.19Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f6" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062120">
+            <rect x="-770" y="-192.5" width="1540" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062120)">
+          <g transform="translate(14.046399606879056, -1.1002092310694085)">
+            <g transform="scale(25.333333333333332)"><g transform="rotate(6.809865248766663)"><path d="M16.66 26.19L-16.66 26.19L-16.66-26.19L-5.94-26.19L-5.94 17.30L16.66 17.30L16.66 26.19Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f7" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062121">
+            <rect x="-1732.5" y="-2695" width="3465" height="5390" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062121)">
+          <g transform="translate(8.627307426010866, 7.224303254496448)">
+            <g transform="scale(142.18298069740976)"><g transform="rotate(-15.366673467385896)"><path d="M0.37 26.93L0.37 26.93Q-9.09 26.93-14.73 22.59Q-20.37 18.25-20.58 9.91L-20.58 9.91L-10.14 9.91Q-9.86 13.89-6.96 15.87Q-4.06 17.86 0.26 17.86L0.26 17.86Q4.55 17.86 7.17 16.01Q9.79 14.17 9.79 11.18L9.79 11.18Q9.79 8.47 7.42 7.03Q5.04 5.59 0.76 4.54L0.76 4.54L-5.01 3.09Q-11.65 1.48-15.42-1.99Q-19.18-5.45-19.18-11.14L-19.18-11.14Q-19.18-15.89-16.63-19.44Q-14.08-22.99-9.63-24.96Q-5.19-26.93 0.51-26.93L0.51-26.93Q6.31-26.93 10.63-24.94Q14.96-22.96 17.38-19.42Q19.81-15.89 19.88-11.29L19.88-11.29L9.51-11.29Q9.23-14.45 6.82-16.17Q4.41-17.89 0.40-17.89L0.40-17.89Q-3.71-17.89-5.94-16.19Q-8.17-14.48-8.17-11.85L-8.17-11.85Q-8.17-8.93-5.66-7.49Q-3.15-6.05 0.19-5.24L0.19-5.24L4.94-4.08Q9.33-3.06 12.88-1.14Q16.44 0.77 18.51 3.81Q20.58 6.86 20.58 11.25L20.58 11.25Q20.58 18.39 15.26 22.66Q9.93 26.93 0.37 26.93Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f8" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062122">
+            <rect x="-1347.5" y="-385" width="2695" height="770" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062122)">
+          <g transform="translate(-14.236357211711052, -2.038601870666538)">
+            <g transform="scale(47.39432689913659)"><g transform="rotate(1.4219820599174042)"><path d="M0.37 26.93L0.37 26.93Q-9.09 26.93-14.73 22.59Q-20.37 18.25-20.58 9.91L-20.58 9.91L-10.14 9.91Q-9.86 13.89-6.96 15.87Q-4.06 17.86 0.26 17.86L0.26 17.86Q4.55 17.86 7.17 16.01Q9.79 14.17 9.79 11.18L9.79 11.18Q9.79 8.47 7.42 7.03Q5.04 5.59 0.76 4.54L0.76 4.54L-5.01 3.09Q-11.65 1.48-15.42-1.99Q-19.18-5.45-19.18-11.14L-19.18-11.14Q-19.18-15.89-16.63-19.44Q-14.08-22.99-9.63-24.96Q-5.19-26.93 0.51-26.93L0.51-26.93Q6.31-26.93 10.63-24.94Q14.96-22.96 17.38-19.42Q19.81-15.89 19.88-11.29L19.88-11.29L9.51-11.29Q9.23-14.45 6.82-16.17Q4.41-17.89 0.40-17.89L0.40-17.89Q-3.71-17.89-5.94-16.19Q-8.17-14.48-8.17-11.85L-8.17-11.85Q-8.17-8.93-5.66-7.49Q-3.15-6.05 0.19-5.24L0.19-5.24L4.94-4.08Q9.33-3.06 12.88-1.14Q16.44 0.77 18.51 3.81Q20.58 6.86 20.58 11.25L20.58 11.25Q20.58 18.39 15.26 22.66Q9.93 26.93 0.37 26.93Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f9" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062123">
+            <rect x="-577.5" y="-385" width="1155" height="770" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062123)">
+          <g transform="translate(-6.781074214624741, -7.8847131709962675)">
+            <g transform="scale(31.026870075253587)"><g transform="rotate(-9.772405619627055)"><path d="M0 26.56L0 26.56Q-6.54 26.56-11.39 24.17Q-16.24 21.78-18.93 17.47Q-21.62 13.17-21.62 7.44L-21.62 7.44L-21.62-26.56L-10.90-26.56L-10.90 6.56Q-10.90 11.13-7.93 14.10Q-4.96 17.07 0 17.07L0 17.07Q4.92 17.07 7.89 14.10Q10.86 11.13 10.86 6.56L10.86 6.56L10.86-26.56L21.62-26.56L21.62 7.44Q21.62 13.17 18.90 17.47Q16.17 21.78 11.32 24.17Q6.47 26.56 0 26.56Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f10" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062124">
+            <rect x="-385" y="-385" width="770" height="770" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062124)">
+          <g transform="translate(-7.538044449192492, 11.23876548895555)">
+            <g transform="scale(25.333333333333332)"><g transform="rotate(13.162508026306753)"><path d="M0.37 26.93L0.37 26.93Q-9.09 26.93-14.73 22.59Q-20.37 18.25-20.58 9.91L-20.58 9.91L-10.14 9.91Q-9.86 13.89-6.96 15.87Q-4.06 17.86 0.26 17.86L0.26 17.86Q4.55 17.86 7.17 16.01Q9.79 14.17 9.79 11.18L9.79 11.18Q9.79 8.47 7.42 7.03Q5.04 5.59 0.76 4.54L0.76 4.54L-5.01 3.09Q-11.65 1.48-15.42-1.99Q-19.18-5.45-19.18-11.14L-19.18-11.14Q-19.18-15.89-16.63-19.44Q-14.08-22.99-9.63-24.96Q-5.19-26.93 0.51-26.93L0.51-26.93Q6.31-26.93 10.63-24.94Q14.96-22.96 17.38-19.42Q19.81-15.89 19.88-11.29L19.88-11.29L9.51-11.29Q9.23-14.45 6.82-16.17Q4.41-17.89 0.40-17.89L0.40-17.89Q-3.71-17.89-5.94-16.19Q-8.17-14.48-8.17-11.85L-8.17-11.85Q-8.17-8.93-5.66-7.49Q-3.15-6.05 0.19-5.24L0.19-5.24L4.94-4.08Q9.33-3.06 12.88-1.14Q16.44 0.77 18.51 3.81Q20.58 6.86 20.58 11.25L20.58 11.25Q20.58 18.39 15.26 22.66Q9.93 26.93 0.37 26.93Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f11" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062125">
+            <rect x="-192.5" y="-385" width="385" height="770" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062125)">
+          <g transform="translate(-11.005804536866865, 0.10089111891616653)">
+            <g transform="scale(17.913371790059205)"><g transform="rotate(12.42356301863844)"><path d="M0 26.56L0 26.56Q-6.54 26.56-11.39 24.17Q-16.24 21.78-18.93 17.47Q-21.62 13.17-21.62 7.44L-21.62 7.44L-21.62-26.56L-10.90-26.56L-10.90 6.56Q-10.90 11.13-7.93 14.10Q-4.96 17.07 0 17.07L0 17.07Q4.92 17.07 7.89 14.10Q10.86 11.13 10.86 6.56L10.86 6.56L10.86-26.56L21.62-26.56L21.62 7.44Q21.62 13.17 18.90 17.47Q16.17 21.78 11.32 24.17Q6.47 26.56 0 26.56Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f12" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062126">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062126)">
+          <g transform="translate(8.024948548071528, 9.591018686811914)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(11.62465096992657)"><path d="M-5.36-17.30L-21.39-17.30L-21.39-26.19L21.39-26.19L21.39-17.30L5.40-17.30L5.40 26.19L-5.36 26.19L-5.36-17.30Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f13" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062127">
+            <rect x="-1155" y="-192.5" width="2310" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062127)">
+          <g transform="translate(1.3060176448458911, -11.11788940388611)">
+            <g transform="scale(31.026870075253587)"><g transform="rotate(-13.132543560644866)"><path d="M0.88 26.89L0.88 26.89Q-6.12 26.89-11.60 23.73Q-17.09 20.57-20.27 14.55Q-23.45 8.54-23.45 0.04L-23.45 0.04Q-23.45-8.51-20.25-14.54Q-17.05-20.57-11.53-23.73Q-6.01-26.89 0.88-26.89L0.88-26.89Q6.82-26.89 11.64-24.70Q16.45-22.50 19.55-18.33Q22.64-14.17 23.41-8.30L23.41-8.30L12.55-8.30Q11.81-12.55 8.70-14.96Q5.59-17.37 1.09-17.37L1.09-17.37Q-5.03-17.37-8.79-12.83Q-12.55-8.30-12.55 0.04L-12.55 0.04Q-12.55 8.54-8.77 12.96Q-4.99 17.37 1.05 17.37L1.05 17.37Q5.52 17.37 8.67 14.96Q11.81 12.55 12.59 8.26L12.59 8.26L23.45 8.26Q22.85 13.15 20.00 17.38Q17.16 21.62 12.32 24.26Q7.49 26.89 0.88 26.89Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f14" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062128">
+            <rect x="-577.5" y="-770" width="1155" height="1540" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062128)">
+          <g transform="translate(-7.052475210303662, -1.8654320192827996)">
+            <g transform="scale(43.878620458411554)"><g transform="rotate(11.673098817315463)"><path d="M0 26.89L0 26.89Q-6.93 26.89-12.46 23.73Q-18 20.57-21.22 14.55Q-24.43 8.54-24.43 0.04L-24.43 0.04Q-24.43-8.51-21.22-14.54Q-18-20.57-12.46-23.73Q-6.93-26.89 0-26.89L0-26.89Q6.96-26.89 12.48-23.73Q18-20.57 21.22-14.54Q24.43-8.51 24.43 0.04L24.43 0.04Q24.43 8.58 21.22 14.57Q18 20.57 12.48 23.73Q6.96 26.89 0 26.89ZM0 17.37L0 17.37Q6.12 17.37 9.83 12.92Q13.54 8.47 13.54 0.04L13.54 0.04Q13.54-8.44 9.83-12.90Q6.12-17.37 0-17.37L0-17.37Q-6.08-17.37-9.81-12.88Q-13.54-8.40-13.54 0.04L-13.54 0.04Q-13.54 8.44-9.81 12.90Q-6.08 17.37 0 17.37Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f15" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062129">
+            <rect x="-385" y="-577.5" width="770" height="1155" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062129)">
+          <g transform="translate(-13.638449906668836, 3.0026407311682792)">
+            <g transform="scale(31.026870075253587)"><g transform="rotate(5.023636829584671)"><path d="M0 26.89L0 26.89Q-6.93 26.89-12.46 23.73Q-18 20.57-21.22 14.55Q-24.43 8.54-24.43 0.04L-24.43 0.04Q-24.43-8.51-21.22-14.54Q-18-20.57-12.46-23.73Q-6.93-26.89 0-26.89L0-26.89Q6.96-26.89 12.48-23.73Q18-20.57 21.22-14.54Q24.43-8.51 24.43 0.04L24.43 0.04Q24.43 8.58 21.22 14.57Q18 20.57 12.48 23.73Q6.96 26.89 0 26.89ZM0 17.37L0 17.37Q6.12 17.37 9.83 12.92Q13.54 8.47 13.54 0.04L13.54 0.04Q13.54-8.44 9.83-12.90Q6.12-17.37 0-17.37L0-17.37Q-6.08-17.37-9.81-12.88Q-13.54-8.40-13.54 0.04L-13.54 0.04Q-13.54 8.44-9.81 12.90Q-6.08 17.37 0 17.37Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f16" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062130">
+            <rect x="-770" y="-385" width="1540" height="770" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062130)">
+          <g transform="translate(9.12263364723075, -9.60704326518208)">
+            <g transform="scale(35.82674358011841)"><g transform="rotate(13.931622520988633)"><path d="M0.37 26.93L0.37 26.93Q-9.09 26.93-14.73 22.59Q-20.37 18.25-20.58 9.91L-20.58 9.91L-10.14 9.91Q-9.86 13.89-6.96 15.87Q-4.06 17.86 0.26 17.86L0.26 17.86Q4.55 17.86 7.17 16.01Q9.79 14.17 9.79 11.18L9.79 11.18Q9.79 8.47 7.42 7.03Q5.04 5.59 0.76 4.54L0.76 4.54L-5.01 3.09Q-11.65 1.48-15.42-1.99Q-19.18-5.45-19.18-11.14L-19.18-11.14Q-19.18-15.89-16.63-19.44Q-14.08-22.99-9.63-24.96Q-5.19-26.93 0.51-26.93L0.51-26.93Q6.31-26.93 10.63-24.94Q14.96-22.96 17.38-19.42Q19.81-15.89 19.88-11.29L19.88-11.29L9.51-11.29Q9.23-14.45 6.82-16.17Q4.41-17.89 0.40-17.89L0.40-17.89Q-3.71-17.89-5.94-16.19Q-8.17-14.48-8.17-11.85L-8.17-11.85Q-8.17-8.93-5.66-7.49Q-3.15-6.05 0.19-5.24L0.19-5.24L4.94-4.08Q9.33-3.06 12.88-1.14Q16.44 0.77 18.51 3.81Q20.58 6.86 20.58 11.25L20.58 11.25Q20.58 18.39 15.26 22.66Q9.93 26.93 0.37 26.93Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f17" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062131">
+            <rect x="-577.5" y="-192.5" width="1155" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062131)">
+          <g transform="translate(-8.126506802219202, 0.2674806175136393)">
+            <g transform="scale(21.939310229205777)"><g transform="rotate(-17.939734457963954)"><path d="M0.37 26.93L0.37 26.93Q-9.09 26.93-14.73 22.59Q-20.37 18.25-20.58 9.91L-20.58 9.91L-10.14 9.91Q-9.86 13.89-6.96 15.87Q-4.06 17.86 0.26 17.86L0.26 17.86Q4.55 17.86 7.17 16.01Q9.79 14.17 9.79 11.18L9.79 11.18Q9.79 8.47 7.42 7.03Q5.04 5.59 0.76 4.54L0.76 4.54L-5.01 3.09Q-11.65 1.48-15.42-1.99Q-19.18-5.45-19.18-11.14L-19.18-11.14Q-19.18-15.89-16.63-19.44Q-14.08-22.99-9.63-24.96Q-5.19-26.93 0.51-26.93L0.51-26.93Q6.31-26.93 10.63-24.94Q14.96-22.96 17.38-19.42Q19.81-15.89 19.88-11.29L19.88-11.29L9.51-11.29Q9.23-14.45 6.82-16.17Q4.41-17.89 0.40-17.89L0.40-17.89Q-3.71-17.89-5.94-16.19Q-8.17-14.48-8.17-11.85L-8.17-11.85Q-8.17-8.93-5.66-7.49Q-3.15-6.05 0.19-5.24L0.19-5.24L4.94-4.08Q9.33-3.06 12.88-1.14Q16.44 0.77 18.51 3.81Q20.58 6.86 20.58 11.25L20.58 11.25Q20.58 18.39 15.26 22.66Q9.93 26.93 0.37 26.93Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f18" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062132">
+            <rect x="-385" y="-192.5" width="770" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062132)">
+          <g transform="translate(-8.376959857240767, -11.135370254113976)">
+            <g transform="scale(17.913371790059205)"><g transform="rotate(13.326498285553654)"><path d="M0 26.56L0 26.56Q-6.54 26.56-11.39 24.17Q-16.24 21.78-18.93 17.47Q-21.62 13.17-21.62 7.44L-21.62 7.44L-21.62-26.56L-10.90-26.56L-10.90 6.56Q-10.90 11.13-7.93 14.10Q-4.96 17.07 0 17.07L0 17.07Q4.92 17.07 7.89 14.10Q10.86 11.13 10.86 6.56L10.86 6.56L10.86-26.56L21.62-26.56L21.62 7.44Q21.62 13.17 18.90 17.47Q16.17 21.78 11.32 24.17Q6.47 26.56 0 26.56Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f19" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062133">
+            <rect x="-577.5" y="-192.5" width="1155" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062133)">
+          <g transform="translate(7.37861932366091, -2.5784618810650244)">
+            <g transform="scale(21.939310229205777)"><g transform="rotate(3.4497451891422948)"><path d="M0 26.56L0 26.56Q-6.54 26.56-11.39 24.17Q-16.24 21.78-18.93 17.47Q-21.62 13.17-21.62 7.44L-21.62 7.44L-21.62-26.56L-10.90-26.56L-10.90 6.56Q-10.90 11.13-7.93 14.10Q-4.96 17.07 0 17.07L0 17.07Q4.92 17.07 7.89 14.10Q10.86 11.13 10.86 6.56L10.86 6.56L10.86-26.56L21.62-26.56L21.62 7.44Q21.62 13.17 18.90 17.47Q16.17 21.78 11.32 24.17Q6.47 26.56 0 26.56Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f20" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062134">
+            <rect x="-385" y="-1155" width="770" height="2310" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062134)">
+          <g transform="translate(9.212000381300225, 8.752112398274296)">
+            <g transform="scale(43.878620458411554)"><g transform="rotate(-4.465827934660869)"><path d="M0 26.56L0 26.56Q-6.54 26.56-11.39 24.17Q-16.24 21.78-18.93 17.47Q-21.62 13.17-21.62 7.44L-21.62 7.44L-21.62-26.56L-10.90-26.56L-10.90 6.56Q-10.90 11.13-7.93 14.10Q-4.96 17.07 0 17.07L0 17.07Q4.92 17.07 7.89 14.10Q10.86 11.13 10.86 6.56L10.86 6.56L10.86-26.56L21.62-26.56L21.62 7.44Q21.62 13.17 18.90 17.47Q16.17 21.78 11.32 24.17Q6.47 26.56 0 26.56Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f21" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062135">
+            <rect x="-192.5" y="-577.5" width="385" height="1155" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062135)">
+          <g transform="translate(-14.730899333828548, -9.214436529769765)">
+            <g transform="scale(21.939310229205777)"><g transform="rotate(-15.427360532538668)"><path d="M-9.79 26.19L-20.51 26.19L-20.51-26.19L-0.09-26.19Q8.84-26.19 13.75-21.53Q18.65-16.88 18.65-9.14L18.65-9.14Q18.65-3.76 16.26 0.05Q13.87 3.87 9.37 5.77L9.37 5.77L20.51 26.19L8.63 26.19L-1.35 7.49L-9.79 7.49L-9.79 26.19ZM-9.79-17.33L-9.79-1.20L-2.06-1.20Q7.58-1.20 7.58-9.14L7.58-9.14Q7.58-13.11 5.20-15.22Q2.83-17.33-2.09-17.33L-2.09-17.33L-9.79-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f22" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062136">
+            <rect x="-385" y="-770" width="770" height="1540" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062136)">
+          <g transform="translate(-7.578255344451525, -2.1170961810821183)">
+            <g transform="scale(35.82674358011841)"><g transform="rotate(19.882775563692107)"><path d="M0.37 26.93L0.37 26.93Q-9.09 26.93-14.73 22.59Q-20.37 18.25-20.58 9.91L-20.58 9.91L-10.14 9.91Q-9.86 13.89-6.96 15.87Q-4.06 17.86 0.26 17.86L0.26 17.86Q4.55 17.86 7.17 16.01Q9.79 14.17 9.79 11.18L9.79 11.18Q9.79 8.47 7.42 7.03Q5.04 5.59 0.76 4.54L0.76 4.54L-5.01 3.09Q-11.65 1.48-15.42-1.99Q-19.18-5.45-19.18-11.14L-19.18-11.14Q-19.18-15.89-16.63-19.44Q-14.08-22.99-9.63-24.96Q-5.19-26.93 0.51-26.93L0.51-26.93Q6.31-26.93 10.63-24.94Q14.96-22.96 17.38-19.42Q19.81-15.89 19.88-11.29L19.88-11.29L9.51-11.29Q9.23-14.45 6.82-16.17Q4.41-17.89 0.40-17.89L0.40-17.89Q-3.71-17.89-5.94-16.19Q-8.17-14.48-8.17-11.85L-8.17-11.85Q-8.17-8.93-5.66-7.49Q-3.15-6.05 0.19-5.24L0.19-5.24L4.94-4.08Q9.33-3.06 12.88-1.14Q16.44 0.77 18.51 3.81Q20.58 6.86 20.58 11.25L20.58 11.25Q20.58 18.39 15.26 22.66Q9.93 26.93 0.37 26.93Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f23" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062137">
+            <rect x="-577.5" y="-385" width="1155" height="770" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062137)">
+          <g transform="translate(13.081419481002456, -4.03373336421034)">
+            <g transform="scale(31.026870075253587)"><g transform="rotate(6.95360184970945)"><path d="M-9.79 26.19L-20.51 26.19L-20.51-26.19L-0.09-26.19Q8.84-26.19 13.75-21.53Q18.65-16.88 18.65-9.14L18.65-9.14Q18.65-3.76 16.26 0.05Q13.87 3.87 9.37 5.77L9.37 5.77L20.51 26.19L8.63 26.19L-1.35 7.49L-9.79 7.49L-9.79 26.19ZM-9.79-17.33L-9.79-1.20L-2.06-1.20Q7.58-1.20 7.58-9.14L7.58-9.14Q7.58-13.11 5.20-15.22Q2.83-17.33-2.09-17.33L-2.09-17.33L-9.79-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f24" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062138">
+            <rect x="-385" y="-385" width="770" height="770" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062138)">
+          <g transform="translate(9.096329223409448, -1.7646903944037344)">
+            <g transform="scale(25.333333333333332)"><g transform="rotate(-5.03568648595162)"><path d="M0.88 26.89L0.88 26.89Q-6.12 26.89-11.60 23.73Q-17.09 20.57-20.27 14.55Q-23.45 8.54-23.45 0.04L-23.45 0.04Q-23.45-8.51-20.25-14.54Q-17.05-20.57-11.53-23.73Q-6.01-26.89 0.88-26.89L0.88-26.89Q6.82-26.89 11.64-24.70Q16.45-22.50 19.55-18.33Q22.64-14.17 23.41-8.30L23.41-8.30L12.55-8.30Q11.81-12.55 8.70-14.96Q5.59-17.37 1.09-17.37L1.09-17.37Q-5.03-17.37-8.79-12.83Q-12.55-8.30-12.55 0.04L-12.55 0.04Q-12.55 8.54-8.77 12.96Q-4.99 17.37 1.05 17.37L1.05 17.37Q5.52 17.37 8.67 14.96Q11.81 12.55 12.59 8.26L12.59 8.26L23.45 8.26Q22.85 13.15 20.00 17.38Q17.16 21.62 12.32 24.26Q7.49 26.89 0.88 26.89Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f25" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062139">
+            <rect x="-192.5" y="-385" width="385" height="770" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062139)">
+          <g transform="translate(-0.8107352190700983, 1.810993201011323)">
+            <g transform="scale(17.913371790059205)"><g transform="rotate(-13.977489468631097)"><path d="M-9.79 26.19L-20.51 26.19L-20.51-26.19L-0.09-26.19Q8.84-26.19 13.75-21.53Q18.65-16.88 18.65-9.14L18.65-9.14Q18.65-3.76 16.26 0.05Q13.87 3.87 9.37 5.77L9.37 5.77L20.51 26.19L8.63 26.19L-1.35 7.49L-9.79 7.49L-9.79 26.19ZM-9.79-17.33L-9.79-1.20L-2.06-1.20Q7.58-1.20 7.58-9.14L7.58-9.14Q7.58-13.11 5.20-15.22Q2.83-17.33-2.09-17.33L-2.09-17.33L-9.79-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f26" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062140">
+            <rect x="-192.5" y="-1540" width="385" height="3080" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062140)">
+          <g transform="translate(-1.1934542591653088, 6.8105049220894)">
+            <g transform="scale(35.82674358011841)"><g transform="rotate(1.4441120724399141)"><path d="M0.37 26.93L0.37 26.93Q-9.09 26.93-14.73 22.59Q-20.37 18.25-20.58 9.91L-20.58 9.91L-10.14 9.91Q-9.86 13.89-6.96 15.87Q-4.06 17.86 0.26 17.86L0.26 17.86Q4.55 17.86 7.17 16.01Q9.79 14.17 9.79 11.18L9.79 11.18Q9.79 8.47 7.42 7.03Q5.04 5.59 0.76 4.54L0.76 4.54L-5.01 3.09Q-11.65 1.48-15.42-1.99Q-19.18-5.45-19.18-11.14L-19.18-11.14Q-19.18-15.89-16.63-19.44Q-14.08-22.99-9.63-24.96Q-5.19-26.93 0.51-26.93L0.51-26.93Q6.31-26.93 10.63-24.94Q14.96-22.96 17.38-19.42Q19.81-15.89 19.88-11.29L19.88-11.29L9.51-11.29Q9.23-14.45 6.82-16.17Q4.41-17.89 0.40-17.89L0.40-17.89Q-3.71-17.89-5.94-16.19Q-8.17-14.48-8.17-11.85L-8.17-11.85Q-8.17-8.93-5.66-7.49Q-3.15-6.05 0.19-5.24L0.19-5.24L4.94-4.08Q9.33-3.06 12.88-1.14Q16.44 0.77 18.51 3.81Q20.58 6.86 20.58 11.25L20.58 11.25Q20.58 18.39 15.26 22.66Q9.93 26.93 0.37 26.93Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f27" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062141">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062141)">
+          <g transform="translate(13.70638133432082, -9.992717741985208)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(-3.593144409169046)"><path d="M-9.79 26.19L-20.51 26.19L-20.51-26.19L-0.09-26.19Q8.84-26.19 13.75-21.53Q18.65-16.88 18.65-9.14L18.65-9.14Q18.65-3.76 16.26 0.05Q13.87 3.87 9.37 5.77L9.37 5.77L20.51 26.19L8.63 26.19L-1.35 7.49L-9.79 7.49L-9.79 26.19ZM-9.79-17.33L-9.79-1.20L-2.06-1.20Q7.58-1.20 7.58-9.14L7.58-9.14Q7.58-13.11 5.20-15.22Q2.83-17.33-2.09-17.33L-2.09-17.33L-9.79-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f28" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062142">
+            <rect x="-2117.5" y="-192.5" width="4235" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062142)">
+          <g transform="translate(1.4554524498318564, -0.2939865534631476)">
+            <g transform="scale(42.010580677835065)"><g transform="rotate(-1.4352273854591076)"><path d="M-5.36-17.30L-21.39-17.30L-21.39-26.19L21.39-26.19L21.39-17.30L5.40-17.30L5.40 26.19L-5.36 26.19L-5.36-17.30Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f29" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062143">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062143)">
+          <g transform="translate(-1.6936469016101423, 6.413243302336543)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(10.564837469982375)"><path d="M0 26.56L0 26.56Q-6.54 26.56-11.39 24.17Q-16.24 21.78-18.93 17.47Q-21.62 13.17-21.62 7.44L-21.62 7.44L-21.62-26.56L-10.90-26.56L-10.90 6.56Q-10.90 11.13-7.93 14.10Q-4.96 17.07 0 17.07L0 17.07Q4.92 17.07 7.89 14.10Q10.86 11.13 10.86 6.56L10.86 6.56L10.86-26.56L21.62-26.56L21.62 7.44Q21.62 13.17 18.90 17.47Q16.17 21.78 11.32 24.17Q6.47 26.56 0 26.56Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f30" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062144">
+            <rect x="-192.5" y="-577.5" width="385" height="1155" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062144)">
+          <g transform="translate(-12.411296366439805, 0.5607461987811835)">
+            <g transform="scale(21.939310229205777)"><g transform="rotate(-6.63317202899287)"><path d="M0.37 26.93L0.37 26.93Q-9.09 26.93-14.73 22.59Q-20.37 18.25-20.58 9.91L-20.58 9.91L-10.14 9.91Q-9.86 13.89-6.96 15.87Q-4.06 17.86 0.26 17.86L0.26 17.86Q4.55 17.86 7.17 16.01Q9.79 14.17 9.79 11.18L9.79 11.18Q9.79 8.47 7.42 7.03Q5.04 5.59 0.76 4.54L0.76 4.54L-5.01 3.09Q-11.65 1.48-15.42-1.99Q-19.18-5.45-19.18-11.14L-19.18-11.14Q-19.18-15.89-16.63-19.44Q-14.08-22.99-9.63-24.96Q-5.19-26.93 0.51-26.93L0.51-26.93Q6.31-26.93 10.63-24.94Q14.96-22.96 17.38-19.42Q19.81-15.89 19.88-11.29L19.88-11.29L9.51-11.29Q9.23-14.45 6.82-16.17Q4.41-17.89 0.40-17.89L0.40-17.89Q-3.71-17.89-5.94-16.19Q-8.17-14.48-8.17-11.85L-8.17-11.85Q-8.17-8.93-5.66-7.49Q-3.15-6.05 0.19-5.24L0.19-5.24L4.94-4.08Q9.33-3.06 12.88-1.14Q16.44 0.77 18.51 3.81Q20.58 6.86 20.58 11.25L20.58 11.25Q20.58 18.39 15.26 22.66Q9.93 26.93 0.37 26.93Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f31" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062145">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062145)">
+          <g transform="translate(-11.90950065707299, -3.5235471685992312)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(16.430277841366028)"><path d="M16.66 26.19L-16.66 26.19L-16.66-26.19L-5.94-26.19L-5.94 17.30L16.66 17.30L16.66 26.19Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f32" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062146">
+            <rect x="-577.5" y="-192.5" width="1155" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062146)">
+          <g transform="translate(12.994514120740124, 2.618554122102706)">
+            <g transform="scale(21.939310229205777)"><g transform="rotate(18.813109415961947)"><path d="M-9.79 26.19L-20.51 26.19L-20.51-26.19L-0.09-26.19Q8.84-26.19 13.75-21.53Q18.65-16.88 18.65-9.14L18.65-9.14Q18.65-3.76 16.26 0.05Q13.87 3.87 9.37 5.77L9.37 5.77L20.51 26.19L8.63 26.19L-1.35 7.49L-9.79 7.49L-9.79 26.19ZM-9.79-17.33L-9.79-1.20L-2.06-1.20Q7.58-1.20 7.58-9.14L7.58-9.14Q7.58-13.11 5.20-15.22Q2.83-17.33-2.09-17.33L-2.09-17.33L-9.79-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f33" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062147">
+            <rect x="-192.5" y="-385" width="385" height="770" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062147)">
+          <g transform="translate(9.219288837266756, 10.086110125335917)">
+            <g transform="scale(17.913371790059205)"><g transform="rotate(-13.57738971411129)"><path d="M16.66 26.19L-16.66 26.19L-16.66-26.19L-5.94-26.19L-5.94 17.30L16.66 17.30L16.66 26.19Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f34" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062148">
+            <rect x="-192.5" y="-385" width="385" height="770" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062148)">
+          <g transform="translate(-2.463068956259205, -5.292082783436442)">
+            <g transform="scale(17.913371790059205)"><g transform="rotate(19.871879834622092)"><path d="M-9.79 26.19L-20.51 26.19L-20.51-26.19L-0.09-26.19Q8.84-26.19 13.75-21.53Q18.65-16.88 18.65-9.14L18.65-9.14Q18.65-3.76 16.26 0.05Q13.87 3.87 9.37 5.77L9.37 5.77L20.51 26.19L8.63 26.19L-1.35 7.49L-9.79 7.49L-9.79 26.19ZM-9.79-17.33L-9.79-1.20L-2.06-1.20Q7.58-1.20 7.58-9.14L7.58-9.14Q7.58-13.11 5.20-15.22Q2.83-17.33-2.09-17.33L-2.09-17.33L-9.79-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f35" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062149">
+            <rect x="-385" y="-770" width="770" height="1540" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062149)">
+          <g transform="translate(-9.160380360745071, -0.7709684319658994)">
+            <g transform="scale(35.82674358011841)"><g transform="rotate(3.825044643052408)"><path d="M0.88 26.89L0.88 26.89Q-6.12 26.89-11.60 23.73Q-17.09 20.57-20.27 14.55Q-23.45 8.54-23.45 0.04L-23.45 0.04Q-23.45-8.51-20.25-14.54Q-17.05-20.57-11.53-23.73Q-6.01-26.89 0.88-26.89L0.88-26.89Q6.82-26.89 11.64-24.70Q16.45-22.50 19.55-18.33Q22.64-14.17 23.41-8.30L23.41-8.30L12.55-8.30Q11.81-12.55 8.70-14.96Q5.59-17.37 1.09-17.37L1.09-17.37Q-5.03-17.37-8.79-12.83Q-12.55-8.30-12.55 0.04L-12.55 0.04Q-12.55 8.54-8.77 12.96Q-4.99 17.37 1.05 17.37L1.05 17.37Q5.52 17.37 8.67 14.96Q11.81 12.55 12.59 8.26L12.59 8.26L23.45 8.26Q22.85 13.15 20.00 17.38Q17.16 21.62 12.32 24.26Q7.49 26.89 0.88 26.89Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f36" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062150">
+            <rect x="-577.5" y="-385" width="1155" height="770" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062150)">
+          <g transform="translate(-11.081384716593373, 0.14182377426970127)">
+            <g transform="scale(31.026870075253587)"><g transform="rotate(-15.828695295298797)"><path d="M-5.36-17.30L-21.39-17.30L-21.39-26.19L21.39-26.19L21.39-17.30L5.40-17.30L5.40 26.19L-5.36 26.19L-5.36-17.30Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f37" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062151">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062151)">
+          <g transform="translate(-2.484256619347377, -5.229060169881704)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(-8.965252632724706)"><path d="M0.37 26.93L0.37 26.93Q-9.09 26.93-14.73 22.59Q-20.37 18.25-20.58 9.91L-20.58 9.91L-10.14 9.91Q-9.86 13.89-6.96 15.87Q-4.06 17.86 0.26 17.86L0.26 17.86Q4.55 17.86 7.17 16.01Q9.79 14.17 9.79 11.18L9.79 11.18Q9.79 8.47 7.42 7.03Q5.04 5.59 0.76 4.54L0.76 4.54L-5.01 3.09Q-11.65 1.48-15.42-1.99Q-19.18-5.45-19.18-11.14L-19.18-11.14Q-19.18-15.89-16.63-19.44Q-14.08-22.99-9.63-24.96Q-5.19-26.93 0.51-26.93L0.51-26.93Q6.31-26.93 10.63-24.94Q14.96-22.96 17.38-19.42Q19.81-15.89 19.88-11.29L19.88-11.29L9.51-11.29Q9.23-14.45 6.82-16.17Q4.41-17.89 0.40-17.89L0.40-17.89Q-3.71-17.89-5.94-16.19Q-8.17-14.48-8.17-11.85L-8.17-11.85Q-8.17-8.93-5.66-7.49Q-3.15-6.05 0.19-5.24L0.19-5.24L4.94-4.08Q9.33-3.06 12.88-1.14Q16.44 0.77 18.51 3.81Q20.58 6.86 20.58 11.25L20.58 11.25Q20.58 18.39 15.26 22.66Q9.93 26.93 0.37 26.93Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f38" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062152">
+            <rect x="-577.5" y="-192.5" width="1155" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062152)">
+          <g transform="translate(1.6267830210862613, 6.034043320470509)">
+            <g transform="scale(21.939310229205777)"><g transform="rotate(-1.1582326801299274)"><path d="M0.88 26.89L0.88 26.89Q-6.12 26.89-11.60 23.73Q-17.09 20.57-20.27 14.55Q-23.45 8.54-23.45 0.04L-23.45 0.04Q-23.45-8.51-20.25-14.54Q-17.05-20.57-11.53-23.73Q-6.01-26.89 0.88-26.89L0.88-26.89Q6.82-26.89 11.64-24.70Q16.45-22.50 19.55-18.33Q22.64-14.17 23.41-8.30L23.41-8.30L12.55-8.30Q11.81-12.55 8.70-14.96Q5.59-17.37 1.09-17.37L1.09-17.37Q-5.03-17.37-8.79-12.83Q-12.55-8.30-12.55 0.04L-12.55 0.04Q-12.55 8.54-8.77 12.96Q-4.99 17.37 1.05 17.37L1.05 17.37Q5.52 17.37 8.67 14.96Q11.81 12.55 12.59 8.26L12.59 8.26L23.45 8.26Q22.85 13.15 20.00 17.38Q17.16 21.62 12.32 24.26Q7.49 26.89 0.88 26.89Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f39" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062153">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062153)">
+          <g transform="translate(-14.467892646541769, -0.13728618069425558)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(10.53753377429095)"><path d="M0.88 26.89L0.88 26.89Q-6.12 26.89-11.60 23.73Q-17.09 20.57-20.27 14.55Q-23.45 8.54-23.45 0.04L-23.45 0.04Q-23.45-8.51-20.25-14.54Q-17.05-20.57-11.53-23.73Q-6.01-26.89 0.88-26.89L0.88-26.89Q6.82-26.89 11.64-24.70Q16.45-22.50 19.55-18.33Q22.64-14.17 23.41-8.30L23.41-8.30L12.55-8.30Q11.81-12.55 8.70-14.96Q5.59-17.37 1.09-17.37L1.09-17.37Q-5.03-17.37-8.79-12.83Q-12.55-8.30-12.55 0.04L-12.55 0.04Q-12.55 8.54-8.77 12.96Q-4.99 17.37 1.05 17.37L1.05 17.37Q5.52 17.37 8.67 14.96Q11.81 12.55 12.59 8.26L12.59 8.26L23.45 8.26Q22.85 13.15 20.00 17.38Q17.16 21.62 12.32 24.26Q7.49 26.89 0.88 26.89Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f40" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062154">
+            <rect x="-385" y="-192.5" width="770" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062154)">
+          <g transform="translate(1.244502857441315, 8.580376634644523)">
+            <g transform="scale(17.913371790059205)"><g transform="rotate(-11.05947017253352)"><path d="M16.66 26.19L-16.66 26.19L-16.66-26.19L-5.94-26.19L-5.94 17.30L16.66 17.30L16.66 26.19Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f41" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062155">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062155)">
+          <g transform="translate(-12.714743613132622, 5.596638687698469)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(18.392492550608004)"><path d="M0.37 26.93L0.37 26.93Q-9.09 26.93-14.73 22.59Q-20.37 18.25-20.58 9.91L-20.58 9.91L-10.14 9.91Q-9.86 13.89-6.96 15.87Q-4.06 17.86 0.26 17.86L0.26 17.86Q4.55 17.86 7.17 16.01Q9.79 14.17 9.79 11.18L9.79 11.18Q9.79 8.47 7.42 7.03Q5.04 5.59 0.76 4.54L0.76 4.54L-5.01 3.09Q-11.65 1.48-15.42-1.99Q-19.18-5.45-19.18-11.14L-19.18-11.14Q-19.18-15.89-16.63-19.44Q-14.08-22.99-9.63-24.96Q-5.19-26.93 0.51-26.93L0.51-26.93Q6.31-26.93 10.63-24.94Q14.96-22.96 17.38-19.42Q19.81-15.89 19.88-11.29L19.88-11.29L9.51-11.29Q9.23-14.45 6.82-16.17Q4.41-17.89 0.40-17.89L0.40-17.89Q-3.71-17.89-5.94-16.19Q-8.17-14.48-8.17-11.85L-8.17-11.85Q-8.17-8.93-5.66-7.49Q-3.15-6.05 0.19-5.24L0.19-5.24L4.94-4.08Q9.33-3.06 12.88-1.14Q16.44 0.77 18.51 3.81Q20.58 6.86 20.58 11.25L20.58 11.25Q20.58 18.39 15.26 22.66Q9.93 26.93 0.37 26.93Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f42" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062156">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062156)">
+          <g transform="translate(5.4676303362788765, -8.410094259497754)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(-16.583442686397323)"><path d="M0 26.56L0 26.56Q-6.54 26.56-11.39 24.17Q-16.24 21.78-18.93 17.47Q-21.62 13.17-21.62 7.44L-21.62 7.44L-21.62-26.56L-10.90-26.56L-10.90 6.56Q-10.90 11.13-7.93 14.10Q-4.96 17.07 0 17.07L0 17.07Q4.92 17.07 7.89 14.10Q10.86 11.13 10.86 6.56L10.86 6.56L10.86-26.56L21.62-26.56L21.62 7.44Q21.62 13.17 18.90 17.47Q16.17 21.78 11.32 24.17Q6.47 26.56 0 26.56Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f43" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062157">
+            <rect x="-192.5" y="-2310" width="385" height="4620" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062157)">
+          <g transform="translate(9.59080339623187, 2.912656552583286)">
+            <g transform="scale(43.878620458411554)"><g transform="rotate(19.221383351470053)"><path d="M0.88 26.89L0.88 26.89Q-6.12 26.89-11.60 23.73Q-17.09 20.57-20.27 14.55Q-23.45 8.54-23.45 0.04L-23.45 0.04Q-23.45-8.51-20.25-14.54Q-17.05-20.57-11.53-23.73Q-6.01-26.89 0.88-26.89L0.88-26.89Q6.82-26.89 11.64-24.70Q16.45-22.50 19.55-18.33Q22.64-14.17 23.41-8.30L23.41-8.30L12.55-8.30Q11.81-12.55 8.70-14.96Q5.59-17.37 1.09-17.37L1.09-17.37Q-5.03-17.37-8.79-12.83Q-12.55-8.30-12.55 0.04L-12.55 0.04Q-12.55 8.54-8.77 12.96Q-4.99 17.37 1.05 17.37L1.05 17.37Q5.52 17.37 8.67 14.96Q11.81 12.55 12.59 8.26L12.59 8.26L23.45 8.26Q22.85 13.15 20.00 17.38Q17.16 21.62 12.32 24.26Q7.49 26.89 0.88 26.89Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f44" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062158">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062158)">
+          <g transform="translate(-13.096522091932838, -2.4381465867339394)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(18.182163256305344)"><path d="M-8.86 26.19L-19.58 26.19L-19.58-26.19L0.84-26.19Q6.82-26.19 11.00-23.92Q15.19-21.66 17.38-17.67Q19.58-13.68 19.58-8.51L19.58-8.51Q19.58-3.30 17.35 0.65Q15.12 4.61 10.86 6.84Q6.61 9.07 0.60 9.07L0.60 9.07L-8.86 9.07L-8.86 26.19ZM-8.86-17.33L-8.86 0.42L-1.13 0.42Q3.80 0.42 6.15-2.07Q8.51-4.57 8.51-8.51L8.51-8.51Q8.51-12.48 6.15-14.91Q3.80-17.33-1.16-17.33L-1.16-17.33L-8.86-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f45" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062159">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062159)">
+          <g transform="translate(4.094865032981552, -4.9189739194321325)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(0.7915687657853425)"><path d="M16.66 26.19L-16.66 26.19L-16.66-26.19L-5.94-26.19L-5.94 17.30L16.66 17.30L16.66 26.19Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f46" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062160">
+            <rect x="-192.5" y="-385" width="385" height="770" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062160)">
+          <g transform="translate(0.3005719256124326, -9.489309309743955)">
+            <g transform="scale(17.913371790059205)"><g transform="rotate(-10.173854823305204)"><path d="M0.88 26.89L0.88 26.89Q-6.12 26.89-11.60 23.73Q-17.09 20.57-20.27 14.55Q-23.45 8.54-23.45 0.04L-23.45 0.04Q-23.45-8.51-20.25-14.54Q-17.05-20.57-11.53-23.73Q-6.01-26.89 0.88-26.89L0.88-26.89Q6.82-26.89 11.64-24.70Q16.45-22.50 19.55-18.33Q22.64-14.17 23.41-8.30L23.41-8.30L12.55-8.30Q11.81-12.55 8.70-14.96Q5.59-17.37 1.09-17.37L1.09-17.37Q-5.03-17.37-8.79-12.83Q-12.55-8.30-12.55 0.04L-12.55 0.04Q-12.55 8.54-8.77 12.96Q-4.99 17.37 1.05 17.37L1.05 17.37Q5.52 17.37 8.67 14.96Q11.81 12.55 12.59 8.26L12.59 8.26L23.45 8.26Q22.85 13.15 20.00 17.38Q17.16 21.62 12.32 24.26Q7.49 26.89 0.88 26.89Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f47" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062161">
+            <rect x="-770" y="-192.5" width="1540" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062161)">
+          <g transform="translate(-5.729920859788507, -1.1128971525993663)">
+            <g transform="scale(25.333333333333332)"><g transform="rotate(17.016849535059578)"><path d="M16.66 26.19L-16.66 26.19L-16.66-26.19L-5.94-26.19L-5.94 17.30L16.66 17.30L16.66 26.19Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f48" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062162">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062162)">
+          <g transform="translate(3.816483029544578, 4.39515209961457)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(-15.212001798307524)"><path d="M16.66 26.19L-16.66 26.19L-16.66-26.19L-5.94-26.19L-5.94 17.30L16.66 17.30L16.66 26.19Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f49" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062163">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062163)">
+          <g transform="translate(-14.28272008862473, 9.593688021224779)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(-13.85991930675689)"><path d="M0 26.89L0 26.89Q-6.93 26.89-12.46 23.73Q-18 20.57-21.22 14.55Q-24.43 8.54-24.43 0.04L-24.43 0.04Q-24.43-8.51-21.22-14.54Q-18-20.57-12.46-23.73Q-6.93-26.89 0-26.89L0-26.89Q6.96-26.89 12.48-23.73Q18-20.57 21.22-14.54Q24.43-8.51 24.43 0.04L24.43 0.04Q24.43 8.58 21.22 14.57Q18 20.57 12.48 23.73Q6.96 26.89 0 26.89ZM0 17.37L0 17.37Q6.12 17.37 9.83 12.92Q13.54 8.47 13.54 0.04L13.54 0.04Q13.54-8.44 9.83-12.90Q6.12-17.37 0-17.37L0-17.37Q-6.08-17.37-9.81-12.88Q-13.54-8.40-13.54 0.04L-13.54 0.04Q-13.54 8.44-9.81 12.90Q-6.08 17.37 0 17.37Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f50" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062164">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062164)">
+          <g transform="translate(1.7664464268677165, 0.09933758345401955)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(-12.630999084855894)"><path d="M-8.86 26.19L-19.58 26.19L-19.58-26.19L0.84-26.19Q6.82-26.19 11.00-23.92Q15.19-21.66 17.38-17.67Q19.58-13.68 19.58-8.51L19.58-8.51Q19.58-3.30 17.35 0.65Q15.12 4.61 10.86 6.84Q6.61 9.07 0.60 9.07L0.60 9.07L-8.86 9.07L-8.86 26.19ZM-8.86-17.33L-8.86 0.42L-1.13 0.42Q3.80 0.42 6.15-2.07Q8.51-4.57 8.51-8.51L8.51-8.51Q8.51-12.48 6.15-14.91Q3.80-17.33-1.16-17.33L-1.16-17.33L-8.86-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f51" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062165">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062165)">
+          <g transform="translate(2.908794888252764, 3.5256872249421143)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(-13.50596546824368)"><path d="M0 26.89L0 26.89Q-6.93 26.89-12.46 23.73Q-18 20.57-21.22 14.55Q-24.43 8.54-24.43 0.04L-24.43 0.04Q-24.43-8.51-21.22-14.54Q-18-20.57-12.46-23.73Q-6.93-26.89 0-26.89L0-26.89Q6.96-26.89 12.48-23.73Q18-20.57 21.22-14.54Q24.43-8.51 24.43 0.04L24.43 0.04Q24.43 8.58 21.22 14.57Q18 20.57 12.48 23.73Q6.96 26.89 0 26.89ZM0 17.37L0 17.37Q6.12 17.37 9.83 12.92Q13.54 8.47 13.54 0.04L13.54 0.04Q13.54-8.44 9.83-12.90Q6.12-17.37 0-17.37L0-17.37Q-6.08-17.37-9.81-12.88Q-13.54-8.40-13.54 0.04L-13.54 0.04Q-13.54 8.44-9.81 12.90Q-6.08 17.37 0 17.37Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f52" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062166">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062166)">
+          <g transform="translate(-5.437524314242193, -6.15259265627367)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(4.012713443493805)"><path d="M-9.79 26.19L-20.51 26.19L-20.51-26.19L-0.09-26.19Q8.84-26.19 13.75-21.53Q18.65-16.88 18.65-9.14L18.65-9.14Q18.65-3.76 16.26 0.05Q13.87 3.87 9.37 5.77L9.37 5.77L20.51 26.19L8.63 26.19L-1.35 7.49L-9.79 7.49L-9.79 26.19ZM-9.79-17.33L-9.79-1.20L-2.06-1.20Q7.58-1.20 7.58-9.14L7.58-9.14Q7.58-13.11 5.20-15.22Q2.83-17.33-2.09-17.33L-2.09-17.33L-9.79-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f53" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062167">
+            <rect x="-385" y="-192.5" width="770" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062167)">
+          <g transform="translate(9.261925231787341, -11.477677345032653)">
+            <g transform="scale(17.913371790059205)"><g transform="rotate(6.372809422376015)"><path d="M-8.86 26.19L-19.58 26.19L-19.58-26.19L0.84-26.19Q6.82-26.19 11.00-23.92Q15.19-21.66 17.38-17.67Q19.58-13.68 19.58-8.51L19.58-8.51Q19.58-3.30 17.35 0.65Q15.12 4.61 10.86 6.84Q6.61 9.07 0.60 9.07L0.60 9.07L-8.86 9.07L-8.86 26.19ZM-8.86-17.33L-8.86 0.42L-1.13 0.42Q3.80 0.42 6.15-2.07Q8.51-4.57 8.51-8.51L8.51-8.51Q8.51-12.48 6.15-14.91Q3.80-17.33-1.16-17.33L-1.16-17.33L-8.86-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f54" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062168">
+            <rect x="-962.5" y="-192.5" width="1925" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062168)">
+          <g transform="translate(8.860323440218494, -7.702923146869486)">
+            <g transform="scale(28.323527714997336)"><g transform="rotate(17.519755380935855)"><path d="M0.37 26.93L0.37 26.93Q-9.09 26.93-14.73 22.59Q-20.37 18.25-20.58 9.91L-20.58 9.91L-10.14 9.91Q-9.86 13.89-6.96 15.87Q-4.06 17.86 0.26 17.86L0.26 17.86Q4.55 17.86 7.17 16.01Q9.79 14.17 9.79 11.18L9.79 11.18Q9.79 8.47 7.42 7.03Q5.04 5.59 0.76 4.54L0.76 4.54L-5.01 3.09Q-11.65 1.48-15.42-1.99Q-19.18-5.45-19.18-11.14L-19.18-11.14Q-19.18-15.89-16.63-19.44Q-14.08-22.99-9.63-24.96Q-5.19-26.93 0.51-26.93L0.51-26.93Q6.31-26.93 10.63-24.94Q14.96-22.96 17.38-19.42Q19.81-15.89 19.88-11.29L19.88-11.29L9.51-11.29Q9.23-14.45 6.82-16.17Q4.41-17.89 0.40-17.89L0.40-17.89Q-3.71-17.89-5.94-16.19Q-8.17-14.48-8.17-11.85L-8.17-11.85Q-8.17-8.93-5.66-7.49Q-3.15-6.05 0.19-5.24L0.19-5.24L4.94-4.08Q9.33-3.06 12.88-1.14Q16.44 0.77 18.51 3.81Q20.58 6.86 20.58 11.25L20.58 11.25Q20.58 18.39 15.26 22.66Q9.93 26.93 0.37 26.93Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f55" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062169">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062169)">
+          <g transform="translate(-10.348842141846587, -5.841828343384819)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(12.253661170719965)"><path d="M0 26.56L0 26.56Q-6.54 26.56-11.39 24.17Q-16.24 21.78-18.93 17.47Q-21.62 13.17-21.62 7.44L-21.62 7.44L-21.62-26.56L-10.90-26.56L-10.90 6.56Q-10.90 11.13-7.93 14.10Q-4.96 17.07 0 17.07L0 17.07Q4.92 17.07 7.89 14.10Q10.86 11.13 10.86 6.56L10.86 6.56L10.86-26.56L21.62-26.56L21.62 7.44Q21.62 13.17 18.90 17.47Q16.17 21.78 11.32 24.17Q6.47 26.56 0 26.56Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f56" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062170">
+            <rect x="-385" y="-385" width="770" height="770" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062170)">
+          <g transform="translate(-4.016052777420754, 1.23742962499961)">
+            <g transform="scale(25.333333333333332)"><g transform="rotate(12.380251899538678)"><path d="M-8.86 26.19L-19.58 26.19L-19.58-26.19L0.84-26.19Q6.82-26.19 11.00-23.92Q15.19-21.66 17.38-17.67Q19.58-13.68 19.58-8.51L19.58-8.51Q19.58-3.30 17.35 0.65Q15.12 4.61 10.86 6.84Q6.61 9.07 0.60 9.07L0.60 9.07L-8.86 9.07L-8.86 26.19ZM-8.86-17.33L-8.86 0.42L-1.13 0.42Q3.80 0.42 6.15-2.07Q8.51-4.57 8.51-8.51L8.51-8.51Q8.51-12.48 6.15-14.91Q3.80-17.33-1.16-17.33L-1.16-17.33L-8.86-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f57" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062171">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062171)">
+          <g transform="translate(-0.2524816921225206, -7.0004053092563545)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(11.442313208916374)"><path d="M-9.79 26.19L-20.51 26.19L-20.51-26.19L-0.09-26.19Q8.84-26.19 13.75-21.53Q18.65-16.88 18.65-9.14L18.65-9.14Q18.65-3.76 16.26 0.05Q13.87 3.87 9.37 5.77L9.37 5.77L20.51 26.19L8.63 26.19L-1.35 7.49L-9.79 7.49L-9.79 26.19ZM-9.79-17.33L-9.79-1.20L-2.06-1.20Q7.58-1.20 7.58-9.14L7.58-9.14Q7.58-13.11 5.20-15.22Q2.83-17.33-2.09-17.33L-2.09-17.33L-9.79-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f58" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062172">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062172)">
+          <g transform="translate(6.081351051610593, -6.512302634544811)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(7.9472303520642384)"><path d="M16.66 26.19L-16.66 26.19L-16.66-26.19L-5.94-26.19L-5.94 17.30L16.66 17.30L16.66 26.19Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f59" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062173">
+            <rect x="-385" y="-192.5" width="770" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062173)">
+          <g transform="translate(-5.183712239462748, -0.09365701120982628)">
+            <g transform="scale(17.913371790059205)"><g transform="rotate(-5.331253998601461)"><path d="M0.88 26.89L0.88 26.89Q-6.12 26.89-11.60 23.73Q-17.09 20.57-20.27 14.55Q-23.45 8.54-23.45 0.04L-23.45 0.04Q-23.45-8.51-20.25-14.54Q-17.05-20.57-11.53-23.73Q-6.01-26.89 0.88-26.89L0.88-26.89Q6.82-26.89 11.64-24.70Q16.45-22.50 19.55-18.33Q22.64-14.17 23.41-8.30L23.41-8.30L12.55-8.30Q11.81-12.55 8.70-14.96Q5.59-17.37 1.09-17.37L1.09-17.37Q-5.03-17.37-8.79-12.83Q-12.55-8.30-12.55 0.04L-12.55 0.04Q-12.55 8.54-8.77 12.96Q-4.99 17.37 1.05 17.37L1.05 17.37Q5.52 17.37 8.67 14.96Q11.81 12.55 12.59 8.26L12.59 8.26L23.45 8.26Q22.85 13.15 20.00 17.38Q17.16 21.62 12.32 24.26Q7.49 26.89 0.88 26.89Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f60" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062174">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062174)">
+          <g transform="translate(13.015698207549612, -1.789289469732573)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(10.038561834971684)"><path d="M0.37 26.93L0.37 26.93Q-9.09 26.93-14.73 22.59Q-20.37 18.25-20.58 9.91L-20.58 9.91L-10.14 9.91Q-9.86 13.89-6.96 15.87Q-4.06 17.86 0.26 17.86L0.26 17.86Q4.55 17.86 7.17 16.01Q9.79 14.17 9.79 11.18L9.79 11.18Q9.79 8.47 7.42 7.03Q5.04 5.59 0.76 4.54L0.76 4.54L-5.01 3.09Q-11.65 1.48-15.42-1.99Q-19.18-5.45-19.18-11.14L-19.18-11.14Q-19.18-15.89-16.63-19.44Q-14.08-22.99-9.63-24.96Q-5.19-26.93 0.51-26.93L0.51-26.93Q6.31-26.93 10.63-24.94Q14.96-22.96 17.38-19.42Q19.81-15.89 19.88-11.29L19.88-11.29L9.51-11.29Q9.23-14.45 6.82-16.17Q4.41-17.89 0.40-17.89L0.40-17.89Q-3.71-17.89-5.94-16.19Q-8.17-14.48-8.17-11.85L-8.17-11.85Q-8.17-8.93-5.66-7.49Q-3.15-6.05 0.19-5.24L0.19-5.24L4.94-4.08Q9.33-3.06 12.88-1.14Q16.44 0.77 18.51 3.81Q20.58 6.86 20.58 11.25L20.58 11.25Q20.58 18.39 15.26 22.66Q9.93 26.93 0.37 26.93Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f61" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062175">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062175)">
+          <g transform="translate(11.9540727264034, 11.185358058281874)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(7.33090878805654)"><path d="M-8.86 26.19L-19.58 26.19L-19.58-26.19L0.84-26.19Q6.82-26.19 11.00-23.92Q15.19-21.66 17.38-17.67Q19.58-13.68 19.58-8.51L19.58-8.51Q19.58-3.30 17.35 0.65Q15.12 4.61 10.86 6.84Q6.61 9.07 0.60 9.07L0.60 9.07L-8.86 9.07L-8.86 26.19ZM-8.86-17.33L-8.86 0.42L-1.13 0.42Q3.80 0.42 6.15-2.07Q8.51-4.57 8.51-8.51L8.51-8.51Q8.51-12.48 6.15-14.91Q3.80-17.33-1.16-17.33L-1.16-17.33L-8.86-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f62" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062176">
+            <rect x="-385" y="-192.5" width="770" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062176)">
+          <g transform="translate(-0.4257023266636306, -1.8163433027529834)">
+            <g transform="scale(17.913371790059205)"><g transform="rotate(-6.719288819804456)"><path d="M-8.86 26.19L-19.58 26.19L-19.58-26.19L0.84-26.19Q6.82-26.19 11.00-23.92Q15.19-21.66 17.38-17.67Q19.58-13.68 19.58-8.51L19.58-8.51Q19.58-3.30 17.35 0.65Q15.12 4.61 10.86 6.84Q6.61 9.07 0.60 9.07L0.60 9.07L-8.86 9.07L-8.86 26.19ZM-8.86-17.33L-8.86 0.42L-1.13 0.42Q3.80 0.42 6.15-2.07Q8.51-4.57 8.51-8.51L8.51-8.51Q8.51-12.48 6.15-14.91Q3.80-17.33-1.16-17.33L-1.16-17.33L-8.86-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f63" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062177">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062177)">
+          <g transform="translate(-4.794327015892755, -9.97444724942299)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(-15.036530492378645)"><path d="M16.66 26.19L-16.66 26.19L-16.66-26.19L-5.94-26.19L-5.94 17.30L16.66 17.30L16.66 26.19Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f64" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062178">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062178)">
+          <g transform="translate(-6.797171827311242, -9.227307556768556)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(7.202488196642367)"><path d="M0.37 26.93L0.37 26.93Q-9.09 26.93-14.73 22.59Q-20.37 18.25-20.58 9.91L-20.58 9.91L-10.14 9.91Q-9.86 13.89-6.96 15.87Q-4.06 17.86 0.26 17.86L0.26 17.86Q4.55 17.86 7.17 16.01Q9.79 14.17 9.79 11.18L9.79 11.18Q9.79 8.47 7.42 7.03Q5.04 5.59 0.76 4.54L0.76 4.54L-5.01 3.09Q-11.65 1.48-15.42-1.99Q-19.18-5.45-19.18-11.14L-19.18-11.14Q-19.18-15.89-16.63-19.44Q-14.08-22.99-9.63-24.96Q-5.19-26.93 0.51-26.93L0.51-26.93Q6.31-26.93 10.63-24.94Q14.96-22.96 17.38-19.42Q19.81-15.89 19.88-11.29L19.88-11.29L9.51-11.29Q9.23-14.45 6.82-16.17Q4.41-17.89 0.40-17.89L0.40-17.89Q-3.71-17.89-5.94-16.19Q-8.17-14.48-8.17-11.85L-8.17-11.85Q-8.17-8.93-5.66-7.49Q-3.15-6.05 0.19-5.24L0.19-5.24L4.94-4.08Q9.33-3.06 12.88-1.14Q16.44 0.77 18.51 3.81Q20.58 6.86 20.58 11.25L20.58 11.25Q20.58 18.39 15.26 22.66Q9.93 26.93 0.37 26.93Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f65" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062179">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062179)">
+          <g transform="translate(-8.537431952328156, -8.622455118513878)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(-7.050752633740544)"><path d="M0 26.56L0 26.56Q-6.54 26.56-11.39 24.17Q-16.24 21.78-18.93 17.47Q-21.62 13.17-21.62 7.44L-21.62 7.44L-21.62-26.56L-10.90-26.56L-10.90 6.56Q-10.90 11.13-7.93 14.10Q-4.96 17.07 0 17.07L0 17.07Q4.92 17.07 7.89 14.10Q10.86 11.13 10.86 6.56L10.86 6.56L10.86-26.56L21.62-26.56L21.62 7.44Q21.62 13.17 18.90 17.47Q16.17 21.78 11.32 24.17Q6.47 26.56 0 26.56Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f66" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062180">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062180)">
+          <g transform="translate(4.135055252879418, -2.3438079312182065)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(13.289480224852205)"><path d="M0 26.89L0 26.89Q-6.93 26.89-12.46 23.73Q-18 20.57-21.22 14.55Q-24.43 8.54-24.43 0.04L-24.43 0.04Q-24.43-8.51-21.22-14.54Q-18-20.57-12.46-23.73Q-6.93-26.89 0-26.89L0-26.89Q6.96-26.89 12.48-23.73Q18-20.57 21.22-14.54Q24.43-8.51 24.43 0.04L24.43 0.04Q24.43 8.58 21.22 14.57Q18 20.57 12.48 23.73Q6.96 26.89 0 26.89ZM0 17.37L0 17.37Q6.12 17.37 9.83 12.92Q13.54 8.47 13.54 0.04L13.54 0.04Q13.54-8.44 9.83-12.90Q6.12-17.37 0-17.37L0-17.37Q-6.08-17.37-9.81-12.88Q-13.54-8.40-13.54 0.04L-13.54 0.04Q-13.54 8.44-9.81 12.90Q-6.08 17.37 0 17.37Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f67" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062181">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062181)">
+          <g transform="translate(-9.362883565185072, 11.586962710873674)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(9.14439202712122)"><path d="M-5.36-17.30L-21.39-17.30L-21.39-26.19L21.39-26.19L21.39-17.30L5.40-17.30L5.40 26.19L-5.36 26.19L-5.36-17.30Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f68" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062182">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062182)">
+          <g transform="translate(-4.238218362088418, 6.575260171003293)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(-6.7913150725845775)"><path d="M0 26.56L0 26.56Q-6.54 26.56-11.39 24.17Q-16.24 21.78-18.93 17.47Q-21.62 13.17-21.62 7.44L-21.62 7.44L-21.62-26.56L-10.90-26.56L-10.90 6.56Q-10.90 11.13-7.93 14.10Q-4.96 17.07 0 17.07L0 17.07Q4.92 17.07 7.89 14.10Q10.86 11.13 10.86 6.56L10.86 6.56L10.86-26.56L21.62-26.56L21.62 7.44Q21.62 13.17 18.90 17.47Q16.17 21.78 11.32 24.17Q6.47 26.56 0 26.56Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f69" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062183">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062183)">
+          <g transform="translate(10.26657701715202, -11.00158309890031)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(-2.9826068798930407)"><path d="M-8.86 26.19L-19.58 26.19L-19.58-26.19L0.84-26.19Q6.82-26.19 11.00-23.92Q15.19-21.66 17.38-17.67Q19.58-13.68 19.58-8.51L19.58-8.51Q19.58-3.30 17.35 0.65Q15.12 4.61 10.86 6.84Q6.61 9.07 0.60 9.07L0.60 9.07L-8.86 9.07L-8.86 26.19ZM-8.86-17.33L-8.86 0.42L-1.13 0.42Q3.80 0.42 6.15-2.07Q8.51-4.57 8.51-8.51L8.51-8.51Q8.51-12.48 6.15-14.91Q3.80-17.33-1.16-17.33L-1.16-17.33L-8.86-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f70" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062184">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062184)">
+          <g transform="translate(9.410458814543887, -5.283747908325749)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(-10.548257823357478)"><path d="M-9.79 26.19L-20.51 26.19L-20.51-26.19L-0.09-26.19Q8.84-26.19 13.75-21.53Q18.65-16.88 18.65-9.14L18.65-9.14Q18.65-3.76 16.26 0.05Q13.87 3.87 9.37 5.77L9.37 5.77L20.51 26.19L8.63 26.19L-1.35 7.49L-9.79 7.49L-9.79 26.19ZM-9.79-17.33L-9.79-1.20L-2.06-1.20Q7.58-1.20 7.58-9.14L7.58-9.14Q7.58-13.11 5.20-15.22Q2.83-17.33-2.09-17.33L-2.09-17.33L-9.79-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f71" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062185">
+            <rect x="-385" y="-192.5" width="770" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062185)">
+          <g transform="translate(1.7503130513943361, -3.025431628816497)">
+            <g transform="scale(17.913371790059205)"><g transform="rotate(-1.1221778304885035)"><path d="M-5.36-17.30L-21.39-17.30L-21.39-26.19L21.39-26.19L21.39-17.30L5.40-17.30L5.40 26.19L-5.36 26.19L-5.36-17.30Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f72" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062186">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062186)">
+          <g transform="translate(-12.871102093658923, -1.7157583188804608)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(6.754498494209024)"><path d="M0.88 26.89L0.88 26.89Q-6.12 26.89-11.60 23.73Q-17.09 20.57-20.27 14.55Q-23.45 8.54-23.45 0.04L-23.45 0.04Q-23.45-8.51-20.25-14.54Q-17.05-20.57-11.53-23.73Q-6.01-26.89 0.88-26.89L0.88-26.89Q6.82-26.89 11.64-24.70Q16.45-22.50 19.55-18.33Q22.64-14.17 23.41-8.30L23.41-8.30L12.55-8.30Q11.81-12.55 8.70-14.96Q5.59-17.37 1.09-17.37L1.09-17.37Q-5.03-17.37-8.79-12.83Q-12.55-8.30-12.55 0.04L-12.55 0.04Q-12.55 8.54-8.77 12.96Q-4.99 17.37 1.05 17.37L1.05 17.37Q5.52 17.37 8.67 14.96Q11.81 12.55 12.59 8.26L12.59 8.26L23.45 8.26Q22.85 13.15 20.00 17.38Q17.16 21.62 12.32 24.26Q7.49 26.89 0.88 26.89Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f73" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062187">
+            <rect x="-192.5" y="-385" width="385" height="770" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062187)">
+          <g transform="translate(-11.397831736317757, 5.095273025843909)">
+            <g transform="scale(17.913371790059205)"><g transform="rotate(6.941246998934659)"><path d="M0 26.56L0 26.56Q-6.54 26.56-11.39 24.17Q-16.24 21.78-18.93 17.47Q-21.62 13.17-21.62 7.44L-21.62 7.44L-21.62-26.56L-10.90-26.56L-10.90 6.56Q-10.90 11.13-7.93 14.10Q-4.96 17.07 0 17.07L0 17.07Q4.92 17.07 7.89 14.10Q10.86 11.13 10.86 6.56L10.86 6.56L10.86-26.56L21.62-26.56L21.62 7.44Q21.62 13.17 18.90 17.47Q16.17 21.78 11.32 24.17Q6.47 26.56 0 26.56Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f74" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062188">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062188)">
+          <g transform="translate(-2.8223186674631737, -3.328482623830663)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(-11.20902537890199)"><path d="M0.88 26.89L0.88 26.89Q-6.12 26.89-11.60 23.73Q-17.09 20.57-20.27 14.55Q-23.45 8.54-23.45 0.04L-23.45 0.04Q-23.45-8.51-20.25-14.54Q-17.05-20.57-11.53-23.73Q-6.01-26.89 0.88-26.89L0.88-26.89Q6.82-26.89 11.64-24.70Q16.45-22.50 19.55-18.33Q22.64-14.17 23.41-8.30L23.41-8.30L12.55-8.30Q11.81-12.55 8.70-14.96Q5.59-17.37 1.09-17.37L1.09-17.37Q-5.03-17.37-8.79-12.83Q-12.55-8.30-12.55 0.04L-12.55 0.04Q-12.55 8.54-8.77 12.96Q-4.99 17.37 1.05 17.37L1.05 17.37Q5.52 17.37 8.67 14.96Q11.81 12.55 12.59 8.26L12.59 8.26L23.45 8.26Q22.85 13.15 20.00 17.38Q17.16 21.62 12.32 24.26Q7.49 26.89 0.88 26.89Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f75" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062189">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062189)">
+          <g transform="translate(7.948796163754906, 5.429417618284663)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(8.272615684323302)"><path d="M0 26.89L0 26.89Q-6.93 26.89-12.46 23.73Q-18 20.57-21.22 14.55Q-24.43 8.54-24.43 0.04L-24.43 0.04Q-24.43-8.51-21.22-14.54Q-18-20.57-12.46-23.73Q-6.93-26.89 0-26.89L0-26.89Q6.96-26.89 12.48-23.73Q18-20.57 21.22-14.54Q24.43-8.51 24.43 0.04L24.43 0.04Q24.43 8.58 21.22 14.57Q18 20.57 12.48 23.73Q6.96 26.89 0 26.89ZM0 17.37L0 17.37Q6.12 17.37 9.83 12.92Q13.54 8.47 13.54 0.04L13.54 0.04Q13.54-8.44 9.83-12.90Q6.12-17.37 0-17.37L0-17.37Q-6.08-17.37-9.81-12.88Q-13.54-8.40-13.54 0.04L-13.54 0.04Q-13.54 8.44-9.81 12.90Q-6.08 17.37 0 17.37Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f76" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062190">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062190)">
+          <g transform="translate(-5.691339965300328, 0.29249668693752007)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(-10.851192470104989)"><path d="M0 26.56L0 26.56Q-6.54 26.56-11.39 24.17Q-16.24 21.78-18.93 17.47Q-21.62 13.17-21.62 7.44L-21.62 7.44L-21.62-26.56L-10.90-26.56L-10.90 6.56Q-10.90 11.13-7.93 14.10Q-4.96 17.07 0 17.07L0 17.07Q4.92 17.07 7.89 14.10Q10.86 11.13 10.86 6.56L10.86 6.56L10.86-26.56L21.62-26.56L21.62 7.44Q21.62 13.17 18.90 17.47Q16.17 21.78 11.32 24.17Q6.47 26.56 0 26.56Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f77" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062191">
+            <rect x="-385" y="-192.5" width="770" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062191)">
+          <g transform="translate(-10.969898698837449, 10.83100606074138)">
+            <g transform="scale(17.913371790059205)"><g transform="rotate(-1.8910777484490922)"><path d="M0 26.89L0 26.89Q-6.93 26.89-12.46 23.73Q-18 20.57-21.22 14.55Q-24.43 8.54-24.43 0.04L-24.43 0.04Q-24.43-8.51-21.22-14.54Q-18-20.57-12.46-23.73Q-6.93-26.89 0-26.89L0-26.89Q6.96-26.89 12.48-23.73Q18-20.57 21.22-14.54Q24.43-8.51 24.43 0.04L24.43 0.04Q24.43 8.58 21.22 14.57Q18 20.57 12.48 23.73Q6.96 26.89 0 26.89ZM0 17.37L0 17.37Q6.12 17.37 9.83 12.92Q13.54 8.47 13.54 0.04L13.54 0.04Q13.54-8.44 9.83-12.90Q6.12-17.37 0-17.37L0-17.37Q-6.08-17.37-9.81-12.88Q-13.54-8.40-13.54 0.04L-13.54 0.04Q-13.54 8.44-9.81 12.90Q-6.08 17.37 0 17.37Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f78" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062192">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062192)">
+          <g transform="translate(-2.3435416758728884, 6.983605393666593)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(-14.199147221725037)"><path d="M-9.79 26.19L-20.51 26.19L-20.51-26.19L-0.09-26.19Q8.84-26.19 13.75-21.53Q18.65-16.88 18.65-9.14L18.65-9.14Q18.65-3.76 16.26 0.05Q13.87 3.87 9.37 5.77L9.37 5.77L20.51 26.19L8.63 26.19L-1.35 7.49L-9.79 7.49L-9.79 26.19ZM-9.79-17.33L-9.79-1.20L-2.06-1.20Q7.58-1.20 7.58-9.14L7.58-9.14Q7.58-13.11 5.20-15.22Q2.83-17.33-2.09-17.33L-2.09-17.33L-9.79-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f79" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062193">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062193)">
+          <g transform="translate(6.877888451273503, -0.7795515008175524)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(11.846405282545092)"><path d="M0.88 26.89L0.88 26.89Q-6.12 26.89-11.60 23.73Q-17.09 20.57-20.27 14.55Q-23.45 8.54-23.45 0.04L-23.45 0.04Q-23.45-8.51-20.25-14.54Q-17.05-20.57-11.53-23.73Q-6.01-26.89 0.88-26.89L0.88-26.89Q6.82-26.89 11.64-24.70Q16.45-22.50 19.55-18.33Q22.64-14.17 23.41-8.30L23.41-8.30L12.55-8.30Q11.81-12.55 8.70-14.96Q5.59-17.37 1.09-17.37L1.09-17.37Q-5.03-17.37-8.79-12.83Q-12.55-8.30-12.55 0.04L-12.55 0.04Q-12.55 8.54-8.77 12.96Q-4.99 17.37 1.05 17.37L1.05 17.37Q5.52 17.37 8.67 14.96Q11.81 12.55 12.59 8.26L12.59 8.26L23.45 8.26Q22.85 13.15 20.00 17.38Q17.16 21.62 12.32 24.26Q7.49 26.89 0.88 26.89Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g><g id="sc-f80" class="frag"><defs>
+          <clipPath id="clip-1788602073041-1062194">
+            <rect x="-192.5" y="-192.5" width="385" height="385" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#clip-1788602073041-1062194)">
+          <g transform="translate(8.147653352072304, 4.8195505220534045)">
+            <g transform="scale(12.666666666666666)"><g transform="rotate(11.372537627524014)"><path d="M-8.86 26.19L-19.58 26.19L-19.58-26.19L0.84-26.19Q6.82-26.19 11.00-23.92Q15.19-21.66 17.38-17.67Q19.58-13.68 19.58-8.51L19.58-8.51Q19.58-3.30 17.35 0.65Q15.12 4.61 10.86 6.84Q6.61 9.07 0.60 9.07L0.60 9.07L-8.86 9.07L-8.86 26.19ZM-8.86-17.33L-8.86 0.42L-1.13 0.42Q3.80 0.42 6.15-2.07Q8.51-4.57 8.51-8.51L8.51-8.51Q8.51-12.48 6.15-14.91Q3.80-17.33-1.16-17.33L-1.16-17.33L-8.86-17.33Z" fill="var(--fill-color, currentColor)" stroke="none"  /></g></g>
+          </g>
+        </g></g></g></g>
+</svg>

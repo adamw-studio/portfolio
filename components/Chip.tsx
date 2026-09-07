@@ -13,6 +13,12 @@ import type { ReactNode } from "react";
  * the chip itself doesn't need to know which icon it's hosting. tabIndex
  * makes the chip keyboard-focusable so the same animation triggers on
  * focus, not just hover.
+ *
+ * backdrop-blur-sm: works even with no fill of its own — a backdrop
+ * filter blurs whatever's behind the element, not the element's own
+ * background. Softens the page's dot-grid pattern (globals.css) where it
+ * sits under a chip, the same frosted-glass treatment the nav already
+ * uses at a much larger radius.
  */
 export function Chip({
   icon,
@@ -28,7 +34,7 @@ export function Chip({
   return (
     <span
       tabIndex={0}
-      className={`group inline-flex items-center gap-1 border border-border-subtle bg-transparent px-1.5 py-0.5 align-middle font-sans text-[14px] leading-[normal] tracking-[-0.128px] text-text-primary ${
+      className={`group inline-flex items-center gap-1 border border-border-subtle bg-transparent px-1.5 py-0.5 align-middle font-sans text-[14px] leading-[normal] tracking-[-0.128px] text-text-primary backdrop-blur-sm ${
         radius === "sm" ? "rounded-sm" : "rounded-xs"
       } ${medium ? "font-medium" : "font-normal"}`}
     >

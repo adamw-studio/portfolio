@@ -296,8 +296,21 @@ export default function Nav() {
             // "different" between those two states in *which* trigger is
             // holding it there (a real hover vs. being the current route),
             // never in appearance.
-            const itemClassName = `group flex flex-1 items-center justify-center gap-2 rounded-m px-2 py-1.5 max-[359px]:gap-1 max-[359px]:px-1 backdrop-blur-[12px] transition-[background-color,transform] duration-150 active:scale-[0.97] ${
-              active ? "bg-bg-tertiary" : "hover:bg-bg-tertiary"
+            //
+            // backdrop-blur only travels together with an actual
+            // background, never applied unconditionally — bg-tertiary is
+            // a near-invisible 5% tint (see globals.css), so blurring
+            // *something* behind it is how that tint reads as a frosted
+            // highlight instead of nothing at all. But blur has a visible
+            // effect of its own even with zero background color: it still
+            // samples and softens whatever's behind it (this page's dotted
+            // backdrop), which read as a hazy rounded-rect "background" on
+            // every inactive item, all the time — exactly the bug this was
+            // meant to avoid, just via a different property than the one
+            // being watched. Gating it onto the same branch as the
+            // background it exists to serve fixes both at once.
+            const itemClassName = `group flex flex-1 items-center justify-center gap-2 rounded-m px-2 py-1.5 max-[359px]:gap-1 max-[359px]:px-1 transition-[background-color,transform] duration-150 active:scale-[0.97] ${
+              active ? "bg-bg-tertiary backdrop-blur-[12px]" : "hover:bg-bg-tertiary hover:backdrop-blur-[12px]"
             }`;
             const content = (
               <>

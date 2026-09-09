@@ -332,11 +332,19 @@ export default function Nav() {
             fade+translate, same as the menu row above — this is a genuine
             entrance, not a reshape. */}
         <div
-          className={`grid px-2 pb-2 transition-[grid-template-rows] ${EASE_IN_OUT} ${MOTION_REDUCE} ${
+          className={`grid transition-[grid-template-rows] ${EASE_IN_OUT} ${MOTION_REDUCE} ${
             showContact ? "grid-rows-[1fr] duration-200" : "grid-rows-[0fr] duration-150"
           }`}
         >
-          <div className="overflow-hidden">
+          {/* px-2 pb-2 lives here, inside the clipping element, not on the
+              grid-rows wrapper above — padding is part of an element's own
+              box regardless of how a *different* element's grid track
+              sizes it, so on the outer div it was rendering as a constant
+              extra 8px under the pill even at showContact=false/grid-
+              rows-[0fr], when this row should contribute nothing visible
+              at all. Inside overflow-hidden, it collapses away with
+              everything else once the track above squeezes it to 0. */}
+          <div className="overflow-hidden px-2 pb-2">
             <div
               className={`flex items-center justify-between gap-2 rounded-m border border-border-subtle bg-bg-default py-1.5 pl-2 pr-1.5 transition-[opacity,translate] ${EASE_OUT} ${MOTION_REDUCE} ${
                 showContact ? "translate-y-0 opacity-100 duration-150 delay-75" : "translate-y-[-4px] opacity-0 duration-100"

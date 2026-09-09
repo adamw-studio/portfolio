@@ -33,7 +33,7 @@ const SIX_MONTHS_EARLIER_PARAGRAPHS = [
 const CONTRIBUTION_GALLERY = [
   { src: "/images/home/documentary-poster.jpg", alt: "Black and white \"Fekete Fehér Kék Zöld Piros\" film posters scattered together" },
   { src: "/images/home/documentary-design-process.jpg", alt: "Poster design process in Photoshop, layered comps of the film poster" },
-  { src: "/images/home/documentary-premiere.png", alt: "The film poster projected on screen at the premiere" },
+  { src: "/images/home/documentary-premiere.jpg", alt: "The film poster projected on screen at the premiere" },
   { src: "/images/home/documentary-bts.jpg", alt: "Behind the scenes: the crew filming with a camera and boom microphone" },
   { src: "/images/home/documentary-poster-rooftop.jpg", alt: "The film poster held up against a rooftop view" },
   { src: "/images/home/documentary-poster-closeup.jpg", alt: "Close-up of the film posters scattered together" },
@@ -110,7 +110,7 @@ export default function DocumentaryCaseStudy() {
           <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
             <div className="relative h-[180px] w-full shrink-0 overflow-hidden rounded-lg bg-bg-tertiary sm:h-[147px] sm:w-[248px]">
               <Image
-                src="/images/home/documentary-hero.png"
+                src="/images/home/documentary-hero.jpg"
                 alt=""
                 fill
                 className="object-cover"

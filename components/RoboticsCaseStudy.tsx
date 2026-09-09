@@ -31,8 +31,8 @@ const CONTEXT_PARAGRAPHS = [
 // directly rather than assuming — so that's the one file kept per slide.
 const CONTEXT_GALLERY = [
   { src: "/images/home/robotics-gallery-1.jpg", alt: "Workshop notes and the robotics kit on a table" },
-  { src: "/images/home/robotics-gallery-2.png", alt: "Robot kit parts and cables laid out for assembly" },
-  { src: "/images/home/robotics-gallery-3.png", alt: "Kids assembling a robot on the floor with a phone controller" },
+  { src: "/images/home/robotics-gallery-2.jpg", alt: "Robot kit parts and cables laid out for assembly" },
+  { src: "/images/home/robotics-gallery-3.jpg", alt: "Kids assembling a robot on the floor with a phone controller" },
   { src: "/images/home/robotics-gallery-4.png", alt: "Workshop whiteboard with sticky notes mapping the customer journey" },
   { src: "/images/home/robotics-gallery-5.png", alt: "Assembled robot in front of its Challenge Kit packaging" },
 ];

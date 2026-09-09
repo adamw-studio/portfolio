@@ -167,7 +167,7 @@ export default function Nav() {
       //
       // rounded-[18px], not rounded-full, at rest: Tailwind's rounded-full
       // is border-radius:9999px, not 50% — and animating border-radius
-      // from 9999px down to rounded-lg's 12px interpolates that raw
+      // from 9999px down to the open state's 16px interpolates that raw
       // number linearly, while the *rendered* corner stays clamped at the
       // pill's actual max radius (18px, half its 36px height) for over
       // 99.9% of that numeric range. Nothing visibly moves for nearly the
@@ -176,9 +176,16 @@ export default function Nav() {
       // its final shape almost instantly — the exact "border jumps at the
       // end" this was. 18px *is* fully rounded on a 36px-tall pill, so
       // this looks identical at rest and now interpolates smoothly and
-      // proportionally down to 12px instead.
+      // proportionally down to 16px instead.
+      //
+      // w-[400px], rounded-[16px]: Figma 346:1573 ("Navigation / Opened",
+      // the current canonical spec — supersedes the 336px/12px this was
+      // first built against from an older/looser reference). rounded-[16px]
+      // as a literal value, not rounded-lg/--radius-lg (12px) — this one
+      // genuinely is a flat 16px in that node, not the same design token
+      // the menu items below reuse at a smaller size.
       className={`fixed left-1/2 top-6 z-20 grid -translate-x-1/2 overflow-hidden border border-border-subtle bg-bg-default/80 backdrop-blur-[23px] transition-[width,border-radius,grid-template-rows] ${EASE_IN_OUT} ${MOTION_REDUCE} ${
-          open ? "w-[336px] max-w-[calc(100vw-32px)] grid-rows-[auto_1fr] rounded-lg duration-300" : "w-[160px] grid-rows-[auto_0fr] rounded-[18px] duration-200"
+          open ? "w-[400px] max-w-[calc(100vw-32px)] grid-rows-[auto_1fr] rounded-[16px] duration-300" : "w-[160px] grid-rows-[auto_0fr] rounded-[18px] duration-200"
       }`}
     >
       <div className="flex max-w-full items-center justify-between p-1.5">
@@ -278,7 +285,18 @@ export default function Nav() {
             // max-[359px]: pair tightens spacing just enough to keep all
             // 3 labels on one line and fully visible at 320px, without
             // touching the roomier spacing everywhere else.
-            const itemClassName = `flex flex-1 items-center justify-center gap-2 rounded-sm px-2 py-1.5 max-[359px]:gap-1 max-[359px]:px-1 backdrop-blur-[12px] transition-[background-color,transform] duration-150 active:scale-[0.97] ${
+            //
+            // rounded-m (10px), not rounded-sm — Figma 249:14311's Menu
+            // Item V2 states use --radius-m specifically, a size up from
+            // what this shipped with. `group` is what lets the icon/label
+            // below react to hovering the item as a whole, not just the
+            // background: Figma's own Hover state isn't just a tertiary
+            // fill, the icon and label both go full-strength text-primary
+            // too, exactly matching Selected — this item only ever looks
+            // "different" between those two states in *which* trigger is
+            // holding it there (a real hover vs. being the current route),
+            // never in appearance.
+            const itemClassName = `group flex flex-1 items-center justify-center gap-2 rounded-m px-2 py-1.5 max-[359px]:gap-1 max-[359px]:px-1 backdrop-blur-[12px] transition-[background-color,transform] duration-150 active:scale-[0.97] ${
               active ? "bg-bg-tertiary" : "hover:bg-bg-tertiary"
             }`;
             const content = (
@@ -288,11 +306,11 @@ export default function Nav() {
                   alt=""
                   width={16}
                   height={16}
-                  className={`shrink-0 ${themedIcon} ${active ? "" : "opacity-70"}`}
+                  className={`shrink-0 ${themedIcon} ${active ? "" : "opacity-70 group-hover:opacity-100"}`}
                 />
                 <span
                   className={`whitespace-nowrap text-[14px] leading-4 tracking-[-0.112px] ${
-                    active ? "text-text-primary" : "text-text-secondary"
+                    active ? "text-text-primary" : "text-text-secondary group-hover:text-text-primary"
                   }`}
                 >
                   {link.label}
@@ -336,30 +354,37 @@ export default function Nav() {
             showContact ? "grid-rows-[1fr] duration-200" : "grid-rows-[0fr] duration-150"
           }`}
         >
-          {/* px-2 pb-2 lives here, inside the clipping element, not on the
-              grid-rows wrapper above — padding is part of an element's own
-              box regardless of how a *different* element's grid track
-              sizes it, so on the outer div it was rendering as a constant
-              extra 8px under the pill even at showContact=false/grid-
-              rows-[0fr], when this row should contribute nothing visible
-              at all. Inside overflow-hidden, it collapses away with
-              everything else once the track above squeezes it to 0. */}
-          <div className="overflow-hidden px-2 pb-2">
-            <div
-              className={`flex items-center justify-between gap-2 rounded-m border border-border-subtle bg-bg-default py-1.5 pl-2 pr-1.5 transition-[opacity,translate] ${EASE_OUT} ${MOTION_REDUCE} ${
-                showContact ? "translate-y-0 opacity-100 duration-150 delay-75" : "translate-y-[-4px] opacity-0 duration-100"
-              }`}
-            >
-              <p className="whitespace-nowrap font-sans text-[14px] leading-6 tracking-[-0.112px] text-text-secondary">
-                {CONTACT_EMAIL}
-              </p>
-              <button
-                type="button"
-                onClick={handleCopy}
-                className="shrink-0 rounded-sm bg-bg-tertiary px-3 py-1 font-sans text-[14px] font-medium leading-4 tracking-[-0.112px] text-text-primary transition-transform duration-100 active:scale-95"
+          {/* px-2 pb-2 lives two levels down from the grid-rows wrapper,
+              not on the overflow-hidden div directly below it — padding is
+              unconditional box-model space on whatever element carries it,
+              so even *inside* overflow-hidden, an element the 0fr track is
+              actively squeezing still renders its own padding at full size
+              (only its content-box shrinks, not its padding box). That's
+              exactly the same bug this fixed once already, just one level
+              deeper: putting the padding on the overflow-hidden div itself
+              (the grid item the track resizes) still left a constant 8px
+              behind at showContact=false. It has to sit on a *descendant*
+              of that div instead, mirroring the pill's own icon-row/menu-
+              row split above — overflow-hidden div (no padding, IS the
+              grid item) → this div (the padding) → the visible card. */}
+          <div className="overflow-hidden">
+            <div className="px-2 pb-2">
+              <div
+                className={`flex items-center justify-between gap-2 rounded-m border border-border-subtle bg-bg-default py-1.5 pl-2 pr-1.5 transition-[opacity,translate] ${EASE_OUT} ${MOTION_REDUCE} ${
+                  showContact ? "translate-y-0 opacity-100 duration-150 delay-75" : "translate-y-[-4px] opacity-0 duration-100"
+                }`}
               >
-                {copied ? "Copied!" : "Copy"}
-              </button>
+                <p className="whitespace-nowrap font-sans text-[14px] leading-6 tracking-[-0.112px] text-text-secondary">
+                  {CONTACT_EMAIL}
+                </p>
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="shrink-0 rounded-sm bg-bg-tertiary px-3 py-1 font-sans text-[14px] font-medium leading-4 tracking-[-0.112px] text-text-primary transition-transform duration-100 active:scale-95"
+                >
+                  {copied ? "Copied!" : "Copy"}
+                </button>
+              </div>
             </div>
           </div>
         </div>

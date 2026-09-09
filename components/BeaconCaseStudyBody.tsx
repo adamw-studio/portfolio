@@ -4,6 +4,7 @@ import HomeFooter from "@/components/HomeFooter";
 import { Divider } from "@/components/Divider";
 import { Tag } from "@/components/Tag";
 import { CaseStudyImagePlaceholder } from "@/components/CaseStudyImagePlaceholder";
+import { CaseStudyImageCarousel } from "@/components/CaseStudyImageCarousel";
 import { themedIcon } from "@/components/themedIcon";
 import { insetBorder } from "@/components/typography";
 
@@ -104,6 +105,44 @@ const SECTIONS_AFTER_REFLECTION: Section[] = [
       "The ideation phase has been one of our most challenging areas yet. Today, Beacon can generate multiple value pools to give users a head start, but our research showed that this isn’t enough. Users want to be more involved in the process. They want to shape, challenge, and develop ideas themselves rather than simply receive AI-generated suggestions.",
       "That’s the problem we’re currently tackling: how might we combine the speed and intelligence of AI with the user’s own expertise and judgment? Below are a few snapshots of where that exploration is taking us.",
     ],
+  },
+];
+
+// Figma 343:1333 / 343:1335 / 346:1606 — the "few snapshots" gallery
+// SECTIONS_AFTER_REFLECTION's own last paragraph leads into. Slide 1's
+// video is a transcode of Figma's actual animated GIF export (see
+// CaseStudyImageCarousel's own doc comment on that field for why);
+// slides 2 and 3 layer a product-screen recording over the same
+// background photo, Figma's own oversized-crop composition technique.
+const SNAPSHOTS_GALLERY = [
+  {
+    src: "/images/home/beacon-gallery-1-poster.jpg",
+    video: "/images/home/beacon-gallery-1.mp4",
+    alt: "Workspace generation in progress, Beacon's AI building out a new venture workspace",
+  },
+  {
+    src: "/images/home/beacon-gallery-2-bg.jpg",
+    alt: "",
+    overlay: {
+      src: "/images/home/beacon-gallery-2-overlay.jpg",
+      alt: "Beacon's value pools screen, dark theme",
+      left: 27,
+      top: 30,
+      width: 530,
+      height: 358,
+    },
+  },
+  {
+    src: "/images/home/beacon-gallery-3-bg.jpg",
+    alt: "",
+    overlay: {
+      src: "/images/home/beacon-gallery-3-overlay.jpg",
+      alt: "Beacon's value pools screen, light theme",
+      left: 27,
+      top: 30,
+      width: 530,
+      height: 358,
+    },
   },
 ];
 
@@ -236,7 +275,7 @@ export default function BeaconCaseStudyBody() {
               <ProseSection key={section.heading} {...section} />
             ))}
 
-            <CaseStudyImagePlaceholder />
+            <CaseStudyImageCarousel slides={SNAPSHOTS_GALLERY} />
           </div>
         </div>
       </div>

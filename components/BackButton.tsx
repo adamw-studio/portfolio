@@ -11,10 +11,17 @@ import { insetBorder } from "@/components/typography";
 //
 // Pulled into one shared component instead of the four identical copies
 // this was duplicated as (Beacon, Documentary, Robotics, PasswordGate) —
-// same position (`absolute left-0 top-[30px]`, inside each page's
-// `relative` wrapper) and same classes at every call site, so a shared
+// same position and same classes at every call site, so a shared
 // definition removes the risk of the four quietly drifting apart instead
 // of adding one.
+//
+// top-6, not top-[30px]: this button is now 36px tall (10px padding +
+// 16px icon + 10px padding), the exact same height as Nav's own closed
+// pill — so matching Nav's own `top-6` offset keeps their vertical
+// centers aligned. top-[30px] was correct for the *previous* 24px-tall
+// button (its center landed on the same line purely because 30 + 24/2
+// happens to equal 6 + 36/2), but silently stopped being once the button
+// grew — a coincidence of the old size, not a value to carry forward.
 //
 // active:scale-95 + transition-transform: same press-feedback convention
 // as every other pressable control on the site (Nav's icon buttons, the
@@ -26,7 +33,7 @@ export function BackButton() {
     <Link
       href="/"
       aria-label="Back to home"
-      className={`absolute left-0 top-[30px] flex items-center justify-center rounded-full px-4 py-2.5 transition-transform duration-100 active:scale-95 ${insetBorder}`}
+      className={`absolute left-0 top-6 flex items-center justify-center rounded-full px-4 py-2.5 transition-transform duration-100 active:scale-95 ${insetBorder}`}
     >
       <Image src="/images/home/work-back-arrow.svg" alt="" width={16} height={16} className={themedIcon} />
     </Link>

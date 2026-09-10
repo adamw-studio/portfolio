@@ -88,8 +88,8 @@ export default function DocumentaryCaseStudy() {
       {/* pt-[140px]: same nav-clearance offset as the home page (Nav is
           `fixed`, so this column carries the whole gap itself). The back
           button sits inside that same gap, absolutely positioned so it
-          doesn't add any extra height of its own — its Figma position
-          (y:30) lines up with the fixed nav pill's own vertical center. */}
+          doesn't add any extra height of its own — see BackButton for how
+          it lines up with the fixed nav pill's own vertical center. */}
       <div className="relative mx-auto w-full max-w-[688px] pb-[60px] pt-[140px]">
         <BackButton />
 

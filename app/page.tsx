@@ -4,28 +4,29 @@ import { Chip } from "@/components/Chip";
 import { Tag } from "@/components/Tag";
 import AboutCardStack from "@/components/AboutCardStack";
 import SelectedWorks from "@/components/SelectedWorks";
+import Experience from "@/components/Experience";
 import HomeFooter from "@/components/HomeFooter";
-import { Divider } from "@/components/Divider";
 import { ThemeProvider } from "@/components/ThemeContext";
 import { themedIcon } from "@/components/themedIcon";
-import { TimeMark, SculptorMark } from "@/components/marks";
-import BarChartIcon from "@/components/icons/BarChartIcon";
-import EqualsIcon from "@/components/icons/EqualsIcon";
-import CuriosityIcon from "@/components/icons/CuriosityIcon";
-import CraftsmanshipIcon from "@/components/icons/CraftsmanshipIcon";
 import { bodyText, heading } from "@/components/typography";
 
 // Every "What I do" tag shares one identical icon shape (Figma 203:2034)
-// but its own fixed brand color, the same in both themes — except Brand
-// identity, which stays a theme-swapping neutral (see Tag.tsx's color
-// prop, omitted here on purpose for that one).
+// but its own fixed brand color, the same in both themes. Figma 15:7301
+// (current) gives every tag a real fixed color now, including Brand
+// identity — which used to be the one asymmetric case (a theme-swapping
+// neutral gray, falling back to --tag-icon-bg with no color prop here;
+// see Tag.tsx's own doc comment for that history). Figma also swapped
+// which color which tag carries: Craft in canvas & code is purple
+// (#a16ea9, Brand identity's old color) and Brand identity is red
+// (#d92100, Craft in canvas & code's old color) — not a coincidental
+// near-match, confirmed against the current file directly.
 const whatIDo: { label: string; color?: string }[] = [
   { label: "Research", color: "#d9a900" },
   { label: "System thinking", color: "#00a2c2" },
   { label: "Product & design strategy", color: "#e5522e" },
   { label: "Design system", color: "#0d99ff" },
-  { label: "Craft in canvas & code", color: "#d92100" },
-  { label: "Brand identity" },
+  { label: "Craft in canvas & code", color: "#a16ea9" },
+  { label: "Brand identity", color: "#d92100" },
   { label: "Stakeholder management", color: "#46723c" },
 ];
 
@@ -40,18 +41,19 @@ export default function Home() {
       <Nav />
 
       <div className="mx-auto w-full max-w-[688px] pt-[140px]">
-        <div className="flex flex-col gap-[60px]">
-          <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-[100px]">
+          {/* Figma 15:7360 — 100px between the intro bio and the card
+              cluster, the same gap this outer column uses between every
+              other top-level section, not the tighter 40px "What shapes
+              me"/"What I do" share below. */}
+          <div className="flex flex-col gap-[100px]">
             <div className="flex flex-col gap-3">
               <h1 className={heading}>Hey, I’m Adam</h1>
               <div className="flex flex-col gap-4">
                 <p className={bodyText}>
-                  A Senior Product Designer with{" "}
-                  <Chip icon={<TimeMark />} radius="sm">
-                    5 years &amp; 4 months
-                  </Chip>{" "}
-                  of experience across banking, media, education and enterprise tech at McKinsey &amp; Company, and
-                  now building 0 → 1 B2B products.
+                  A Senior Product Designer with <Chip radius="sm">5 years &amp; 4 months</Chip> of experience across
+                  banking, media, education and enterprise tech at McKinsey &amp; Company, and now building 0 → 1 B2B
+                  products.
                 </p>
                 <p className={bodyText}>
                   I currently lead design for{" "}
@@ -69,20 +71,28 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Figma 14:7194 — the card cluster now sits directly under the
+                intro bio, before "What shapes me", with no heading of its
+                own (the old "I'm a designer who," label is gone). It's also
+                narrower now (655px) than the 688px column it lives in, so
+                unlike before, it no longer needs to break out of the column
+                as its own full-width section below the fold. */}
+            <AboutCardStack />
+          </div>
+
+          <div className="flex flex-col gap-10">
             <div className="flex flex-col gap-3">
               <h2 className={heading}>What shapes me</h2>
               <div className="flex flex-col gap-4">
                 <p className={bodyText}>
-                  I was raised by a <Chip icon={<BarChartIcon />}>painter</Chip> and a{" "}
-                  <Chip icon={<SculptorMark />}>sculptor</Chip>. I learned that craft matters. My first design
-                  education didn’t come from software, it came from watching a painter and a sculptor at work.
+                  I was raised by a <Chip>painter</Chip> and a <Chip>sculptor</Chip>. I learned that craft matters. My
+                  first design education didn’t come from software, it came from watching a painter and a sculptor
+                  at work.
                 </p>
                 <p className={bodyText}>
-                  That foundation continues to shape how I approach designing today:{" "}
-                  <Chip icon={<CuriosityIcon />}>curiosity</Chip>,{" "}
-                  <Chip icon={<CraftsmanshipIcon />}>craftsmanship</Chip> and a{" "}
-                  <Chip icon={<EqualsIcon />}>deep respect</Chip> for the people who touch, feel or use the
-                  things I design.
+                  That foundation continues to shape how I approach designing today: <Chip>curiosity</Chip>,{" "}
+                  <Chip>craftsmanship</Chip> and a <Chip>deep respect</Chip> for the people who touch, feel or use
+                  the things I design.
                 </p>
               </div>
             </div>
@@ -109,28 +119,20 @@ export default function Home() {
             </div>
           </div>
 
-          <Divider />
+          {/* Figma 15:7412 — a short 40px centered rule, not the full-width
+              dashed Divider this page previously used twice (before and
+              after Selected works). The current file only shows this one,
+              once, here — Divider itself stays for the case-study pages,
+              which still use it (see Divider.tsx), just not this page
+              anymore. */}
+          <div className="flex w-full justify-center">
+            <div aria-hidden className="h-px w-10 bg-border-subtle" />
+          </div>
 
-          {/* gap-4 (16px): Figma keeps this section's header-to-content gap
-              at 16px, unlike the 12px used everywhere else on this page. */}
           <SelectedWorks />
+
+          <Experience />
         </div>
-      </div>
-
-      {/* Divider stays constrained to the 688px content column (matches
-          Figma), even though the section below it breaks out wider. */}
-      <div className="mx-auto mt-[60px] w-full max-w-[688px]">
-        <Divider />
-      </div>
-
-      {/* Breaks out of the 688px column: the card composition is ~832px
-          wide on desktop, wider than the rest of the page's content. The
-          heading is centered across the full section width too (unlike
-          every other header on this page, which is left-aligned in the
-          688px column) — matches Figma's centered "before" state. */}
-      <div className="mt-[60px] flex flex-col gap-3 pb-9">
-        <h2 className={`${heading} text-center`}>I&apos;m a designer who,</h2>
-        <AboutCardStack />
       </div>
 
       <HomeFooter />

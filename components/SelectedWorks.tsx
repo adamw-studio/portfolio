@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { heading, insetBorder } from "@/components/typography";
+import { heading } from "@/components/typography";
 import { themedIcon } from "@/components/themedIcon";
 import { BeaconComposer } from "@/components/BeaconComposer";
 
@@ -66,13 +66,19 @@ export default function SelectedWorks() {
     <div className="flex flex-col gap-4">
       <div className="flex w-full items-center justify-between">
         <h2 className={heading}>Selected works</h2>
-        <div className="flex items-center gap-2">
+        {/* Figma 15:7365 — the two arrow buttons now share one outer pill
+            (a real border + 4px padding + 4px gap between them) rather
+            than sitting as two independent freestanding circles with a
+            gap and their own insetBorder each. Each inner circle keeps
+            its own bg-tertiary fill and disabled state — only the border
+            moved from per-button to the shared wrapper. */}
+        <div className="flex items-center gap-1 rounded-full border border-border-subtle p-1">
           <button
             type="button"
             aria-label="Previous work"
             disabled={!canGoPrev}
             onClick={() => setIndex((i) => Math.max(0, i - 1))}
-            className={`flex size-6 items-center justify-center rounded-full bg-bg-tertiary disabled:cursor-not-allowed disabled:opacity-40 ${insetBorder}`}
+            className="flex size-6 items-center justify-center rounded-full bg-bg-tertiary disabled:cursor-not-allowed disabled:opacity-40"
           >
             <Image src="/images/home/arrow-left.svg" alt="" width={16} height={16} className={themedIcon} />
           </button>
@@ -81,7 +87,7 @@ export default function SelectedWorks() {
             aria-label="Next work"
             disabled={!canGoNext}
             onClick={() => setIndex((i) => Math.min(PROJECTS.length - 1, i + 1))}
-            className={`flex size-6 items-center justify-center rounded-full bg-bg-tertiary disabled:cursor-not-allowed disabled:opacity-40 ${insetBorder}`}
+            className="flex size-6 items-center justify-center rounded-full bg-bg-tertiary disabled:cursor-not-allowed disabled:opacity-40"
           >
             <Image src="/images/home/arrow-right.svg" alt="" width={16} height={16} className={themedIcon} />
           </button>

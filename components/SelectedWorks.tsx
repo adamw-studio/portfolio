@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { heading, insetBorder } from "@/components/typography";
 import { themedIcon } from "@/components/themedIcon";
+import { BeaconComposer } from "@/components/BeaconComposer";
 
 type Project = {
   /** Also doubles as the /work/[id] case study route slug. */
@@ -14,10 +15,6 @@ type Project = {
   year: string;
   backdropSrc: string;
   backdropAlt: string;
-  // Beacon's Figma composition layers a second, blurred product screenshot
-  // inset over the backdrop — later projects may just be a single flat
-  // image, so this stays optional per-project rather than a fixed shape.
-  inset?: { src: string; alt: string; left: number; top: number; width: number; height: number };
 };
 
 const PROJECTS: Project[] = [
@@ -29,14 +26,6 @@ const PROJECTS: Project[] = [
     year: "2026",
     backdropSrc: "/images/home/selected-work-1-backdrop.jpg",
     backdropAlt: "",
-    inset: {
-      src: "/images/home/selected-work-1-screen.jpg",
-      alt: "Beacon product screen",
-      left: 79,
-      top: 86,
-      width: 530,
-      height: 358,
-    },
   },
   {
     id: "robotics",
@@ -109,13 +98,17 @@ export default function SelectedWorks() {
             className="object-cover"
             sizes="688px"
           />
-          {project.inset && (
-            <div
-              className="absolute overflow-hidden rounded-lg blur-[1px]"
-              style={{ left: project.inset.left, top: project.inset.top, width: project.inset.width, height: project.inset.height }}
-            >
-              <Image src={project.inset.src} alt={project.inset.alt} fill className="object-cover" sizes={`${project.inset.width}px`} />
-            </div>
+          {/* Figma 356:1192's own composition over Beacon's cover: a flat
+              20% black wash between the photo and the composer, there
+              specifically so the composer's white text/borders read
+              against a busy backdrop — not something the other three
+              projects need, since none of them layer UI on top of their
+              image. */}
+          {project.id === "beacon" && (
+            <>
+              <div aria-hidden className="absolute inset-0 bg-black/20" />
+              <BeaconComposer />
+            </>
           )}
         </div>
         <div className="flex flex-col gap-1">

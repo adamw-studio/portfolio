@@ -213,3 +213,27 @@ body {
     transparent 16px
   );
 }
+
+/* BeaconComposer's typing caret — now a border-right on the text's own
+   span (see BeaconComposer.tsx), not a separate element, so this
+   animates border-color rather than opacity: opacity would fade the
+   typed text itself, since text and caret now share one box. ease-in-out
+   rather than the original step-end hard cut — a smooth fade reads as a
+   gentler, more polished pulse than an instant on/off toggle. No
+   motion-reduce guard needed here the way other animations in this file
+   get one: BeaconComposer only ever renders this class when it has
+   already decided reduced-motion is off (see its own
+   prefers-reduced-motion check), so gating it a second time at the CSS
+   layer would be redundant, not extra-safe. */
+@keyframes composer-caret-blink {
+  0%,
+  100% {
+    border-color: white;
+  }
+  50% {
+    border-color: transparent;
+  }
+}
+.composer-caret {
+  animation: composer-caret-blink 1.1s ease-in-out infinite;
+}

@@ -189,15 +189,38 @@ export default function BeaconCaseStudyBody() {
           <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
             <div className="relative h-[180px] w-full shrink-0 overflow-hidden rounded-lg bg-bg-tertiary sm:h-[147px] sm:w-[248px]">
               <Image
-                src="/images/home/selected-work-1-backdrop.jpg"
+                src="/images/home/beacon-thumb-backdrop.jpg"
                 alt=""
                 fill
                 className="object-cover"
                 sizes="(min-width: 640px) 248px, 100vw"
               />
-              <div className="absolute left-[19px] top-4 h-[358px] w-[530px] overflow-hidden rounded-lg blur-[1px]">
+              {/* Figma 325:259 — this thumbnail's own design, distinct
+                  from the Home page cover (356:1192): a product
+                  screenshot inset, not the composer. Several rounds of
+                  "make the composer bigger/wider here" turned out to be
+                  solving the wrong problem — this location was never
+                  supposed to carry the composer at all. left-19px top-4
+                  (16px) w-530 h-358 rounded-lg (this project's --radius-l
+                  token, 12px — matches Figma's literal 12px exactly). No
+                  blur on the screen image itself — an earlier revision
+                  carried one over from the Home page card's old inset
+                  (see git history), but Figma's own export for this node
+                  never specified it, and it was just softening real,
+                  meant-to-be-legible UI text for no reason.
+                  Both images are this node's own fresh exports
+                  (beacon-thumb-*), not the Home page card's old inset
+                  assets reused — despite depicting the same flower-field
+                  photo and a Beacon UI screen, checking pixel dimensions
+                  and content against the existing selected-work-1-*
+                  files turned up a different (higher-res) backdrop crop
+                  and a genuinely different screen (this one's the "Value
+                  pools" ideation view, not the sidebar/workspace one the
+                  old asset showed) — assuming "same photo" meant "same
+                  file" the first time was wrong. */}
+              <div className="absolute left-[19px] top-4 h-[358px] w-[530px] overflow-hidden rounded-lg">
                 <Image
-                  src="/images/home/selected-work-1-screen.jpg"
+                  src="/images/home/beacon-thumb-screen.jpg"
                   alt="Beacon product screen"
                   fill
                   className="object-cover"

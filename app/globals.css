@@ -195,3 +195,21 @@ body {
 .page-dots.dots-canvas-active::before {
   display: none;
 }
+
+/* Divider.tsx's dashed rule, drawn as a repeating gradient instead of
+   border-dashed — a real border-style can't set an exact dash/gap
+   length, only pick from the browser's own fixed dash patterns, so
+   there's no way to match Figma's literal ratio from there. 8px dash /
+   8px gap, matching Figma 325:270's current `stroke-dasharray="8 8"`
+   exactly (an earlier revision of this same node used "4 4" — this
+   isn't that value doubled on purpose, it's a different export). */
+.divider-dashed {
+  height: 1px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--color-border-subtle) 0,
+    var(--color-border-subtle) 8px,
+    transparent 8px,
+    transparent 16px
+  );
+}

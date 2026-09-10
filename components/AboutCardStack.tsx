@@ -33,6 +33,7 @@ type CardData = {
 // centering step — their left/top are used directly.
 const CARD_W = 130;
 const CARD_H = 162;
+const CARD_RADIUS = 10; // --radius-m
 
 const CARDS: CardData[] = [
   { id: "prototype", color: "#f83e00", textColor: "#ffffbc", text: "prototyping with AI", x: 10, y: 21, rotate: -7.55, video: "about-card-prototype.mp4" },
@@ -49,15 +50,57 @@ const CARDS: CardData[] = [
 const CONTAINER_W = 655;
 const CONTAINER_H = 199;
 
-// Where a selected card lands: the container's own center, minus half the
-// card's own footprint — i.e. every card converges on the same spot when
-// picked, rather than just growing from its own scattered position (which
-// would push cards near the container's edges — cards 1 and 5 both sit
-// within 10px of it — mostly off past the edge instead of into view).
-const SELECTED_X = CONTAINER_W / 2 - CARD_W / 2;
-const SELECTED_Y = CONTAINER_H / 2 - CARD_H / 2;
-const SELECTED_SCALE = 1.5;
-const DIM_OPACITY = 0.55;
+// Selected-card size/radius/type, Figma 18:7508 (its own worked example,
+// "obsessed about the smallest details" picked) — literal fixed values,
+// not this card's own 130x162/10px-radius/16px-text scaled up by a CSS
+// transform. That distinction matters: Figma keeps padding at a flat 8px
+// in both states, only width/height/radius/font-size actually change, so
+// a uniform transform: scale() (which stretches padding and radius right
+// along with everything else) would visibly overpad and over-round this
+// compared to the real design.
+const SELECTED_W = 240;
+const SELECTED_H = 300;
+const SELECTED_RADIUS = 16;
+const SELECTED_VIDEO_H = 154;
+const SELECTED_TEXT = "text-[20px] leading-[24px] tracking-[-0.16px]";
+const RESTING_TEXT = "text-[16px] leading-[18px] tracking-[-0.128px]";
+
+// Selected card centers horizontally in the container and sits with its
+// own top at the container's own top (y=0) — not vertically centered,
+// which was the actual bug being fixed here: centering it let the card
+// grow symmetrically both up *and* down from the container's normal
+// bounds, and growing up is what pushed it into the bio paragraph
+// sitting directly above this component on the page. Growing only
+// downward, into space this component already reserves for exactly this
+// (see EXPANDED_H below), keeps it clear of everything above.
+const SELECTED_X = CONTAINER_W / 2 - SELECTED_W / 2;
+const SELECTED_Y = 0;
+const DIM_OPACITY = 0.85;
+
+// The five non-selected cards fan into one row centered under the
+// selected card's own midpoint — adapts to whichever card is picked,
+// rather than Figma's one worked example's literal (and non-uniform,
+// tighter near the selected card, wider further away) per-card offsets,
+// which only actually line up for that one specific card/position
+// combination. Row sits at y=178, matching Figma's own example, chosen
+// there so it tucks just under the selected card's video area without
+// reaching its copy (video ends at 8+154=162; row starting at 178 clears
+// that with room to spare).
+const OTHER_ROW_Y = 178;
+const OTHER_STEP = 55;
+const OTHER_ROW_W = CARD_W + OTHER_STEP * 4; // 5 cards
+const OTHER_ROW_X = CONTAINER_W / 2 - OTHER_ROW_W / 2;
+
+// Reserves enough height for the fully expanded state (selected card 0
+// to 300, other-cards row 178 to 178+162=340, +5 breathing room) at all
+// times, animated rather than a fixed always-tall box — an explicit
+// exception to "only animate transform/opacity" (see the `animate`
+// skill's own accordion exception): the whole point is for the page
+// content *below* this component to actually move out of the way while
+// a card is expanded, which only a real layout property can do —
+// transform never affects surrounding layout, that's exactly why it's
+// normally the safe one to animate.
+const CONTAINER_EXPANDED_H = 345;
 
 const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)"; // this project's own strong-ease-out (see components/motion/tokens.ts)
 const STAGGER_MS = 60;
@@ -142,30 +185,40 @@ export default function AboutCardStack() {
     // but on narrower viewports (this never rescales down the way the old
     // hover version did) the fan is wider than its column and the outer
     // cards crop at the edges by design, matching the interfacecraft.dev
-    // reference this was modeled on. Switches to overflow-visible while a
-    // card is selected: at 1.5x, a selected card's own box (195x243) is
-    // taller than this container (199px), and centering it means that
-    // excess extends symmetrically above/below the container's normal
-    // bounds — clipping it there would cut off the exact card this is
-    // trying to showcase. html/body's own overflow-x: hidden (globals.css)
-    // still backstops horizontal page scroll either way.
+    // reference this was modeled on. Height animates between the resting
+    // and expanded reservation (see CONTAINER_EXPANDED_H) so the page
+    // content below this component moves out of the way instead of being
+    // covered by it.
     <div
       ref={wrapperRef}
-      className={`flex w-full items-start justify-center pt-6 ${selectedId ? "overflow-visible" : "overflow-hidden"}`}
+      className="flex w-full items-start justify-center overflow-hidden pt-6"
+      style={{
+        height: (selectedId ? CONTAINER_EXPANDED_H : CONTAINER_H) + 24, // +24 = pt-6
+        transition: reducedMotion ? undefined : `height ${SELECT_MS}ms ${EASE_OUT}`,
+      }}
     >
       <div className="relative shrink-0" style={{ width: CONTAINER_W, height: CONTAINER_H }}>
-        {CARDS.map((card, i) => (
-          <Card
-            key={card.id}
-            card={card}
-            visible={visible}
-            reducedMotion={reducedMotion}
-            delay={i * STAGGER_MS}
-            selected={selectedId === card.id}
-            dimmed={selectedId !== null && selectedId !== card.id}
-            onToggle={() => setSelectedId((current) => (current === card.id ? null : card.id))}
-          />
-        ))}
+        {(() => {
+          // otherIndex: this card's position among the *other* (non-
+          // selected) cards specifically, e.g. the 3rd card overall might
+          // be the 2nd "other" one once whichever card is selected is
+          // excluded — that's what actually drives the stacked row's
+          // layout below, not each card's own fixed array index.
+          const otherIds = CARDS.filter((c) => c.id !== selectedId).map((c) => c.id);
+          return CARDS.map((card, i) => (
+            <Card
+              key={card.id}
+              card={card}
+              visible={visible}
+              reducedMotion={reducedMotion}
+              delay={i * STAGGER_MS}
+              selected={selectedId === card.id}
+              dimmed={selectedId !== null && selectedId !== card.id}
+              otherIndex={otherIds.indexOf(card.id)}
+              onToggle={() => setSelectedId((current) => (current === card.id ? null : card.id))}
+            />
+          ));
+        })()}
       </div>
     </div>
   );
@@ -178,6 +231,7 @@ function Card({
   delay,
   selected,
   dimmed,
+  otherIndex,
   onToggle,
 }: {
   card: CardData;
@@ -186,13 +240,19 @@ function Card({
   delay: number;
   selected: boolean;
   dimmed: boolean;
+  otherIndex: number;
   onToggle: () => void;
 }) {
-  const x = selected ? SELECTED_X : card.x;
-  const y = selected ? SELECTED_Y : card.y;
+  // dimmed here doubles as "some other card is selected" — that's
+  // exactly when this one belongs in the stacked row instead of its own
+  // resting spot, not just visually faded there.
+  const x = selected ? SELECTED_X : dimmed ? OTHER_ROW_X + otherIndex * OTHER_STEP : card.x;
+  const y = selected ? SELECTED_Y : dimmed ? OTHER_ROW_Y : card.y;
   const rotate = selected ? 0 : card.rotate; // straightens out of its tilt when picked — same "this one's in focus" cue Tag.tsx's own hover state already uses
-  const entranceScale = visible ? 1 : 0.92;
-  const scale = selected ? SELECTED_SCALE : entranceScale;
+  const entranceScale = reducedMotion || visible ? 1 : 0.92; // only the mount-in animation ever uses transform:scale — the selected-size change uses real width/height instead, see the module doc comment above
+  const width = selected ? SELECTED_W : CARD_W;
+  const height = selected ? SELECTED_H : CARD_H;
+  const radius = selected ? SELECTED_RADIUS : CARD_RADIUS;
 
   return (
     <div
@@ -207,29 +267,43 @@ function Card({
           onToggle();
         }
       }}
-      className="absolute left-0 top-0 flex cursor-pointer flex-col justify-between overflow-hidden rounded-m p-2 outline-none will-change-transform focus-visible:ring-2 focus-visible:ring-text-primary"
+      className="absolute left-0 top-0 flex cursor-pointer flex-col justify-between overflow-hidden p-2 outline-none will-change-transform focus-visible:ring-2 focus-visible:ring-text-primary"
       style={{
-        width: CARD_W,
-        height: CARD_H,
+        width,
+        height,
+        borderRadius: radius,
         backgroundColor: card.color,
         opacity: reducedMotion ? (dimmed ? DIM_OPACITY : 1) : visible ? (dimmed ? DIM_OPACITY : 1) : 0,
-        zIndex: selected ? 10 : 1,
-        transform: `translate3d(${x}px, ${y}px, 0) rotate(${rotate}deg) scale(${reducedMotion ? (selected ? SELECTED_SCALE : 1) : scale})`,
+        // Selected is always frontmost; among the stacked others, later
+        // otherIndex (further right in the row) sits on top of earlier
+        // ones, same left-under-right layering an ordinary hand of fanned
+        // cards would have.
+        zIndex: selected ? 10 : dimmed ? 2 + otherIndex : 1,
+        transform: `translate3d(${x}px, ${y}px, 0) rotate(${rotate}deg) scale(${entranceScale})`,
         transition: reducedMotion
           ? undefined
-          : `opacity ${SELECT_MS}ms ${EASE_OUT} ${delay}ms, transform ${selected || dimmed ? SELECT_MS : 500}ms ${EASE_OUT} ${selected || dimmed ? 0 : delay}ms`,
+          : `opacity ${SELECT_MS}ms ${EASE_OUT} ${delay}ms, transform ${selected || dimmed ? SELECT_MS : 500}ms ${EASE_OUT} ${selected || dimmed ? 0 : delay}ms, width ${SELECT_MS}ms ${EASE_OUT}, height ${SELECT_MS}ms ${EASE_OUT}, border-radius ${SELECT_MS}ms ${EASE_OUT}`,
       }}
     >
       {/* Figma's own export for this area came back as an empty div —
           it renders a hand-drawn pattern in the design file that the
           MCP tool can't translate to markup, but the actual intent is a
           looping video here instead of a static pattern (confirmed, and
-          supplied per-card). object-cover on a 4:3 source inside this
-          wide, short 130x60 box crops to a horizontal center band — not
-          a bug, just what covering a mismatched aspect ratio does; the
-          `video` field staying optional is what lets a card render as
-          just its flat color if one's ever missing rather than breaking. */}
-      <div className="relative h-[60px] w-full shrink-0 overflow-hidden">
+          supplied per-card). object-cover on a mismatched aspect ratio
+          crops to a center band — not a bug, just what covering does;
+          the `video` field staying optional is what lets a card render
+          as just its flat color if one's ever missing rather than
+          breaking. Height animates 60↔154 alongside the card itself
+          (Figma 18:7508's own selected-state value), width stays w-full
+          in both states since the padding either side of it doesn't
+          change. */}
+      <div
+        className="relative w-full shrink-0 overflow-hidden"
+        style={{
+          height: selected ? SELECTED_VIDEO_H : 60,
+          transition: reducedMotion ? undefined : `height ${SELECT_MS}ms ${EASE_OUT}`,
+        }}
+      >
         {card.video && (
           <video
             src={`/videos/about-cards/${card.video}`}
@@ -241,7 +315,10 @@ function Card({
           />
         )}
       </div>
-      <p className="w-full font-serif text-[16px] leading-[18px] tracking-[-0.128px]" style={{ color: card.textColor }}>
+      <p
+        className={`w-full font-serif not-italic ${selected ? SELECTED_TEXT : RESTING_TEXT}`}
+        style={{ color: card.textColor, transition: reducedMotion ? undefined : `font-size ${SELECT_MS}ms ${EASE_OUT}` }}
+      >
         {card.text}
       </p>
     </div>

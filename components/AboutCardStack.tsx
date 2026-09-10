@@ -111,6 +111,13 @@ export default function AboutCardStack() {
   const [visible, setVisible] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  // Stays false only for the duration of the initial stagger, then true
+  // forever after — see the effect below and its use as `delay` at the
+  // call site. Not the same thing as `visible`: that one only tracks
+  // *whether* the reveal has started, not whether it's finished, so
+  // using it alone would still leave a later deselect re-reading as
+  // "not yet revealed" and re-applying the mount-in stagger.
+  const [hasRevealedOnce, setHasRevealedOnce] = useState(false);
 
   useEffect(() => {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -154,6 +161,23 @@ export default function AboutCardStack() {
     observer.observe(wrapper);
     return () => observer.disconnect();
   }, [reducedMotion]);
+
+  // Flips true once, a beat after the mount-in stagger would have
+  // finished playing (last card's own delay + its transition duration) —
+  // not tied to `visible` directly, since that flips true the instant the
+  // reveal *starts*, while this needs to stay false until it's actually
+  // *done*. Read by every card below as whether to apply its own
+  // STAGGER_MS delay at all: without this, deselecting (or selecting a
+  // different card) kept reusing each card's original mount-in delay,
+  // since at that point every card is back in the same "resting, not
+  // selected, not dimmed" branch the real first-load stagger uses — so
+  // returning to rest played out as the same one-after-another cascade
+  // the entrance does, instead of one clean, synced motion.
+  useEffect(() => {
+    if (!visible || hasRevealedOnce) return;
+    const timeout = setTimeout(() => setHasRevealedOnce(true), CARDS.length * STAGGER_MS + 500);
+    return () => clearTimeout(timeout);
+  }, [visible, hasRevealedOnce]);
 
   // Click/tap a card to bring it forward and highlight it (interfacecraft.dev
   // itself turned out not to actually have this on closer testing — real
@@ -211,7 +235,7 @@ export default function AboutCardStack() {
               card={card}
               visible={visible}
               reducedMotion={reducedMotion}
-              delay={i * STAGGER_MS}
+              delay={hasRevealedOnce ? 0 : i * STAGGER_MS}
               selected={selectedId === card.id}
               dimmed={selectedId !== null && selectedId !== card.id}
               otherIndex={otherIds.indexOf(card.id)}
@@ -248,7 +272,16 @@ function Card({
   // resting spot, not just visually faded there.
   const x = selected ? SELECTED_X : dimmed ? OTHER_ROW_X + otherIndex * OTHER_STEP : card.x;
   const y = selected ? SELECTED_Y : dimmed ? OTHER_ROW_Y : card.y;
-  const rotate = selected ? 0 : card.rotate; // straightens out of its tilt when picked — same "this one's in focus" cue Tag.tsx's own hover state already uses
+  // Straightens out of its resting tilt whenever it's not sitting at its
+  // own resting spot — selected for the same "this one's in focus" cue
+  // Tag.tsx's own hover state already uses, and dimmed/stacked because a
+  // rotated card's rendered footprint doesn't match its own box: the
+  // corners of a tilted card can lift clear of the *next* card's
+  // supposedly-covering rectangle, letting whatever text sits underneath
+  // show through at exactly those corners. Flat, perfectly rectangular
+  // cards in the stacked row is what makes each one's z-index actually
+  // fully hide the one behind it, not just mostly.
+  const rotate = selected || dimmed ? 0 : card.rotate;
   const entranceScale = reducedMotion || visible ? 1 : 0.92; // only the mount-in animation ever uses transform:scale — the selected-size change uses real width/height instead, see the module doc comment above
   const width = selected ? SELECTED_W : CARD_W;
   const height = selected ? SELECTED_H : CARD_H;

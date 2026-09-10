@@ -239,17 +239,34 @@ body {
 }
 
 /* PageLoading's triangle (Figma 21:8014/21:8280) — the "A" of "Hey, I'm
-   Adam" on the splash screen, jumping up and spinning 180deg before
-   settling back down, on a 2s infinite loop matching Figma's own motion
-   export exactly (times converted straight to percentages: 0.3963 ->
-   39.63%, 0.4333 -> 43.33%, 0.5038 -> 50.38%). Two separate animations
-   (see PageLoading.tsx for why they're split across nested elements
-   rather than combined) so each axis keeps its own Figma-specified
-   easing: the vertical bounce is linear throughout, the spin uses a
-   symmetric cubic-bezier that front- and back-loads evenly. Both hold at
-   their final keyframe through 100% and then hard-cut back to the start
-   for the next loop — an intentional snap-reset per Figma's own repeat
-   behavior, not a bug.
+   Adam" on the splash screen, spinning 180deg through nearly the whole
+   loop while it rises and lands with a springy overshoot, on a 2.503s
+   infinite loop matching Figma's own re-fetched motion export exactly
+   (a later, richer pass than this file's first one — the rotate now
+   spans 0-92.95% of the cycle instead of finishing by 43%, and the
+   landing genuinely overshoots and settles rather than just easing flat).
+   Two separate animations (see PageLoading.tsx for why they're split
+   across nested elements rather than combined) so each axis keeps its
+   own Figma-specified easing:
+
+   - Spin: a single cubic-bezier(0.5,0,0.5,1) segment covering 0-92.95%
+     (rotate 0 -> -180deg), holding flat for the small remainder — CSS
+     supports this directly via a per-keyframe animation-timing-function,
+     no baking needed.
+   - Bounce: the rise (0-89.25%, translateY 0 -> -31px) is linear, but the
+     landing (89.25-100%, -31px -> 3px) uses a genuine damped-harmonic
+     spring easing function (1 - e^(-7.6657t) * (cos(6.7605t) +
+     1.1339*sin(6.7605t))) that CSS keyframes can't express directly.
+     Baked into 11 extra stops by sampling that function at t=0,0.1,
+     ...,1 and converting each to an absolute translateY value and a
+     percentage of the full 2.503s cycle — plain linear interpolation
+     between these closely-spaced stops approximates the smooth curve,
+     including the ~4px overshoot past the final resting value around
+     94% before it settles back down.
+
+   Both hold at their final keyframe through 100% and then hard-cut back
+   to the start for the next loop — an intentional snap-reset per Figma's
+   own repeat behavior, not a bug.
 
    No prefers-reduced-motion guard needed here, the way most animations in
    this file get one: PageLoading only ever renders this markup at all
@@ -261,26 +278,52 @@ body {
   0% {
     transform: translateY(0);
   }
-  39.63% {
+  89.25% {
     transform: translateY(-31px);
   }
-  50.38%,
+  90.325% {
+    transform: translateY(-20.53px);
+  }
+  91.4% {
+    transform: translateY(-6.716px);
+  }
+  92.475% {
+    transform: translateY(1.037px);
+  }
+  93.55% {
+    transform: translateY(3.674px);
+  }
+  94.088% {
+    transform: translateY(3.953px);
+  }
+  94.625% {
+    transform: translateY(3.912px);
+  }
+  95.7% {
+    transform: translateY(3.516px);
+  }
+  96.775% {
+    transform: translateY(3.177px);
+  }
+  98.388% {
+    transform: translateY(2.986px);
+  }
   100% {
-    transform: translateY(3px);
+    transform: translateY(2.978px);
   }
 }
 @keyframes page-loading-spin {
   0% {
     transform: rotate(0deg);
   }
-  43.33%,
+  92.95%,
   100% {
     transform: rotate(-180deg);
   }
 }
 .page-loading-bounce {
-  animation: page-loading-bounce 2s linear infinite;
+  animation: page-loading-bounce 2.503s linear infinite;
 }
 .page-loading-spin {
-  animation: page-loading-spin 2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  animation: page-loading-spin 2.503s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 }

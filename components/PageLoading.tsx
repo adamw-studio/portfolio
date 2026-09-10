@@ -3,14 +3,16 @@
 import { useEffect, useState, type ReactNode } from "react";
 
 const SESSION_KEY = "aw-intro-seen";
-// One 2s cycle (matching globals.css's page-loading-bounce/page-loading-spin
-// exactly) reads as a flash, not an animation — gone before it's actually
-// registered; three still felt too quick. 8 full loops lands closest to
-// the requested ~15s while still landing exactly on a loop boundary — a
-// mid-cycle cutoff (e.g. a bare 15000ms, 7.5 loops) would reveal the site
-// right as the triangle is mid-flight instead of settled.
-const LOOP_COUNT = 8;
-const LOOP_MS = 2000 * LOOP_COUNT;
+// One cycle (matching globals.css's page-loading-bounce/page-loading-spin
+// exactly — re-fetched from Figma with a richer, slightly longer motion
+// export since this was first built: 2.503s, not a flat 2s) read as a
+// flash on its own. 6 full loops (~15.02s) lands closest to the
+// requested ~15s while still landing exactly on a loop boundary — a
+// mid-cycle cutoff would reveal the site right as the triangle is
+// mid-flight instead of settled.
+const LOOP_DURATION_MS = 2503;
+const LOOP_COUNT = 6;
+const LOOP_MS = LOOP_DURATION_MS * LOOP_COUNT;
 
 /**
  * Full-screen splash shown once per browser session before the site

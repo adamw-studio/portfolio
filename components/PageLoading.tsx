@@ -106,14 +106,31 @@ export function PageLoading({ children }: { children: ReactNode }) {
                   nesting composes them the same way a combined transform
                   would, since the inner span's rotation happens purely
                   around its own center regardless of where the outer one
-                  has moved it. */}
+                  has moved it.
+
+                  A pure CSS border-triangle (zero-size box, two transparent
+                  side borders, one solid bottom border), not an inline
+                  <svg><path>: this environment's own known animation/
+                  compositing limitation with SVG content (see
+                  motion/tokens.ts's note on Motion for React not animating
+                  SVG primitives here at all) turned out to extend to plain
+                  CSS keyframe animations too — a transform animation on an
+                  element wrapping raw SVG played its first pass and then
+                  silently stopped repeating, despite `infinite` being set
+                  and computed style reporting it as still "running".
+                  Confirmed by swapping this exact SVG for the identical
+                  shape built from borders, with no other change: it loops
+                  correctly. */}
               <span className="relative inline-block h-[34.5px] w-[39.837px]">
                 <span className="page-loading-bounce absolute inset-0 inline-block">
-                  <span className="page-loading-spin block h-full w-full">
-                    <svg viewBox="0 0 39.8372 34.5" width="39.8372" height="34.5" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M19.9186 0L39.8372 34.5H0L19.9186 0Z" fill="currentColor" />
-                    </svg>
-                  </span>
+                  <span
+                    className="page-loading-spin block h-0 w-0"
+                    style={{
+                      borderLeft: "19.9186px solid transparent",
+                      borderRight: "19.9186px solid transparent",
+                      borderBottom: "34.5px solid currentColor",
+                    }}
+                  />
                 </span>
                 <span className="absolute left-[16px] top-[19px] size-[7px] rounded-full bg-bg-default" />
               </span>

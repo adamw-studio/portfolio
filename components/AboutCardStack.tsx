@@ -1,263 +1,121 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type CardData = {
   id: string;
   color: string;
-  lines: string[];
-  /** Final (expanded) position — Figma's exact per-card pixel offsets from node 217:12252. */
-  final: { x: number; y: number };
-  /** 0 = frontmost card in the resting stack (the only one with legible text), 7 = furthest back/most hidden. */
-  stackIndex: number;
+  textColor: string;
+  text: string;
+  /** Pre-rotation top-left position (px), within this component's fixed
+   * 655x199 reference frame — see the width/height note below. */
+  x: number;
+  y: number;
+  rotate: number;
+  /** Filename under public/videos/about-cards/ — unset renders the flat
+   * card color alone (Figma's own placeholder state) until wired up. */
+  video?: string;
 };
 
-// Card copy, color and *final* positions are exact (Figma node 217:12252).
+// Figma node 14:7194 — six cards, scattered with individual rotation, not
+// the eight-card staggered-diagonal stack this previously showed only on
+// hover. Position math: Figma exports a rotated element as a NON-rotated
+// wrapper div sized to that element's rotated bounding box (so the
+// rotation itself doesn't shift the wrapper's own layout position), with
+// the actual rotated card centered inside via items-center justify-center.
+// To get each card's own pre-rotation (x, y) — what this component
+// actually needs, since CSS `rotate()` pivots around transform-origin
+// without touching layout position — every wrapper's center point was
+// computed (left + width/2, top + height/2) and then this card's own
+// fixed 130x162 box was centered on that same point (x = centerX - 65,
+// y = centerY - 81). Cards 4 and 5 ("rethinks team's workflows", "...want
+// to ship code") have no rotation in Figma, so they needed no wrapper/
+// centering step — their left/top are used directly.
+const CARD_W = 130;
+const CARD_H = 162;
+
 const CARDS: CardData[] = [
-  { id: "prototype", color: "#fff1b5", lines: ["prototype", "with AI"], final: { x: 168, y: 17 }, stackIndex: 0 },
-  { id: "systems", color: "#00a2c2", lines: ["builds design", "systems"], final: { x: 336, y: 70 }, stackIndex: 1 },
-  { id: "workflows", color: "#fff1b5", lines: ["rethinks team’s", "workflows"], final: { x: 504, y: 0 }, stackIndex: 2 },
-  {
-    id: "creative",
-    color: "#00a2c2",
-    lines: ["believes in the power", "of creative thinking"],
-    final: { x: 0, y: 143 },
-    stackIndex: 3,
-  },
-  {
-    id: "learning",
-    color: "#fff1b5",
-    lines: ["is invested in", "learning new things"],
-    final: { x: 672, y: 143 },
-    stackIndex: 4,
-  },
-  {
-    id: "details",
-    color: "#fff1b5",
-    lines: ["obsessed about the", "smallest details"],
-    final: { x: 168, y: 215 },
-    stackIndex: 5,
-  },
-  { id: "shipcode", color: "#00a2c2", lines: ["...want to", "ship code"], final: { x: 504, y: 198 }, stackIndex: 6 },
-  {
-    id: "crit",
-    color: "#fff1b5",
-    lines: ["loves a good design", "crit session"],
-    final: { x: 337, y: 268 },
-    stackIndex: 7,
-  },
+  { id: "prototype", color: "#f83e00", textColor: "#ffffbc", text: "prototyping with AI", x: 10, y: 21, rotate: -7.55, video: "about-card-prototype.mp4" },
+  { id: "learning", color: "#f8ecd7", textColor: "#544831", text: "is invested in learning new things", x: 123, y: 23, rotate: 5.09, video: "about-card-learning.mp4" },
+  { id: "details", color: "#0093d9", textColor: "#93ffff", text: "obsessed about the smallest details", x: 225, y: 6, rotate: -5.68, video: "about-card-details.mp4" },
+  { id: "workflows", color: "#00f790", textColor: "#004f00", text: "rethinks team’s workflows", x: 315, y: 26, rotate: 0, video: "about-card-workflows.mp4" },
+  { id: "design", color: "#211f1e", textColor: "#f8ecd7", text: "builds design system", x: 415, y: 26, rotate: 10.05, video: "about-card-design.mp4" },
+  { id: "shipcode", color: "#00a4c6", textColor: "#0d0d0d", text: "...want to ship code", x: 525, y: 26, rotate: 0, video: "about-card-shipcode.mp4" },
 ];
 
-type Breakpoint = "desktop" | "tablet" | "mobile";
+// Bounding box of all six cards' *rotated* extents (not the sum of their
+// unrotated boxes) — rightmost is card 5's flat right edge (525+130=655),
+// bottommost is card 6's rotated wrapper bottom (15.94+182.205≈198).
+const CONTAINER_W = 655;
+const CONTAINER_H = 199;
 
-const LAYOUT: Record<Breakpoint, { cardW: number; cardH: number; containerW: number; containerH: number; scale: { x: number; y: number } }> = {
-  // Desktop: exact Figma values, no scaling.
-  desktop: { cardW: 160, cardH: 190, containerW: 832, containerH: 458, scale: { x: 1, y: 1 } },
-  // Tablet: smaller cards, horizontal spread compressed more than vertical
-  // (per spec: "reduce horizontal spread", "preserve the scattered-card concept").
-  tablet: { cardW: 128, cardH: 152, containerW: 560, containerH: 430, scale: { x: 0.55, y: 0.85 } },
-  // Mobile: opened state is a plain, non-overlapping 2-column grid (Figma
-  // 303:8456 — "opened" mobile state), not a zigzagging cascade — see
-  // getMobileFinal below. Figma's own frame draws that grid at the cards'
-  // full desktop size (160x190), but adopting that size here — not just
-  // the grid *pattern* — would force containerH up to ~808px (4 rows of
-  // 190 + 3 16px gaps) purely to reserve room for a state that's only
-  // ever entered on tap. Since this wrapper's height is static (sized for
-  // whichever state is tallest, closed or open — see showFinal below) as
-  // it already is on desktop, that 808px would sit as dead space behind
-  // the resting 3-card stack on every phone-width viewport, nearly a full
-  // extra screen's worth. Keeping the cards at the size already tuned for
-  // narrow viewports (132x156) and only borrowing Figma's arrangement
-  // keeps containerH proportionate (4*156+3*16=672) while still reading
-  // as the same clean, non-overlapping grid once opened.
-  mobile: { cardW: 132, cardH: 156, containerW: 280, containerH: 672, scale: { x: 1, y: 1 } },
-};
-
-function getBreakpoint(width: number): Breakpoint {
-  if (width < 640) return "mobile";
-  if (width < 1024) return "tablet";
-  return "desktop";
-}
-
-/** Mobile final layout: a plain 2-column, non-overlapping grid — 16px gaps
- * both between columns and between rows, per Figma 303:8456 — computed
- * directly rather than compressing the wide desktop composition. */
-function getMobileFinal(index: number, cardW: number, cardH: number) {
-  const col = index % 2;
-  const row = Math.floor(index / 2);
-  const gap = 16;
-  return { x: col * (cardW + gap), y: row * (cardH + gap) };
-}
-
-function getFinalPosition(breakpoint: Breakpoint, card: CardData, index: number) {
-  const layout = LAYOUT[breakpoint];
-  if (breakpoint === "mobile") return getMobileFinal(index, layout.cardW, layout.cardH);
-  return { x: card.final.x * layout.scale.x, y: card.final.y * layout.scale.y };
-}
-
-// Figma's stacked "before" state (217:12280) only ever shows 3 distinct card
-// surfaces — front, middle, back — each offset from the last by the same
-// diagonal step. The remaining 5 cards aren't a continuation of that
-// cascade; they sit exactly where the back card sits, fully hidden beneath
-// it, so only 3 are ever visible at rest.
-const STACK_CASCADE = [
-  { x: 0, y: 47 },
-  { x: 25, y: 23.5 },
-  { x: 50, y: 0 },
-];
-
-function getStackOffset(stackIndex: number, layout: (typeof LAYOUT)["desktop"]) {
-  const cascade = STACK_CASCADE[Math.min(stackIndex, STACK_CASCADE.length - 1)];
-  const last = STACK_CASCADE[STACK_CASCADE.length - 1];
-  const clusterW = layout.cardW + last.x * layout.scale.x;
-  const clusterH = layout.cardH + last.y * layout.scale.y;
-  const baseX = layout.containerW / 2 - clusterW / 2;
-  // Biased toward the top third of the container (not true vertical
-  // center) so the resting stack sits closer to the "I'm a designer who,"
-  // heading rather than in the middle of the viewport.
-  const baseY = layout.containerH * 0.32 - clusterH / 2;
-  return { x: baseX + cascade.x * layout.scale.x, y: baseY + cascade.y * layout.scale.y };
-}
-
-// Card-to-card transform transition. Only ever toggled between two fixed
-// endpoints (stack / final) now that this is hover-driven rather than
-// scroll-scrubbed, so a plain CSS transition on `transform` does the
-// interpolation — no rAF, no per-frame lerp, no scroll listener at all.
-const CARD_TRANSITION = "transform 500ms cubic-bezier(0.4, 0, 0.2, 1)";
+const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)"; // this project's own strong-ease-out (see components/motion/tokens.ts)
+const STAGGER_MS = 60;
 
 export default function AboutCardStack() {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [breakpoint, setBreakpoint] = useState<Breakpoint>("desktop");
+  const [visible, setVisible] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [fitScale, setFitScale] = useState(1);
-  const [hovered, setHovered] = useState(false);
-  // Touch devices have no persistent hover state — mouseenter/leave
-  // either never fire or fire once on tap with no matching "leave" until
-  // the next tap elsewhere, so a hover-only reveal is simply unreachable
-  // there. canHover switches the trigger to tap-to-toggle instead of
-  // hover for exactly those devices; keyboard access (focus/blur, below)
-  // is unconditional either way.
-  const [canHover, setCanHover] = useState(true);
 
   useEffect(() => {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const updateMotion = () => setReducedMotion(motionQuery.matches);
     updateMotion();
     motionQuery.addEventListener("change", updateMotion);
-
-    const updateBreakpoint = () => setBreakpoint(getBreakpoint(window.innerWidth));
-    updateBreakpoint();
-    window.addEventListener("resize", updateBreakpoint);
-
-    const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
-    const updateCanHover = () => setCanHover(hoverQuery.matches);
-    updateCanHover();
-    hoverQuery.addEventListener("change", updateCanHover);
-
-    return () => {
-      motionQuery.removeEventListener("change", updateMotion);
-      window.removeEventListener("resize", updateBreakpoint);
-      hoverQuery.removeEventListener("change", updateCanHover);
-    };
+    return () => motionQuery.removeEventListener("change", updateMotion);
   }, []);
 
-  const layout = LAYOUT[breakpoint];
-
-  const positions = useMemo(
-    () =>
-      CARDS.map((card, i) => ({
-        stack: getStackOffset(card.stackIndex, layout),
-        final: getFinalPosition(breakpoint, card, i),
-      })),
-    [breakpoint, layout],
-  );
-
-  // Shrink the composition (via a single ancestor transform, not by
-  // recomputing every card's pixel offsets) whenever the available column is
-  // narrower than the layout's native container width, so cards never get
-  // clipped on tighter viewports.
+  // One-time reveal when the composition scrolls into view — not a
+  // hover/tap trigger like the previous version had, since Figma now
+  // shows these cards in their final scattered position inline on the
+  // page, not behind an interaction. Reduced motion (or the IO callback
+  // never having a chance to fire, e.g. no IntersectionObserver support)
+  // just shows the resting state immediately rather than leaving cards
+  // stuck invisible.
   useEffect(() => {
+    if (reducedMotion) {
+      // Syncing from the reducedMotion signal, known only after mount —
+      // same pattern (and same justified exception) as PasswordGate's
+      // own sessionStorage read and BeaconComposer's own reduced-motion
+      // branch.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setVisible(true);
+      return;
+    }
     const wrapper = wrapperRef.current;
-    if (!wrapper) return;
-    const update = () => {
-      const available = wrapper.clientWidth;
-      setFitScale(available > 0 ? Math.min(1, available / layout.containerW) : 1);
-    };
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(wrapper);
-    return () => ro.disconnect();
-  }, [layout.containerW]);
-
-  // Hover-driven only: no scroll scrubbing, no sticky pin, no wrapper
-  // height tied to viewport size. That scroll-linked design needed a
-  // large, viewport-proportional scroll distance for the pin to release
-  // into, which only ever paid off in extra scrollable dead space once
-  // the trailing content (the footer) turned out too short to fill it on
-  // anything but a short viewport — no amount of retuning that distance
-  // could avoid it, since the shortfall doesn't depend on how that
-  // distance is sized. Driving the reveal from hover instead removes the
-  // scroll dependency (and the dead space) entirely: this is just a
-  // normal, content-sized block now.
-  const showFinal = reducedMotion || hovered;
+    if (!wrapper || typeof IntersectionObserver === "undefined") {
+      setVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 },
+    );
+    observer.observe(wrapper);
+    return () => observer.disconnect();
+  }, [reducedMotion]);
 
   return (
-    // No overflow-hidden here: the hover hit-zone below deliberately
-    // extends 16px past this element's own box on every side (including
-    // the bottom), and clipping would silently kill the bottom margin of
-    // that hit area.
-    <div ref={wrapperRef} className="flex w-full items-start justify-center pt-6">
-      <div className="relative" style={{ width: layout.containerW, height: layout.containerH }}>
-        {/* Hover-to-preview triggers over the card composition itself plus
-            a 16px margin around it — this element *wraps* the cards
-            (rather than sitting beside them) specifically so hovering a
-            card counts as hovering it too; mouseenter/leave only fire on
-            an ancestor for crossing its own outer boundary, not for
-            moving between children, which is exactly the "leave only
-            when you exit the whole padded area" behavior this needs.
-            Absolutely positioned + inset so the extra 16px is purely a
-            bigger hit area — it doesn't add to this element's layout
-            footprint the way padding would, which is what keeps the gap
-            to the footer below exactly the designed 36px instead of 16px
-            taller than intended. */}
-        <div
-          onMouseEnter={canHover ? () => setHovered(true) : undefined}
-          onMouseLeave={canHover ? () => setHovered(false) : undefined}
-          onClick={!canHover ? () => setHovered((h) => !h) : undefined}
-          onFocus={() => setHovered(true)}
-          onBlur={() => setHovered(false)}
-          role={!canHover ? "button" : undefined}
-          aria-pressed={!canHover ? hovered : undefined}
-          aria-label={!canHover ? "Reveal what kind of designer I am" : undefined}
-          tabIndex={0}
-          className="absolute -inset-4 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-text-primary"
-        >
-          <div
-            className="absolute"
-            style={{
-              inset: 16,
-              transform: fitScale < 1 ? `scale(${fitScale})` : undefined,
-              transformOrigin: "top center",
-            }}
-          >
-            {CARDS.map((card, i) => {
-              const { stack, final } = positions[i];
-              const { x, y } = showFinal ? final : stack;
-              return (
-                <Card
-                  key={card.id}
-                  card={card}
-                  layout={layout}
-                  style={{
-                    transform: `translate3d(${x}px, ${y}px, 0)`,
-                    transition: reducedMotion ? undefined : CARD_TRANSITION,
-                    zIndex: 8 - card.stackIndex,
-                  }}
-                />
-              );
-            })}
-          </div>
-        </div>
+    // overflow-hidden + flex justify-center: the 655px composition fits
+    // Home's own 688px column with room to spare, so nothing clips at
+    // that width — but on any narrower viewport (this never rescales
+    // down the way the old hover version did), the fan is wider than its
+    // column and the outer cards crop at the edges by design, matching
+    // the interfacecraft.dev reference this was modeled on — its own
+    // card composition is a fixed size that overflows and crops on
+    // narrow viewports rather than shrinking to stay fully visible.
+    // html/body's own overflow-x: hidden (globals.css) is what keeps
+    // that from ever becoming page-level horizontal scroll.
+    <div ref={wrapperRef} className="flex w-full items-start justify-center overflow-hidden pt-6">
+      <div className="relative shrink-0" style={{ width: CONTAINER_W, height: CONTAINER_H }}>
+        {CARDS.map((card, i) => (
+          <Card key={card.id} card={card} visible={visible} reducedMotion={reducedMotion} delay={i * STAGGER_MS} />
+        ))}
       </div>
     </div>
   );
@@ -265,25 +123,52 @@ export default function AboutCardStack() {
 
 function Card({
   card,
-  layout,
-  style,
+  visible,
+  reducedMotion,
+  delay,
 }: {
   card: CardData;
-  layout: { cardW: number; cardH: number };
-  style: React.CSSProperties;
+  visible: boolean;
+  reducedMotion: boolean;
+  delay: number;
 }) {
+  const scale = visible ? 1 : 0.92;
   return (
     <div
-      className="absolute left-0 top-0 overflow-hidden rounded-lg will-change-transform"
-      style={{ width: layout.cardW, height: layout.cardH, backgroundColor: card.color, ...style }}
+      className="absolute left-0 top-0 flex flex-col justify-between overflow-hidden rounded-m p-2 will-change-transform"
+      style={{
+        width: CARD_W,
+        height: CARD_H,
+        backgroundColor: card.color,
+        opacity: reducedMotion ? 1 : visible ? 1 : 0,
+        transform: `translate3d(${card.x}px, ${card.y}px, 0) rotate(${card.rotate}deg) scale(${reducedMotion ? 1 : scale})`,
+        transition: reducedMotion ? undefined : `opacity 500ms ${EASE_OUT} ${delay}ms, transform 500ms ${EASE_OUT} ${delay}ms`,
+      }}
     >
-      <div className="absolute left-3 top-3 size-1 rounded-full bg-[#0d0d0d]" />
-      <div className="absolute left-[66px] top-3 h-1 w-7 rounded-full bg-[#0d0d0d]" />
-      <div className="absolute bottom-3 left-3 font-serif text-[16px] leading-[18px] tracking-[-0.128px] text-[#0d0d0d]">
-        {card.lines.map((line, i) => (
-          <p key={i}>{line}</p>
-        ))}
+      {/* Figma's own export for this area came back as an empty div —
+          it renders a hand-drawn pattern in the design file that the
+          MCP tool can't translate to markup, but the actual intent is a
+          looping video here instead of a static pattern (confirmed, and
+          supplied per-card). object-cover on a 4:3 source inside this
+          wide, short 130x60 box crops to a horizontal center band — not
+          a bug, just what covering a mismatched aspect ratio does; the
+          `video` field staying optional is what lets a card render as
+          just its flat color if one's ever missing rather than breaking. */}
+      <div className="relative h-[60px] w-full shrink-0 overflow-hidden">
+        {card.video && (
+          <video
+            src={`/videos/about-cards/${card.video}`}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="size-full object-cover"
+          />
+        )}
       </div>
+      <p className="w-full font-serif text-[16px] leading-[18px] tracking-[-0.128px]" style={{ color: card.textColor }}>
+        {card.text}
+      </p>
     </div>
   );
 }

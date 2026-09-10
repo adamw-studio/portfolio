@@ -131,6 +131,13 @@ export default function Home() {
 
           <SelectedWorks />
 
+          {/* Figma 19:7737 — same short 40px centered rule as the one
+              above Selected works (15:7412), reused here between Selected
+              works and Experience. */}
+          <div className="flex w-full justify-center">
+            <div aria-hidden className="h-px w-10 bg-border-subtle" />
+          </div>
+
           <Experience />
         </div>
       </div>

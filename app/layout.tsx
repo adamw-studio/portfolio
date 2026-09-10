@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import localFont from "next/font/local";
+import { PageLoading } from "@/components/PageLoading";
 import "./globals.css";
 
 // Self-hosted (not next/font/google): this dev environment's sandboxed
@@ -27,7 +28,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${GeistSans.variable} ${GeistMono.variable} ${gentiumBasic.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <PageLoading>{children}</PageLoading>
+      </body>
     </html>
   );
 }

@@ -237,3 +237,50 @@ body {
 .composer-caret {
   animation: composer-caret-blink 1.1s ease-in-out infinite;
 }
+
+/* PageLoading's triangle (Figma 21:8014/21:8280) — the "A" of "Hey, I'm
+   Adam" on the splash screen, jumping up and spinning 180deg before
+   settling back down, on a 2s infinite loop matching Figma's own motion
+   export exactly (times converted straight to percentages: 0.3963 ->
+   39.63%, 0.4333 -> 43.33%, 0.5038 -> 50.38%). Two separate animations
+   (see PageLoading.tsx for why they're split across nested elements
+   rather than combined) so each axis keeps its own Figma-specified
+   easing: the vertical bounce is linear throughout, the spin uses a
+   symmetric cubic-bezier that front- and back-loads evenly. Both hold at
+   their final keyframe through 100% and then hard-cut back to the start
+   for the next loop — an intentional snap-reset per Figma's own repeat
+   behavior, not a bug.
+
+   No prefers-reduced-motion guard needed here, the way most animations in
+   this file get one: PageLoading only ever renders this markup at all
+   once it's already decided reduced motion is off (it skips the splash
+   entirely otherwise — see PageLoading.tsx), so gating it a second time
+   at the CSS layer would be redundant, not extra-safe (same reasoning as
+   composer-caret-blink above). */
+@keyframes page-loading-bounce {
+  0% {
+    transform: translateY(0);
+  }
+  39.63% {
+    transform: translateY(-31px);
+  }
+  50.38%,
+  100% {
+    transform: translateY(3px);
+  }
+}
+@keyframes page-loading-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  43.33%,
+  100% {
+    transform: rotate(-180deg);
+  }
+}
+.page-loading-bounce {
+  animation: page-loading-bounce 2s linear infinite;
+}
+.page-loading-spin {
+  animation: page-loading-spin 2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}

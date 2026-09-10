@@ -195,21 +195,3 @@ body {
 .page-dots.dots-canvas-active::before {
   display: none;
 }
-
-/* Divider.tsx's dashed rule, drawn as a repeating gradient instead of
-   border-dashed — a real border-style can't set an exact dash/gap
-   length, only pick from the browser's own fixed dash patterns, so
-   there's no way to widen just the gap from there. 4px dash / 12px gap,
-   wider than Figma's literal "4 4" export, to read as a deliberate
-   sparse rule next to the page's own 24px dot-grid rather than a dense
-   line beside a sparse one. */
-.divider-dashed {
-  height: 1px;
-  background-image: repeating-linear-gradient(
-    to right,
-    var(--color-border-subtle) 0,
-    var(--color-border-subtle) 4px,
-    transparent 4px,
-    transparent 16px
-  );
-}

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { heading } from "@/components/typography";
 import { themedIcon } from "@/components/themedIcon";
 import { BeaconComposer } from "@/components/BeaconComposer";
+import { playArrowTap } from "@/components/sound/arrowTap";
 
 type Project = {
   /** Also doubles as the /work/[id] case study route slug. */
@@ -77,7 +78,10 @@ export default function SelectedWorks() {
             type="button"
             aria-label="Previous work"
             disabled={!canGoPrev}
-            onClick={() => setIndex((i) => Math.max(0, i - 1))}
+            onClick={() => {
+              setIndex((i) => Math.max(0, i - 1));
+              playArrowTap();
+            }}
             className="flex size-6 items-center justify-center rounded-full bg-bg-tertiary disabled:cursor-not-allowed disabled:opacity-40"
           >
             <Image src="/images/home/arrow-left.svg" alt="" width={16} height={16} className={themedIcon} />
@@ -86,7 +90,10 @@ export default function SelectedWorks() {
             type="button"
             aria-label="Next work"
             disabled={!canGoNext}
-            onClick={() => setIndex((i) => Math.min(PROJECTS.length - 1, i + 1))}
+            onClick={() => {
+              setIndex((i) => Math.min(PROJECTS.length - 1, i + 1));
+              playArrowTap();
+            }}
             className="flex size-6 items-center justify-center rounded-full bg-bg-tertiary disabled:cursor-not-allowed disabled:opacity-40"
           >
             <Image src="/images/home/arrow-right.svg" alt="" width={16} height={16} className={themedIcon} />

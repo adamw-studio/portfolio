@@ -60,8 +60,6 @@ const PROJECTS: Project[] = [
 export default function SelectedWorks() {
   const [index, setIndex] = useState(0);
   const project = PROJECTS[index];
-  const canGoPrev = index > 0;
-  const canGoNext = index < PROJECTS.length - 1;
 
   return (
     <div className="flex flex-col gap-4">
@@ -71,30 +69,36 @@ export default function SelectedWorks() {
             (a real border + 4px padding + 4px gap between them) rather
             than sitting as two independent freestanding circles with a
             gap and their own insetBorder each. Each inner circle keeps
-            its own bg-tertiary fill and disabled state — only the border
-            moved from per-button to the shared wrapper. */}
+            its own bg-tertiary fill — only the border moved from
+            per-button to the shared wrapper.
+
+            Loops rather than disabling at the ends (prev on the first
+            project wraps to the last, next on the last wraps to the
+            first) — the modulo handles both directions, including JS's
+            own negative-mod quirk (-1 % 4 is -1, not 3) via the
+            + PROJECTS.length before the final % . Neither arrow is ever
+            disabled now, so there's no dead-looking button at either end
+            of the set. */}
         <div className="flex items-center gap-1 rounded-full border border-border-subtle p-1">
           <button
             type="button"
             aria-label="Previous work"
-            disabled={!canGoPrev}
             onClick={() => {
-              setIndex((i) => Math.max(0, i - 1));
+              setIndex((i) => (i - 1 + PROJECTS.length) % PROJECTS.length);
               playArrowTap();
             }}
-            className="flex size-6 items-center justify-center rounded-full bg-bg-tertiary disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex size-6 items-center justify-center rounded-full bg-bg-tertiary"
           >
             <Image src="/images/home/arrow-left.svg" alt="" width={16} height={16} className={themedIcon} />
           </button>
           <button
             type="button"
             aria-label="Next work"
-            disabled={!canGoNext}
             onClick={() => {
-              setIndex((i) => Math.min(PROJECTS.length - 1, i + 1));
+              setIndex((i) => (i + 1) % PROJECTS.length);
               playArrowTap();
             }}
-            className="flex size-6 items-center justify-center rounded-full bg-bg-tertiary disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex size-6 items-center justify-center rounded-full bg-bg-tertiary"
           >
             <Image src="/images/home/arrow-right.svg" alt="" width={16} height={16} className={themedIcon} />
           </button>

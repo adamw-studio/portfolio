@@ -3,8 +3,7 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { themedIcon } from "@/components/themedIcon";
-import { insetBorder } from "@/components/typography";
+import { BackButton } from "@/components/BackButton";
 
 // Figma 304:9017 ("locked"), 304:12070 ("Password Input - Active", typed
 // but not yet wrong) and 304:12160 ("Password Input - Error").
@@ -63,16 +62,9 @@ export function PasswordGate({
 
   return (
     <div className="relative mx-auto flex w-full max-w-[688px] flex-1 flex-col pb-[60px] pt-[140px]">
-      {/* Same back-button treatment as every case study page (see
-          BeaconCaseStudy) — the gate replaces the case study's content,
-          not its chrome. */}
-      <Link
-        href="/"
-        aria-label="Back to home"
-        className={`absolute left-0 top-[30px] flex size-6 items-center justify-center rounded-full p-1 ${insetBorder}`}
-      >
-        <Image src="/images/home/work-back-arrow.svg" alt="" width={16} height={16} className={themedIcon} />
-      </Link>
+      {/* Same back button as every case study page (see BackButton) — the
+          gate replaces the case study's content, not its chrome. */}
+      <BackButton />
 
       <div className="flex flex-1 flex-col items-center justify-center">
         <div className="flex w-full max-w-[336px] flex-col items-center gap-4">

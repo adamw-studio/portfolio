@@ -1,12 +1,10 @@
 import Image from "next/image";
-import Link from "next/link";
 import HomeFooter from "@/components/HomeFooter";
 import { Divider } from "@/components/Divider";
 import { Tag } from "@/components/Tag";
 import { CaseStudyImagePlaceholder } from "@/components/CaseStudyImagePlaceholder";
 import { CaseStudyImageCarousel } from "@/components/CaseStudyImageCarousel";
-import { themedIcon } from "@/components/themedIcon";
-import { insetBorder } from "@/components/typography";
+import { BackButton } from "@/components/BackButton";
 
 // The actual case-study content, split out from BeaconCaseStudy.tsx so it
 // can be next/dynamic-imported with ssr:false there. Beacon is
@@ -176,13 +174,7 @@ export default function BeaconCaseStudyBody() {
           doesn't add any extra height of its own — its Figma position
           (y:30) lines up with the fixed nav pill's own vertical center. */}
       <div className="relative mx-auto w-full max-w-[688px] pb-[60px] pt-[140px]">
-        <Link
-          href="/"
-          aria-label="Back to home"
-          className={`absolute left-0 top-[30px] flex size-6 items-center justify-center rounded-full p-1 ${insetBorder}`}
-        >
-          <Image src="/images/home/work-back-arrow.svg" alt="" width={16} height={16} className={themedIcon} />
-        </Link>
+        <BackButton />
 
         <div className="flex flex-col gap-12">
           {/* Small 248x147 hero thumbnail — the same backdrop+inset-screen

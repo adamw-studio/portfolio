@@ -1,13 +1,11 @@
 import Image from "next/image";
-import Link from "next/link";
 import Nav from "@/components/Nav";
 import HomeFooter from "@/components/HomeFooter";
 import { Divider } from "@/components/Divider";
 import { CaseStudyImageCarousel } from "@/components/CaseStudyImageCarousel";
 import { YouTubeFacade } from "@/components/YouTubeFacade";
 import { ThemeProvider } from "@/components/ThemeContext";
-import { themedIcon } from "@/components/themedIcon";
-import { insetBorder } from "@/components/typography";
+import { BackButton } from "@/components/BackButton";
 
 // Figma 288:7846 ("Symphony of Disorder") — same page shell and prose
 // tokens as BeaconCaseStudy/RoboticsCaseStudy (small hero thumbnail,
@@ -93,13 +91,7 @@ export default function DocumentaryCaseStudy() {
           doesn't add any extra height of its own — its Figma position
           (y:30) lines up with the fixed nav pill's own vertical center. */}
       <div className="relative mx-auto w-full max-w-[688px] pb-[60px] pt-[140px]">
-        <Link
-          href="/"
-          aria-label="Back to home"
-          className={`absolute left-0 top-[30px] flex size-6 items-center justify-center rounded-full p-1 ${insetBorder}`}
-        >
-          <Image src="/images/home/work-back-arrow.svg" alt="" width={16} height={16} className={themedIcon} />
-        </Link>
+        <BackButton />
 
         <div className="flex flex-col gap-12">
           {/* Small 248x147 hero thumbnail, same treatment as the other two

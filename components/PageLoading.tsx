@@ -5,9 +5,11 @@ import { useEffect, useState, type ReactNode } from "react";
 const SESSION_KEY = "aw-intro-seen";
 // One 2s cycle (matching globals.css's page-loading-bounce/page-loading-spin
 // exactly) reads as a flash, not an animation — gone before it's actually
-// registered. Three full loops gives it enough time to actually be seen
-// before the site reveals.
-const LOOP_COUNT = 3;
+// registered; three still felt too quick. 8 full loops lands closest to
+// the requested ~15s while still landing exactly on a loop boundary — a
+// mid-cycle cutoff (e.g. a bare 15000ms, 7.5 loops) would reveal the site
+// right as the triangle is mid-flight instead of settled.
+const LOOP_COUNT = 8;
 const LOOP_MS = 2000 * LOOP_COUNT;
 
 /**

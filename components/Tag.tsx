@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { insetBorder } from "@/components/typography";
 import { ICON_DURATION, EASE_POP, MOTION_REDUCE } from "@/components/motion/tokens";
 import { playPaperRustle } from "@/components/sound/paperRustle";
@@ -92,8 +93,31 @@ import { playPaperRustle } from "@/components/sound/paperRustle";
  * rather than feedback; a mouse hovering one tag at a time doesn't have
  * that problem. This makes the file a client component, the one exception
  * to every other hover effect here being pure CSS.
+ *
+ * Touch has no hover at all, so on a touch device this entire effect
+ * used to be permanently unreachable. canHover mirrors the
+ * matchMedia("(hover: hover) and (pointer: fine)") gate DotFieldCanvas.tsx
+ * already uses to tell a real pointer from a touchscreen; when it's
+ * false, tapping the pill toggles a `tapped` boolean instead (mirroring
+ * the CSS-hover/focus timing/easing exactly via a third
+ * group-data-[tapped=true]: variant alongside every existing
+ * group-hover:/group-focus-visible: pair, rather than a separate JS
+ * transition) and fires the same rustle a hover would have. It's a
+ * toggle, not a hold, so a second tap — or tapping another tag, which
+ * carries its own independent tapped state — puts it back to rest.
  */
 export function Tag({ label, color }: { label: string; color?: string }) {
+  const [canHover, setCanHover] = useState(true);
+  const [tapped, setTapped] = useState(false);
+
+  useEffect(() => {
+    // Reading an external signal (the device's own hover capability) once
+    // on mount, not syncing from props/state — same pattern (and same
+    // justified exception) as AboutCardStack's own reduced-motion read.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCanHover(window.matchMedia("(hover: hover) and (pointer: fine)").matches);
+  }, []);
+
   // Figma gives the hover icon's own position (calc(12.5%+25px), 993px)
   // and the pill's (calc(12.5%+17px), 1009px) rather than an offset — the
   // -9.13deg resting rotation means the two aren't directly comparable
@@ -103,18 +127,28 @@ export function Tag({ label, color }: { label: string; color?: string }) {
   // Working back from both exports to the same unrotated-wrapper space
   // gives ~0px horizontal and -20px vertical, not the eyeballed
   // 3px/-18px this shipped with.
-  const hoverClasses = "group-hover:translate-y-[-20px] group-focus-visible:translate-y-[-20px]";
+  const hoverClasses =
+    "group-hover:translate-y-[-20px] group-focus-visible:translate-y-[-20px] group-data-[tapped=true]:translate-y-[-20px]";
   return (
     <div
       tabIndex={0}
+      data-tapped={tapped}
       onMouseEnter={playPaperRustle}
-      className={`group relative z-0 flex items-center overflow-hidden rounded-xs px-1.5 py-0.5 backdrop-blur-sm transition-colors ${ICON_DURATION} ${MOTION_REDUCE} hover:z-50 hover:overflow-visible hover:bg-bg-tertiary focus-visible:z-50 focus-visible:overflow-visible focus-visible:bg-bg-tertiary`}
+      onClick={
+        !canHover
+          ? () => {
+              setTapped((t) => !t);
+              playPaperRustle();
+            }
+          : undefined
+      }
+      className={`group relative z-0 flex items-center overflow-hidden rounded-xs px-1.5 py-0.5 backdrop-blur-sm transition-colors ${ICON_DURATION} ${MOTION_REDUCE} hover:z-50 hover:overflow-visible hover:bg-bg-tertiary focus-visible:z-50 focus-visible:overflow-visible focus-visible:bg-bg-tertiary data-[tapped=true]:z-50 data-[tapped=true]:overflow-visible data-[tapped=true]:bg-bg-tertiary`}
     >
       <div
         className={`absolute left-[5px] top-[2px] flex h-[42.279px] w-[35.65px] translate-x-0 translate-y-0 items-center justify-center transition-transform ${ICON_DURATION} ${EASE_POP} ${MOTION_REDUCE} ${hoverClasses}`}
       >
         <div
-          className={`rotate-[-9.13deg] transition-transform ${ICON_DURATION} ${EASE_POP} ${MOTION_REDUCE} group-hover:rotate-0 group-focus-visible:rotate-0`}
+          className={`rotate-[-9.13deg] transition-transform ${ICON_DURATION} ${EASE_POP} ${MOTION_REDUCE} group-hover:rotate-0 group-focus-visible:rotate-0 group-data-[tapped=true]:rotate-0`}
         >
           <div
             className="relative h-[38px] w-[30px] overflow-hidden rounded-[4px]"
@@ -136,7 +170,7 @@ export function Tag({ label, color }: { label: string; color?: string }) {
       </span>
       <div
         aria-hidden
-        className={`pointer-events-none absolute inset-0 rounded-xs opacity-100 transition-opacity ${ICON_DURATION} ${MOTION_REDUCE} group-hover:opacity-0 group-focus-visible:opacity-0 ${insetBorder}`}
+        className={`pointer-events-none absolute inset-0 rounded-xs opacity-100 transition-opacity ${ICON_DURATION} ${MOTION_REDUCE} group-hover:opacity-0 group-focus-visible:opacity-0 group-data-[tapped=true]:opacity-0 ${insetBorder}`}
       />
     </div>
   );

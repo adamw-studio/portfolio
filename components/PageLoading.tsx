@@ -6,13 +6,20 @@ const SESSION_KEY = "aw-intro-seen";
 // One cycle (matching globals.css's page-loading-bounce/page-loading-spin
 // exactly — re-fetched from Figma with a richer, slightly longer motion
 // export since this was first built: 2.503s, not a flat 2s) read as a
-// flash on its own. 6 full loops (~15.02s) lands closest to the
-// requested ~15s while still landing exactly on a loop boundary — a
-// mid-cycle cutoff would reveal the site right as the triangle is
-// mid-flight instead of settled.
+// flash on its own. 6 full loops lands closest to the requested ~15s.
 const LOOP_DURATION_MS = 2503;
 const LOOP_COUNT = 6;
-const LOOP_MS = LOOP_DURATION_MS * LOOP_COUNT;
+// Landing the reveal exactly at N*LOOP_DURATION_MS is the single worst
+// moment to cut to — that instant *is* the triangle's held, upside-down
+// "settled" pose (each cycle spends its final ~7% flat there per
+// globals.css), one tick before it hard-snaps back to upright to start
+// the next loop. Ending there is exactly why this kept reading as
+// unfinished: the reveal always landed mid-pose, never on the clean
+// reset. RESET_BUFFER_MS pushes the cutoff just past that snap instead,
+// so the last thing visible before the site appears is the triangle back
+// at its own starting position, not stuck upside-down.
+const RESET_BUFFER_MS = 80;
+const LOOP_MS = LOOP_DURATION_MS * LOOP_COUNT + RESET_BUFFER_MS;
 
 /**
  * Full-screen splash shown once per browser session before the site

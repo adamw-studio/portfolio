@@ -49,13 +49,25 @@ const CARDS: CardData[] = [
 const CONTAINER_W = 655;
 const CONTAINER_H = 199;
 
+// Where a selected card lands: the container's own center, minus half the
+// card's own footprint — i.e. every card converges on the same spot when
+// picked, rather than just growing from its own scattered position (which
+// would push cards near the container's edges — cards 1 and 5 both sit
+// within 10px of it — mostly off past the edge instead of into view).
+const SELECTED_X = CONTAINER_W / 2 - CARD_W / 2;
+const SELECTED_Y = CONTAINER_H / 2 - CARD_H / 2;
+const SELECTED_SCALE = 1.5;
+const DIM_OPACITY = 0.55;
+
 const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)"; // this project's own strong-ease-out (see components/motion/tokens.ts)
 const STAGGER_MS = 60;
+const SELECT_MS = 350;
 
 export default function AboutCardStack() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -100,21 +112,59 @@ export default function AboutCardStack() {
     return () => observer.disconnect();
   }, [reducedMotion]);
 
+  // Click/tap a card to bring it forward and highlight it (interfacecraft.dev
+  // itself turned out not to actually have this on closer testing — real
+  // clicks on its cards did nothing there, the "one big card" look is just
+  // its resting composition — but it's the interaction that was asked for,
+  // built fresh rather than copied from a behavior that doesn't exist to
+  // copy). Clicking the selected card again, clicking outside the
+  // composition, or Escape all deselect — same outside-click + Escape
+  // pattern Nav.tsx already uses for its own dismiss.
+  useEffect(() => {
+    if (!selectedId) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) setSelectedId(null);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedId(null);
+    };
+    window.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [selectedId]);
+
   return (
-    // overflow-hidden + flex justify-center: the 655px composition fits
-    // Home's own 688px column with room to spare, so nothing clips at
-    // that width — but on any narrower viewport (this never rescales
-    // down the way the old hover version did), the fan is wider than its
-    // column and the outer cards crop at the edges by design, matching
-    // the interfacecraft.dev reference this was modeled on — its own
-    // card composition is a fixed size that overflows and crops on
-    // narrow viewports rather than shrinking to stay fully visible.
-    // html/body's own overflow-x: hidden (globals.css) is what keeps
-    // that from ever becoming page-level horizontal scroll.
-    <div ref={wrapperRef} className="flex w-full items-start justify-center overflow-hidden pt-6">
+    // overflow-hidden normally — the 655px composition fits Home's own
+    // 688px column with room to spare, so nothing clips at that width,
+    // but on narrower viewports (this never rescales down the way the old
+    // hover version did) the fan is wider than its column and the outer
+    // cards crop at the edges by design, matching the interfacecraft.dev
+    // reference this was modeled on. Switches to overflow-visible while a
+    // card is selected: at 1.5x, a selected card's own box (195x243) is
+    // taller than this container (199px), and centering it means that
+    // excess extends symmetrically above/below the container's normal
+    // bounds — clipping it there would cut off the exact card this is
+    // trying to showcase. html/body's own overflow-x: hidden (globals.css)
+    // still backstops horizontal page scroll either way.
+    <div
+      ref={wrapperRef}
+      className={`flex w-full items-start justify-center pt-6 ${selectedId ? "overflow-visible" : "overflow-hidden"}`}
+    >
       <div className="relative shrink-0" style={{ width: CONTAINER_W, height: CONTAINER_H }}>
         {CARDS.map((card, i) => (
-          <Card key={card.id} card={card} visible={visible} reducedMotion={reducedMotion} delay={i * STAGGER_MS} />
+          <Card
+            key={card.id}
+            card={card}
+            visible={visible}
+            reducedMotion={reducedMotion}
+            delay={i * STAGGER_MS}
+            selected={selectedId === card.id}
+            dimmed={selectedId !== null && selectedId !== card.id}
+            onToggle={() => setSelectedId((current) => (current === card.id ? null : card.id))}
+          />
         ))}
       </div>
     </div>
@@ -126,23 +176,48 @@ function Card({
   visible,
   reducedMotion,
   delay,
+  selected,
+  dimmed,
+  onToggle,
 }: {
   card: CardData;
   visible: boolean;
   reducedMotion: boolean;
   delay: number;
+  selected: boolean;
+  dimmed: boolean;
+  onToggle: () => void;
 }) {
-  const scale = visible ? 1 : 0.92;
+  const x = selected ? SELECTED_X : card.x;
+  const y = selected ? SELECTED_Y : card.y;
+  const rotate = selected ? 0 : card.rotate; // straightens out of its tilt when picked — same "this one's in focus" cue Tag.tsx's own hover state already uses
+  const entranceScale = visible ? 1 : 0.92;
+  const scale = selected ? SELECTED_SCALE : entranceScale;
+
   return (
     <div
-      className="absolute left-0 top-0 flex flex-col justify-between overflow-hidden rounded-m p-2 will-change-transform"
+      role="button"
+      tabIndex={0}
+      aria-pressed={selected}
+      aria-label={`${card.text}${selected ? " (selected)" : ""}`}
+      onClick={onToggle}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onToggle();
+        }
+      }}
+      className="absolute left-0 top-0 flex cursor-pointer flex-col justify-between overflow-hidden rounded-m p-2 outline-none will-change-transform focus-visible:ring-2 focus-visible:ring-text-primary"
       style={{
         width: CARD_W,
         height: CARD_H,
         backgroundColor: card.color,
-        opacity: reducedMotion ? 1 : visible ? 1 : 0,
-        transform: `translate3d(${card.x}px, ${card.y}px, 0) rotate(${card.rotate}deg) scale(${reducedMotion ? 1 : scale})`,
-        transition: reducedMotion ? undefined : `opacity 500ms ${EASE_OUT} ${delay}ms, transform 500ms ${EASE_OUT} ${delay}ms`,
+        opacity: reducedMotion ? (dimmed ? DIM_OPACITY : 1) : visible ? (dimmed ? DIM_OPACITY : 1) : 0,
+        zIndex: selected ? 10 : 1,
+        transform: `translate3d(${x}px, ${y}px, 0) rotate(${rotate}deg) scale(${reducedMotion ? (selected ? SELECTED_SCALE : 1) : scale})`,
+        transition: reducedMotion
+          ? undefined
+          : `opacity ${SELECT_MS}ms ${EASE_OUT} ${delay}ms, transform ${selected || dimmed ? SELECT_MS : 500}ms ${EASE_OUT} ${selected || dimmed ? 0 : delay}ms`,
       }}
     >
       {/* Figma's own export for this area came back as an empty div —

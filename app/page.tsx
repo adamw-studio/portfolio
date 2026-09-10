@@ -135,7 +135,20 @@ export default function Home() {
         </div>
       </div>
 
-      <HomeFooter />
+      {/* HomeFooter renders as its own full-bleed <footer> outside this
+          column (it does its own 688px centering + horizontal page
+          padding, since Robotics/Beacon/Documentary also render it
+          directly with no such column around it) — so unlike Experience
+          and everything above it, it gets none of the gap-[100px] flex
+          spacing for free. Figma's own footer content (15:7443) is a
+          full member of that same 100px-gapped column, so this margin
+          reproduces that gap by hand instead, without changing
+          HomeFooter itself and risking the spacing every other page
+          using it already has tuned around its current no-top-margin
+          behavior. */}
+      <div className="mt-[100px]">
+        <HomeFooter />
+      </div>
     </ThemeProvider>
   );
 }

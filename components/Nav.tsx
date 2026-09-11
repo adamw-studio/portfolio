@@ -9,38 +9,33 @@ import { themedIcon } from "@/components/themedIcon";
 import { EASE_OUT, MOTION_REDUCE } from "@/components/motion/tokens";
 
 // Figma 41:10445 — back to a top-pinned nav (the bottom-center pill this
-// briefly shipped as is retired), and redesigned: three route segments
-// now (Home/Works/Play, not just Home/Play). "Contact" is no longer a
-// segment inside this pill; "Get in touch" is its own separate pill
-// entirely (Figma's own 96px gap between the two), explicitly reserved
-// to become a real dropdown with options later — for now it keeps the
-// old contact-reveal-panel behavior (the closest existing functionality)
+// briefly shipped as is retired). "Contact" is no longer a segment
+// inside this pill; "Get in touch" is its own separate pill entirely
+// (Figma's own 96px gap between the two), explicitly reserved to become
+// a real dropdown with options later — for now it keeps the old
+// contact-reveal-panel behavior (the closest existing functionality)
 // rather than shipping inert.
 //
-// "Works" jumps to the Home page's own "Selected works" section
-// (#selected-works, SelectedWorks.tsx) rather than navigating to the
-// separate /work case-studies index — a real product decision, not a
-// Figma-driven one (Figma's own node has no href spec at all). A plain
-// hash href handles both cases Next.js's own Link already knows how to:
-// clicking it while already on "/" just scrolls; clicking it from any
-// other page (Playground, a case study) navigates to "/" and then
-// scrolls once it lands. `activeMatch` is separate from `href` for this
-// one link specifically — it should still read as active on an actual
-// /work/* case-study page (those routes still exist, still linked from
-// inside that same section), which a hash href alone can't express since
-// `usePathname()` never includes the fragment.
+// Two segments now (Home/Play), not three — Figma 51:10930's own export
+// of this nav drops "Works" outright, confirmed live rather than assumed
+// (it could have just been an artifact of that particular frame). A
+// case-study page still reads as "on Works" via its own back-link, not
+// this nav; SelectedWorks.tsx's own #selected-works id is left in place
+// as a legitimate target for that and any other future deep link, even
+// with no nav entry pointing at it anymore.
 const links: { href: string; label: string; activeMatch: string }[] = [
   { href: "/", label: "Home", activeMatch: "/" },
-  { href: "/#selected-works", label: "Works", activeMatch: "/work" },
   { href: "/playground", label: "Play", activeMatch: "/playground" },
 ];
 
 const CONTACT_EMAIL = "adamweber54@gmail.com";
 
-// "Works" should still read as active from any case-study page
-// (/work/beacon etc.), not just the exact /work index — the only entry
-// here with real sub-routes. Home stays an exact match so it doesn't
-// light up for every other route once it's the array's own "/" prefix.
+// Generic prefix match, kept even though neither current entry actually
+// needs the sub-route case now that "Works" is gone (it used to be the
+// one with real sub-routes, /work/beacon etc.) — Home stays an exact
+// match so it doesn't light up for every other route once it's the
+// array's own "/" prefix, and this still generalizes correctly for
+// whatever nav entries come next.
 function isActiveHref(pathname: string, activeMatch: string) {
   if (activeMatch === "/") return pathname === "/";
   return pathname === activeMatch || pathname.startsWith(`${activeMatch}/`);

@@ -8,89 +8,56 @@ import { useTheme } from "@/components/ThemeContext";
 import { themedIcon } from "@/components/themedIcon";
 import { EASE_OUT, MOTION_REDUCE } from "@/components/motion/tokens";
 
-// Figma 33:9345 ("Segmented Control", 276x36) — one persistent bottom-
-// center bar, not the separate top-left toggle + bottom "Menu" trigger/
-// panel pair this shipped with one revision ago. Three equal-width route
-// segments (Home/Play/Contact) plus a two-icon theme segment, all always
-// visible — no open/closed state for navigation at all anymore, only
-// Contact (still not a real route, see below) toggles anything.
+// Figma 41:10445 — back to a top-pinned nav (the bottom-center pill this
+// briefly shipped as is retired), and redesigned: three route segments
+// now (Home/Works/Play, not just Home/Play) — "Works" points at the
+// existing /work case-studies index, which had no nav entry at all
+// before. "Contact" is no longer a segment inside this pill; "Get in
+// touch" is its own separate pill entirely (Figma's own 96px gap between
+// the two), explicitly reserved to become a real dropdown with options
+// later — for now it keeps the old contact-reveal-panel behavior (the
+// closest existing functionality) rather than shipping inert.
 const links = [
   { href: "/", label: "Home" },
+  { href: "/work", label: "Works" },
   { href: "/playground", label: "Play" },
 ];
 
 const CONTACT_EMAIL = "adamweber54@gmail.com";
 
-// Same pill treatment the old top nav used (bg-default/80 + heavy blur)
-// for the Contact-reveal panel above the bar, which has no Figma spec of
-// its own to match.
-const pill = "bg-bg-default/80 backdrop-blur-[23px]";
-
-// The segmented-control bar itself is genuinely solid, not translucent —
-// confirmed on a later re-fetch of this control (33:9540) giving an
-// explicit bg-bg-default (this site's own ordinary opaque page-background
-// token, not a percentage of it). No backdrop-blur here despite Figma's
-// own export listing a small 5px value: blur only has anything to reveal
-// through an element that's *not* fully opaque, and this one is — a
-// redundant backdrop-filter sitting on an already-solid background turned
-// out to be the actual remaining cause of live-reported text bleeding
-// through the bar (confirmed only after ruling out every other
-// explanation: opacity percentage, then overflow-clip, neither of which
-// fully closed the gap on their own), most likely fighting the .glass-
-// border child's own layered background in some real browsers. Every
-// earlier attempt to fix that bleed-through (80% opacity, then 95%) was
-// really just approaching this same answer from the wrong direction — a
-// persistent bottom nav sitting permanently over scrolling content should
-// read as solid in the first place, the same way a native app's own tab
-// bar does, not as a frosted floating panel like a dropdown or tooltip.
-const barPill = "bg-bg-default";
-
-// Figma's own Glass effect (Light: -59deg angle, 80% intensity, plus
-// Refraction/Depth/Dispersion/Frost/Splay — Figma's version of Apple's
-// Liquid Glass material, confirmed against its own Inspect panel) sits on
-// the bar itself, not each segment individually. True refraction can't be
-// replicated in CSS — this used to also try approximating the effect's
-// own brightening with two full-bleed blend-mode layers (Figma's own
-// codegen fallback: lighten + color-dodge), dropped after they read as
-// the *whole bar* washing out unpredictably once reported live, not just
-// the intended subtle lift. Blend modes render against whatever's
-// actually behind them — for a fixed element sitting over arbitrary,
-// constantly-scrolling page content, that's never the one static
-// backdrop Figma's own single-composition render was tuned against, so
-// the same two layers that looked right in one test could (and did) blow
-// out over a brighter card or a denser cluster of dots elsewhere on the
-// page. `pill`'s own bg-bg-default/80 + backdrop-blur (below) already
-// does the actual "translucent frosted glass" job reliably, the same way
-// it does for every other floating chrome element on this site — this
-// just adds the one piece that's still a real, predictable CSS technique
-// on top of it: the gradient border (.glass-border, see globals.css),
-// since the directional light *does* produce a genuine gradient along
-// the stroke even without real refraction. Individual segments (the
-// active nav item, the theme-toggle group) layer their own bg-bg-tertiary
-// fill and .glass-border on top of this same shared base.
-
-// The gradient border itself, everywhere it's used — see globals.css for
-// why the punch-out is a real nested element, not this element's own
-// `::after`. `fillClassName` is a plain Tailwind background class
-// (bg-bg-default for the bar, bg-bg-tertiary for the active segments and
-// theme-toggle group) applied directly to that nested element — not a CSS
-// custom property threaded in through an inline style, which is one more
-// layer of "does this browser resolve it the way the spec says" this
-// border has already had trouble with (see .glass-border-fill's own
-// comment). Every other color on this entire site is a plain class for
-// the same reason; there's no good reason for this one piece to be the
-// exception.
-function GlassBorder({ fillClassName }: { fillClassName: string }) {
-  return (
-    <div aria-hidden className="glass-border">
-      <div className={`glass-border-fill ${fillClassName}`} />
-    </div>
-  );
+// "Works" should still read as active from any case-study page
+// (/work/beacon etc.), not just the exact /work index — the only entry
+// here with real sub-routes. Home stays an exact match so it doesn't
+// light up for every other route once it's the array's own "/" prefix.
+function isActiveHref(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-const segmentBase = "relative flex w-[66.667px] items-center justify-center overflow-hidden px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,color] duration-150";
-const segmentActive = "rounded-[20px] bg-bg-tertiary font-medium text-text-primary shadow-[0px_2px_4px_0px_rgba(0,0,0,0.1)]";
-const segmentInactive = "rounded-full font-normal text-text-secondary hover:bg-bg-tertiary hover:text-text-primary";
+// Figma 37:10089 (Nav Item states) — Default carries no fill or border at
+// all (just dim text-subtle); Hover adds bg-tertiary, a shadow, and a
+// border that's a shade MORE visible (border-subtle) than the already-
+// active segment's own (border-disabled) — a deliberate, subtle
+// distinction confirmed against the export's own two states, not a
+// simplification down to one shared "elevated" look.
+const navItemBase =
+  "relative flex w-[66.667px] items-center justify-center gap-[3px] overflow-hidden rounded-[20px] border px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,border-color,box-shadow,color] duration-150";
+const navItemActive = "border-border-disabled bg-bg-tertiary font-medium text-text-primary shadow-[0px_2px_4px_0px_rgba(0,0,0,0.1)]";
+const navItemInactive =
+  "border-transparent font-normal text-text-subtle hover:border-border-subtle hover:bg-bg-tertiary hover:text-text-primary hover:shadow-[0px_2px_4px_0px_rgba(0,0,0,0.1)]";
+
+// The segmented-control bar and the "Get in touch" pill are both
+// genuinely solid (bg-bg-default, this site's own ordinary opaque page
+// background), matching Figma's own export exactly — no backdrop-blur
+// despite the export listing a small 5px value: blur only has anything
+// to reveal through an element that's not fully opaque, and a redundant
+// one sitting on an already-solid background was the confirmed cause of
+// a live-reported text-bleed bug the last time this exact mistake was
+// made (see globals.css's own glass-border history). This export also
+// drops the gradient "glass" border entirely in favor of a plain solid
+// one (border-border-disabled) — simpler, and there's no gradient token
+// on this node to reproduce even if it were wanted.
+const solidPill = "border border-border-disabled bg-bg-default";
 
 export default function Nav() {
   const [showContact, setShowContact] = useState(false);
@@ -121,7 +88,7 @@ export default function Nav() {
   };
 
   // Close the contact reveal on outside click and on Escape — same
-  // baseline dropdown behavior the old nav's own contact toggle had.
+  // baseline dropdown behavior this had as a bottom-nav segment.
   useEffect(() => {
     if (!showContact) return;
     const onPointerDown = (e: PointerEvent) => {
@@ -139,87 +106,41 @@ export default function Nav() {
   }, [showContact]);
 
   return (
-    // Fixed, not sticky, for the same reason as before: nothing here has
-    // spare ancestor height for `sticky` to hold position within, so it
-    // would just scroll away with the first pixel of scroll.
-    <div ref={rootRef} className="fixed bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2">
-      {/* Contact reveal (Figma 324:16254's own email-and-copy row,
-          unchanged) — no design was given for how "Contact" behaves in
-          this new bar, so it keeps the old nav's own answer: it isn't a
-          real route (no /contact page), so tapping it reveals this panel
-          in place instead of navigating. Always rendered so it can
-          animate back out on close, not just vanish — pointer-events-none
-          while closed keeps its reserved (invisible) space from
-          intercepting a click meant for the page behind it. Anchored to
-          the bar's own top edge, where the two meet. */}
-      <div
-        className={`rounded-m border border-border-subtle p-1.5 transition-[opacity,transform] ${EASE_OUT} ${MOTION_REDUCE} ${pill} ${
-          showContact ? "translate-y-0 scale-100 opacity-100 duration-200" : "pointer-events-none translate-y-1 scale-95 opacity-0 duration-150"
-        }`}
-        style={{ transformOrigin: "bottom center" }}
-      >
-        <div className="flex items-center gap-2 whitespace-nowrap">
-          <p className="font-sans text-[14px] leading-6 tracking-[-0.112px] text-text-secondary">{CONTACT_EMAIL}</p>
-          <button
-            type="button"
-            onClick={handleCopy}
-            className="shrink-0 rounded-sm bg-bg-tertiary px-3 py-1 font-sans text-[14px] font-medium leading-4 tracking-[-0.112px] text-text-primary transition-transform duration-100 active:scale-95"
-          >
-            {copied ? "Copied!" : "Copy"}
-          </button>
-        </div>
-      </div>
-
-      {/* overflow-hidden — Figma's own export has overflow-clip on every
-          element in this control, dropped somewhere across the many
-          revisions this bar has been through. Without it, backdrop-blur
-          combined with border-radius is a known gap on some real browsers
-          (confirmed live, not reproducible in this environment's own test
-          browser): the blur/background can leak past the rounded corners
-          instead of clipping cleanly to the pill shape, which is exactly
-          where every bleed-through report concentrated rather than
-          spreading evenly across the middle. */}
-      <div className={`relative flex items-center gap-1 overflow-hidden rounded-full p-1 ${barPill}`}>
-        <GlassBorder fillClassName="bg-bg-default" />
+    // Fixed, not sticky — same reasoning as the bottom-nav version this
+    // replaces: nothing here has spare ancestor height for `sticky` to
+    // hold position within, so it would just scroll away with the first
+    // pixel of scroll. top-6 mirrors the old bottom-6 offset, now at the
+    // opposite edge.
+    //
+    // gap-24 (96px) is Figma's own literal gap between the segmented
+    // control and the separate "Get in touch" pill — but that gap plus
+    // both pills' own width comfortably exceeds a phone viewport, and
+    // Figma gives no mobile variant of this node to follow instead.
+    // inset-x-0 + justify-center + flex-wrap (rather than the previous
+    // left-1/2 -translate-x-1/2 centering, which has no floor and pushed
+    // both pills half off-screen once they no longer fit side by side)
+    // keeps both pills fully on-screen at any width: they sit on one row
+    // with a smaller gap once there's room (sm: 640px+), and wrap onto
+    // their own centered row below that, rather than clipping.
+    <div ref={rootRef} className="fixed inset-x-0 top-6 z-20 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 px-4 sm:gap-x-24">
+      <div className={`relative flex items-center gap-1 overflow-hidden rounded-full p-1 ${solidPill}`}>
         {links.map((link) => {
-          const active = pathname === link.href;
+          const active = isActiveHref(pathname, link.href);
           return (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setShowContact(false)}
-              className={`${segmentBase} ${active ? segmentActive : segmentInactive}`}
-            >
-              {active && <GlassBorder fillClassName="bg-bg-tertiary" />}
+            <Link key={link.href} href={link.href} className={`${navItemBase} ${active ? navItemActive : navItemInactive}`}>
               {link.label}
             </Link>
           );
         })}
-        <button
-          type="button"
-          aria-expanded={showContact}
-          onClick={() => setShowContact((s) => !s)}
-          className={`${segmentBase} ${showContact ? segmentActive : segmentInactive}`}
-        >
-          {showContact && <GlassBorder fillClassName="bg-bg-tertiary" />}
-          Contact
-        </button>
 
-        {/* Theme segment: both icons always visible (not a single button
-            swapping between them) — Figma's own two-state segmented
-            control, matching the three route segments' own look-and-feel
-            rather than reusing the single-icon-button this bar replaced.
-            The *inner* icon's own bg-bg-tertiary marks whichever theme is
-            *current*, not which one tapping would switch to (opposite of
-            the old single-button version's own icon-picking rule, since
-            both options are always on screen here — there's no "next
-            state" to hint at); this *outer* group also gets its own
-            bg-bg-tertiary + glass-border, the same "elevated" treatment
-            as the active nav segment, confirmed on a later re-fetch of
-            this control (33:9540) — an earlier pass had this group with
-            no fill of its own, just the border. */}
-        <div className="relative flex items-center gap-1 overflow-hidden rounded-full bg-bg-tertiary p-0.5">
-          <GlassBorder fillClassName="bg-bg-tertiary" />
+        {/* Theme segment: both icons always visible (Figma's own two-
+            state segmented control), the *inner* icon's own bg-bg-
+            tertiary marking whichever theme is *current* — there's no
+            "next state" to hint at since both options are always on
+            screen. This whole group also gets bg-bg-tertiary + its own
+            border, the same "elevated" treatment as an active nav
+            segment. */}
+        <div className={`relative flex items-center gap-1 overflow-hidden rounded-full border border-border-disabled bg-bg-tertiary p-0.5`}>
           <button
             type="button"
             aria-label="Switch to dark mode"
@@ -238,6 +159,47 @@ export default function Nav() {
           >
             <Image src="/images/home/sun-light.svg" alt="" width={16} height={16} className={themedIcon} />
           </button>
+        </div>
+      </div>
+
+      {/* "Get in touch" — its own separate pill (Figma 41:10445), not a
+          segment inside the bar. No dropdown spec exists yet (explicitly
+          a follow-up), so this keeps the previous Contact segment's own
+          click-to-reveal email/copy panel rather than shipping with no
+          interaction at all in the meantime. */}
+      <div className="relative">
+        <button
+          type="button"
+          aria-expanded={showContact}
+          onClick={() => setShowContact((s) => !s)}
+          className={`rounded-full px-4 py-2.5 text-[14px] leading-4 tracking-[-0.112px] text-text-subtle transition-colors duration-150 hover:text-text-primary ${solidPill}`}
+        >
+          Get in touch
+        </button>
+
+        {/* Anchored to this pill's own bottom-right, dropping straight
+            down — the mirror image of the old bottom-nav version's own
+            panel, which opened upward from the bar's top edge. Always
+            rendered so it can animate back out on close, not just
+            vanish; pointer-events-none while closed keeps its reserved
+            (invisible) space from intercepting a click meant for the
+            page behind it. */}
+        <div
+          className={`absolute right-0 top-full mt-2 rounded-m border border-border-subtle p-1.5 transition-[opacity,transform] ${EASE_OUT} ${MOTION_REDUCE} ${solidPill} ${
+            showContact ? "translate-y-0 scale-100 opacity-100 duration-200" : "pointer-events-none -translate-y-1 scale-95 opacity-0 duration-150"
+          }`}
+          style={{ transformOrigin: "top right" }}
+        >
+          <div className="flex items-center gap-2 whitespace-nowrap">
+            <p className="font-sans text-[14px] leading-6 tracking-[-0.112px] text-text-secondary">{CONTACT_EMAIL}</p>
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="shrink-0 rounded-sm bg-bg-tertiary px-3 py-1 font-sans text-[14px] font-medium leading-4 tracking-[-0.112px] text-text-primary transition-transform duration-100 active:scale-95"
+            >
+              {copied ? "Copied!" : "Copy"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

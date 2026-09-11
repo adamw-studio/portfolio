@@ -33,13 +33,12 @@ export default function Home() {
   return (
     <ThemeProvider>
       {/* Nav is `fixed` (see Nav.tsx) — out of normal document flow, so it
-          never pushes this content down on its own, whether it's the old
-          top-center pill or the current bottom-anchored one. Now that Nav
-          sits at the *bottom* of the viewport, this column no longer needs
-          the 140px top reservation that used to clear the old pill's own
-          height — 100px, matching this page's own section-gap rhythm, is
-          just ordinary top breathing room now, comfortably clearing the
-          much smaller top-left theme toggle (24px offset + 36px tall). */}
+          never pushes this content down on its own. Nav is back at the
+          *top* of the viewport again (Figma 41:10445's own redesign,
+          after a stint bottom-anchored) — 100px, matching this page's own
+          section-gap rhythm, comfortably clears its ~36px bar height plus
+          its own 24px top offset either way, so this reservation didn't
+          need to change even though what it's clearing did. */}
       <Nav />
 
       <div className="mx-auto w-full max-w-[688px] pt-[100px]">

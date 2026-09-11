@@ -42,31 +42,6 @@
      rather than dark gray — confirmed against every other tag's node in
      Figma 270:5949 after this one was wrongly assumed to just be #191919. */
   --tag-icon-bg: #e8e8e8;
-  /* Nav's Glass-effect border (Figma 33:9345/33:9346/33:9550 etc.) — a
-     native Figma "Glass" effect (Light: -59deg angle, 80% intensity, plus
-     Refraction/Depth/Dispersion/Frost/Splay), Figma's own version of
-     Apple's Liquid Glass material. True refraction can't be replicated in
-     CSS, but the directional light does produce a genuine gradient along
-     the stroke — which these four stops reproduce exactly, read directly
-     from Figma's own gradient-stop editor rather than estimated (a
-     previous pass here approximated it as a 2-stop gradient calibrated
-     from pixel-sampling, before this exact data was available): 0% white
-     40%, 41% white 0%, 57% white 0%, 100% white 10% — a bright edge that
-     falls to fully transparent partway down, holds transparent through
-     the middle, then comes back up slightly toward the far edge, not a
-     simple two-point fade. "White" here becomes text-primary/its
-     light-mode equivalent rather than a hardcoded value — a border has to
-     read as "glass catching light" against either page background, not
-     just the dark one Figma's export assumes. (The glass *fill* itself
-     doesn't need an equivalent custom token — every filled piece of this
-     control, the bar itself included, uses bg-bg-default/bg-bg-tertiary,
-     already-existing theme-aware tokens, confirmed as the actual
-     variables Figma references here rather than values worth reverse-
-     engineering by hand.) */
-  --glass-border-0: rgba(13, 13, 13, 0.4);
-  --glass-border-41: rgba(13, 13, 13, 0);
-  --glass-border-57: rgba(13, 13, 13, 0);
-  --glass-border-100: rgba(13, 13, 13, 0.1);
   --radius-xs: 6px;
   /* Note: Figma calls these tokens "radius/s", "radius/m" and "radius/l",
      but naming a custom Tailwind radius scale key "s" or "l" collides with
@@ -102,10 +77,6 @@
   --dot-color: rgba(244, 244, 244, 0.12);
   --icon-cream: #fff1b5;
   --tag-icon-bg: #a16ea9;
-  --glass-border-0: rgba(244, 244, 244, 0.4);
-  --glass-border-41: rgba(244, 244, 244, 0);
-  --glass-border-57: rgba(244, 244, 244, 0);
-  --glass-border-100: rgba(244, 244, 244, 0.1);
 }
 
 @theme inline {
@@ -241,79 +212,6 @@ body {
     transparent 8px,
     transparent 16px
   );
-}
-
-/* Nav's Glass-effect border (see --glass-border-0/41/57/100 above) — a
-   real gradient stroke, not just a translucent flat one. A `border` can
-   only ever hold a solid color, so this is a real "punch-out" instead:
-   this element paints the gradient across its *entire* box, and a real
-   nested child (.glass-border-fill, below — rendered as a plain <div> in
-   Nav.tsx, not a pseudo-element) sitting exactly `padding`-thickness
-   inside it repaints a solid, opaque fill on top of everything but the
-   outer ring — the gradient is never actually visible except in that
-   ring, because there's a real opaque layer covering the rest of it, not
-   a clipping trick asking the browser to withhold paint from part of one
-   layer.
-
-   180deg (top to bottom), not a diagonal — Figma's own gradient-stop
-   editor shows the gradient handle running near-vertically down the
-   button, not at an angle across it.
-
-   Three earlier versions of this each hit a different real-device
-   rendering gap this environment's own test browser never reproduced:
-   `mask-composite: exclude` first (painted the *entire* gradient across
-   the whole element instead of just the ring), then a `background-clip:
-   padding-box` + `border-box` split (still not staying confined to the
-   ring), then a `::after` pseudo-element for the punch-out instead of a
-   real element (border still missing around parts of the control). The
-   first two rely on the browser correctly withholding paint from part of
-   a layer; the third adds a CSS custom property crossing into a
-   pseudo-element as one more spec detail to get right. A real, plain
-   nested element with no custom-property inheritance or clipping
-   involved doesn't have any of those specific questions to get wrong.
-
-   `--glass-fill` (set inline at each call site, since the punch-out has
-   to match whatever's actually supposed to show there — bg-bg-default
-   for the bar, bg-bg-tertiary for the active segments and the
-   theme-toggle group) is what the punch-out repaints with. 1px, not
-   Figma's own literal 0.5px: reported live as reading like a soft glow
-   rather than a crisp line at that width — a sub-pixel thickness can't
-   rasterize cleanly in most browsers, so it anti-aliases into a blur
-   instead of a hairline, especially with a bright 40%-opacity stop at one
-   end of the gradient. A full 1px renders crisply everywhere, at a size
-   difference too small to read as a fidelity loss on its own. */
-.glass-border {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    180deg,
-    var(--glass-border-0) 0%,
-    var(--glass-border-41) 41%,
-    var(--glass-border-57) 57%,
-    var(--glass-border-100) 100%
-  );
-  pointer-events: none;
-}
-/* The punch-out itself — a real element, not this class's own ::after,
-   after a real device kept showing no border at all around parts of this
-   control despite every computed style checking out fine in this
-   environment's own test browser. Pseudo-elements are one more layer of
-   "does this specific browser handle it the way the spec says" beyond an
-   ordinary element — the third different rendering gap this exact border
-   has hit on a real device (after mask-composite, then background-clip),
-   so this drops the pseudo-element entirely rather than trying to
-   diagnose why. Nav.tsx renders this as a plain nested <div>, with its
-   actual fill color (bg-bg-default/bg-bg-tertiary) applied as a plain
-   Tailwind class directly at each call site — not a CSS custom property
-   threaded in through an inline style, which was one indirection layer
-   too many for the same "does this browser resolve it" risk. Only the
-   positioning lives here. */
-.glass-border-fill {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
 }
 
 /* BeaconComposer's typing caret — now a border-right on the text's own

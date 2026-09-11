@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Nav from "@/components/Nav";
 import { PasswordGate } from "@/components/PasswordGate";
 import { ThemeProvider } from "@/components/ThemeContext";
 
@@ -18,10 +17,17 @@ const BEACON_PASSWORD = "PrEtZelDay2_0_2_6";
 // "use client": ssr:false only works from inside a Client Component.
 const BeaconCaseStudyBody = dynamic(() => import("@/components/BeaconCaseStudyBody"), { ssr: false });
 
+// No sitewide <Nav /> here anymore — the case-study presentation (Figma
+// 87:1192, components/case-study/) replaces it with its own dedicated
+// "Back to Home" + Prev/Next chrome (CaseStudyBackButton/CaseStudyNav),
+// deliberately: the brief calls for "minimal interface chrome" and a
+// full-viewport presentation, and the Home/Play segmented control has no
+// role once a case study takes over the whole screen. PasswordGate keeps
+// rendering its own BackButton while locked either way, independent of
+// this.
 export default function BeaconCaseStudy() {
   return (
     <ThemeProvider>
-      <Nav />
       <PasswordGate password={BEACON_PASSWORD} storageKey="beacon-unlocked">
         <BeaconCaseStudyBody />
       </PasswordGate>

@@ -28,9 +28,8 @@ const gentiumBasic = localFont({
 // Extrabold Italic, all six About-card resting titles' own literal font
 // (AboutCardStack.tsx's RESTING_TEXT, Figma 76:293 etc.). The purchased
 // pack also includes Light/Book/Black/Hairline and a whole second "Text"
-// optical-size subfamily (plus Medium/Semibold italics), none of which
-// any current class on this site reaches for — not loaded, to avoid
-// shipping webfont weight nobody uses.
+// optical-size subfamily, none of which any current class on this site
+// reaches for — not loaded, to avoid shipping webfont weight nobody uses.
 const neueMontreal = localFont({
   src: [
     { path: "../public/fonts/PPNeueMontreal-Regular.woff2", weight: "400", style: "normal" },
@@ -49,6 +48,18 @@ const neueMontreal = localFont({
     // registering it as "normal" is what makes plain `font-extrabold`
     // (no `italic` class) resolve to this file.
     { path: "../public/fonts/PPNeueMontreal-ExtraboldItalic.woff2", weight: "800", style: "normal" },
+    // style: "italic" here, unlike ExtraboldItalic above — weight 600 at
+    // style:"normal" is already correctly spoken for by the plain
+    // Semibold file (ProjectCaption's own font-semibold description
+    // text needs to stay upright, not slanted), so the same "label it
+    // normal" trick would silently break that. Registering this one as
+    // real font-style:italic instead means SelectedWorks.tsx's
+    // ComingSoonBadge has to actually use Tailwind's `italic` class to
+    // reach it — a deliberate, narrow exception to the "not-italic"
+    // label Figma's own node (74:159) gives this specific text, made
+    // only because weight 600 had no other safe slot left to register a
+    // second, visually-slanted cut under.
+    { path: "../public/fonts/PPNeueMontreal-SemiboldItalic.woff2", weight: "600", style: "italic" },
   ],
   variable: "--font-neue-montreal",
   display: "swap",

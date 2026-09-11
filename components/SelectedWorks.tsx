@@ -18,6 +18,16 @@ type Project = {
   bordered?: boolean;
   /** false = no case-study page exists yet, renders as a static (unlinked) card. */
   linked?: boolean;
+  /** Renders the "Coming soon" badge (Figma 74:159/74:197) when set. */
+  comingSoon?: boolean;
+  /** Fixed literal text color for that badge — unset uses the theme-aware
+   * text-text-primary class instead. Monday's own badge (74:197) ties its
+   * text directly to --text/text-primary (flips with site theme), while
+   * design-system's (74:159) is a fixed #544831 instead — its cream
+   * collage cover reads correctly in dark brown regardless of site theme,
+   * confirmed as a real difference between the two, not a copy-paste of
+   * one shared value. */
+  comingSoonColor?: string;
 };
 
 // Figma 57:24419 — every card except Documentary reads "Lead designer"
@@ -67,18 +77,24 @@ const PROJECTS: Project[] = [
     role: "Lead designer",
     year: "2024-",
     linked: false,
+    comingSoon: true,
+    comingSoonColor: "#544831",
   },
   {
     id: "monday",
-    // Figma 57:24474 — shorter than this project's own /work/monday copy,
-    // dropping the leading "A creative collective needs an identity, not
-    // a uniform." sentence outright, not just trimmed for space.
-    description: "Designing a visual system that gives Monday a distinctive voice while leaving room for experimentation.",
-    role: "Lead designer",
+    // Figma 74:197 — shorter still than the earlier 57:24474 fetch's own
+    // copy ("Designing a visual system that gives Monday a distinctive
+    // voice while leaving room for experimentation."); role is "Brand
+    // Designer" here too, not the "Lead designer" 57:24419 gave every
+    // other card — this later, more specific fetch of Monday's own card
+    // supersedes both.
+    description: "Designing a visual system for Monday, creative collective.",
+    role: "Brand Designer",
     year: "2026",
     backdropSrc: "/images/home/selected-work-4-cover.jpg",
     backdropAlt: "Red tote bag printed with the Monday wordmark, held up against a blue sky",
     linked: true,
+    comingSoon: true,
   },
   {
     id: "documentary",
@@ -95,30 +111,25 @@ const PROJECTS: Project[] = [
   },
 ];
 
-// Figma 57:24456/61:107 — a small "Soon" badge on the design-system
-// card's cover specifically: the one project with no case-study page
-// yet (SelectedWorks.tsx's own PROJECTS entry renders it unlinked), so
-// this is what actually explains that to a visitor instead of leaving
-// an unlinked card with no comment. Fixed dark colors (bg-[#0d0d0d],
-// white-based text/icon), not this site's theme-aware bg-default/
-// text-* tokens: same reasoning as BeaconComposer's own glass panel —
-// this sits on top of a photo/collage cover, not the page's own light/
-// dark chrome, so it keeps one deliberate look regardless of site theme
-// rather than flipping to a near-invisible light badge over that same
-// dark photo in light mode.
-function SoonBadge() {
+// Figma 74:159/74:197 — a translucent, blurred "Coming soon" pill,
+// replacing the earlier solid-dark bell+"Soon" badge that node
+// 57:24456/61:107 specified (that fetch is superseded outright, not
+// layered alongside this one — Figma's own current cover exports show
+// only this pill, no bell icon anywhere). bg-[rgba(248,236,215,0.23)] +
+// backdrop-blur-[4px] is a fixed literal glass treatment, not a theme
+// token — same reasoning as BeaconComposer's own glass panel: it sits on
+// a photo/collage cover, not page chrome, so it keeps one deliberate
+// look regardless of site theme. Text color is the one part that
+// genuinely varies per card (see Project.comingSoonColor's own comment).
+function ComingSoonBadge({ color }: { color?: string }) {
   return (
-    <div className="absolute right-4 top-5 flex items-center gap-1 rounded-m bg-[#0d0d0d] px-2 py-1">
-      <svg viewBox="0 0 16 16" width={16} height={16} fill="none" className="shrink-0">
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M5.11214 2.83939C5.86692 1.99026 6.90412 1.5 8 1.5C9.09588 1.5 10.1331 1.99026 10.8879 2.83939C11.6409 3.6866 12.0556 4.82429 12.0556 6C12.0556 8.27029 12.4879 9.60223 12.8856 10.348C13.0847 10.7213 13.2774 10.9522 13.4091 11.0839C13.4752 11.15 13.5267 11.1919 13.5569 11.2146C13.5721 11.226 13.582 11.2326 13.5859 11.2351L13.5867 11.2356C13.7793 11.3487 13.8738 11.5765 13.817 11.7934C13.7594 12.0133 13.5607 12.1667 13.3333 12.1667H2.66667C2.43932 12.1667 2.2406 12.0133 2.18299 11.7934C2.12618 11.5765 2.2207 11.3488 2.41334 11.2356L2.41414 11.2351C2.41799 11.2326 2.4279 11.226 2.44306 11.2146C2.47333 11.1919 2.5248 11.15 2.59089 11.0839C2.72261 10.9522 2.91533 10.7213 3.11438 10.348C3.51214 9.60223 3.94444 8.27029 3.94444 6C3.94444 4.82429 4.35906 3.6866 5.11214 2.83939ZM3.79305 11.1667H12.2069C12.1394 11.0615 12.0711 10.9458 12.0033 10.8186C11.5121 9.89777 11.0556 8.39638 11.0556 6C11.0556 5.05397 10.721 4.15684 10.1405 3.50375C9.56164 2.85259 8.79011 2.5 8 2.5C7.20989 2.5 6.43836 2.85259 5.85955 3.50375C5.27903 4.15684 4.94444 5.05397 4.94444 6C4.94444 8.39638 4.48786 9.89777 3.99673 10.8186C3.92893 10.9458 3.86064 11.0615 3.79305 11.1667ZM6.59579 12.9008C6.83466 12.7623 7.14062 12.8436 7.27918 13.0824C7.35243 13.2087 7.45758 13.3136 7.58409 13.3864C7.71059 13.4593 7.85402 13.4976 8.00001 13.4976C8.146 13.4976 8.28943 13.4593 8.41594 13.3864C8.54245 13.3136 8.64759 13.2087 8.72085 13.0824C8.85941 12.8436 9.16537 12.7623 9.40423 12.9008C9.6431 13.0394 9.72441 13.3454 9.58585 13.5842C9.42469 13.862 9.19337 14.0926 8.91505 14.253C8.63674 14.4133 8.32119 14.4976 8.00001 14.4976C7.67883 14.4976 7.36329 14.4133 7.08497 14.253C6.80666 14.0926 6.57534 13.862 6.41418 13.5842C6.27562 13.3454 6.35693 13.0394 6.59579 12.9008Z"
-          fill="#F4F4F4"
-          fillOpacity="0.4"
-        />
-      </svg>
-      <p className="whitespace-nowrap font-sans text-[14px] leading-[normal] tracking-[-0.112px] text-[#F4F4F4]">Soon</p>
+    <div
+      className="absolute right-4 top-[17px] rounded-full bg-[rgba(248,236,215,0.23)] p-2 backdrop-blur-[4px]"
+      style={{ color }}
+    >
+      <p className={`whitespace-nowrap font-sans text-[14px] font-semibold italic leading-[18px] tracking-[-0.112px] ${color ? "" : "text-text-primary"}`}>
+        Coming soon
+      </p>
     </div>
   );
 }
@@ -133,12 +144,7 @@ function ProjectCover({ project }: { project: Project }) {
       {project.backdropSrc && (
         <Image src={project.backdropSrc} alt={project.backdropAlt ?? ""} fill className="object-cover" sizes="688px" />
       )}
-      {project.id === "design-system" && (
-        <>
-          <DesignSystemCollage />
-          <SoonBadge />
-        </>
-      )}
+      {project.id === "design-system" && <DesignSystemCollage />}
       {/* Figma 356:1192's own composition over Beacon's cover: a flat 20%
           black wash between the photo and the composer, there
           specifically so the composer's white text/borders read against
@@ -150,6 +156,7 @@ function ProjectCover({ project }: { project: Project }) {
           <BeaconComposer />
         </>
       )}
+      {project.comingSoon && <ComingSoonBadge color={project.comingSoonColor} />}
     </div>
   );
 }

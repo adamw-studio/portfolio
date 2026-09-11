@@ -612,28 +612,47 @@ function Card({
         >
           {card.text}
         </p>
-        {/* Delayed relative to the card's own move (DESCRIPTION_OPEN_DELAY_MS,
-            ~65% through OPEN_MS) on the way in, no delay on the way out —
-            "reveal the body content approximately 60–70% through the
-            expansion... do not reveal the description immediately while
-            the card is still tiny." Kept mounted at all times (not
-            conditionally rendered) so it has something to animate *out*
-            of when closing, rather than just vanishing. */}
-        <p
-          aria-hidden={!selected}
-          className="w-full break-words font-sans text-[16px] leading-[normal] tracking-[-0.128px]"
+        {/* Collapsed to zero layout height via the grid-rows 0fr/1fr trick
+            (not just opacity: 0) whenever this card isn't selected — kept
+            mounted throughout (not conditionally rendered) so it still
+            has something to animate *out* of on close, but plain
+            `opacity: 0` alone left its own real line-height sitting in
+            the flex column below the title, pushing the title itself
+            up off the card's own bottom edge and leaving a block of
+            blank card-color space where the invisible copy still lived.
+            grid-template-rows *is* a layout property, but it's the
+            standard CSS-only way to animate toward "auto" height, and
+            it's the layout dimension actually at fault here — the inner
+            paragraph's own opacity/translateY still does the visual
+            reveal on top of it. */}
+        <div
+          className="grid w-full"
           style={{
-            color: card.textColor,
-            opacity: selected ? 0.5 : 0,
-            transform: `translateY(${selected ? 0 : 8}px)`,
-            transition: reducedMotion
-              ? undefined
-              : `opacity ${DESCRIPTION_MS}ms ${EASE_OUT} ${selected ? DESCRIPTION_OPEN_DELAY_MS : 0}ms, transform ${DESCRIPTION_MS}ms ${EASE_OUT} ${selected ? DESCRIPTION_OPEN_DELAY_MS : 0}ms`,
-            pointerEvents: selected ? "auto" : "none",
+            gridTemplateRows: selected ? "1fr" : "0fr",
+            transition: reducedMotion ? undefined : `grid-template-rows ${transitionMs}ms ${EASE_OUT}`,
           }}
         >
-          {card.description}
-        </p>
+          {/* Delayed relative to the card's own move
+              (DESCRIPTION_OPEN_DELAY_MS, ~65% through OPEN_MS) on the way
+              in, no delay on the way out — "reveal the body content
+              approximately 60–70% through the expansion... do not reveal
+              the description immediately while the card is still tiny." */}
+          <p
+            aria-hidden={!selected}
+            className="w-full min-h-0 overflow-hidden break-words font-sans text-[16px] leading-[normal] tracking-[-0.128px]"
+            style={{
+              color: card.textColor,
+              opacity: selected ? 0.5 : 0,
+              transform: `translateY(${selected ? 0 : 8}px)`,
+              transition: reducedMotion
+                ? undefined
+                : `opacity ${DESCRIPTION_MS}ms ${EASE_OUT} ${selected ? DESCRIPTION_OPEN_DELAY_MS : 0}ms, transform ${DESCRIPTION_MS}ms ${EASE_OUT} ${selected ? DESCRIPTION_OPEN_DELAY_MS : 0}ms`,
+              pointerEvents: selected ? "auto" : "none",
+            }}
+          >
+            {card.description}
+          </p>
+        </div>
       </div>
     </div>
   );

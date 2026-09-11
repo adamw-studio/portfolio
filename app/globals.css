@@ -245,28 +245,32 @@ body {
 
 /* Nav's Glass-effect border (see --glass-border-0/41/57/100 above) — a
    real gradient stroke, not just a translucent flat one. A `border` can
-   only ever hold a solid color, so this is a real "punch-out" instead: the
-   outer element paints the gradient across its *entire* box, and a
-   `::after` pseudo-element sitting exactly `padding`-thickness inside it
-   repaints a solid, opaque fill on top of everything but the outer ring —
-   the gradient is never actually visible except in that ring, because
-   there's a real opaque layer covering the rest of it, not a clipping
-   trick asking the browser to withhold paint from part of one layer.
+   only ever hold a solid color, so this is a real "punch-out" instead:
+   this element paints the gradient across its *entire* box, and a real
+   nested child (.glass-border-fill, below — rendered as a plain <div> in
+   Nav.tsx, not a pseudo-element) sitting exactly `padding`-thickness
+   inside it repaints a solid, opaque fill on top of everything but the
+   outer ring — the gradient is never actually visible except in that
+   ring, because there's a real opaque layer covering the rest of it, not
+   a clipping trick asking the browser to withhold paint from part of one
+   layer.
 
    180deg (top to bottom), not a diagonal — Figma's own gradient-stop
    editor shows the gradient handle running near-vertically down the
    button, not at an angle across it.
 
-   Two earlier versions of this tried clipping tricks instead of a real
-   punch-out layer — `mask-composite: exclude` first (silently failed in
-   real-world testing: painted the *entire* gradient across the whole
-   element instead of just the ring), then a `background-clip: padding-
-   box` + `border-box` split (reported live as still not staying confined
-   to the ring — visible within the container itself, not just on its
-   edge). Both rely on the browser correctly withholding paint from part
-   of a layer; an actual second opaque element on top doesn't have a
-   "did the browser clip correctly" question to get wrong in the first
-   place.
+   Three earlier versions of this each hit a different real-device
+   rendering gap this environment's own test browser never reproduced:
+   `mask-composite: exclude` first (painted the *entire* gradient across
+   the whole element instead of just the ring), then a `background-clip:
+   padding-box` + `border-box` split (still not staying confined to the
+   ring), then a `::after` pseudo-element for the punch-out instead of a
+   real element (border still missing around parts of the control). The
+   first two rely on the browser correctly withholding paint from part of
+   a layer; the third adds a CSS custom property crossing into a
+   pseudo-element as one more spec detail to get right. A real, plain
+   nested element with no custom-property inheritance or clipping
+   involved doesn't have any of those specific questions to get wrong.
 
    `--glass-fill` (set inline at each call site, since the punch-out has
    to match whatever's actually supposed to show there — bg-bg-default
@@ -292,12 +296,24 @@ body {
   );
   pointer-events: none;
 }
-.glass-border::after {
-  content: "";
+/* The punch-out itself — a real element, not this class's own ::after,
+   after a real device kept showing no border at all around parts of this
+   control despite every computed style checking out fine in this
+   environment's own test browser. Pseudo-elements are one more layer of
+   "does this specific browser handle it the way the spec says" beyond an
+   ordinary element — the third different rendering gap this exact border
+   has hit on a real device (after mask-composite, then background-clip),
+   so this drops the pseudo-element entirely rather than trying to
+   diagnose why. Nav.tsx renders this as a plain nested <div>, with its
+   actual fill color (bg-bg-default/bg-bg-tertiary) applied as a plain
+   Tailwind class directly at each call site — not a CSS custom property
+   threaded in through an inline style, which was one indirection layer
+   too many for the same "does this browser resolve it" risk. Only the
+   positioning lives here. */
+.glass-border-fill {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background-color: var(--glass-fill);
 }
 
 /* BeaconComposer's typing caret — now a border-right on the text's own

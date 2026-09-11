@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -69,15 +69,24 @@ const barPill = "bg-bg-default";
 // active nav item, the theme-toggle group) layer their own bg-bg-tertiary
 // fill and .glass-border on top of this same shared base.
 
-// .glass-border's own punch-out layer (see globals.css) needs to know
-// what to repaint with — whatever this specific instance's real fill
-// actually is, since that varies per call site (the bar itself vs. the
-// active segments/theme-toggle group). Passed as a CSS custom property
-// rather than a prop threaded through the class name, since the punch-out
-// lives on a `::after` pseudo-element .glass-border's own className can't
-// reach directly.
-const glassFillDefault = { "--glass-fill": "var(--color-bg-default)" } as CSSProperties;
-const glassFillTertiary = { "--glass-fill": "var(--color-bg-tertiary)" } as CSSProperties;
+// The gradient border itself, everywhere it's used — see globals.css for
+// why the punch-out is a real nested element, not this element's own
+// `::after`. `fillClassName` is a plain Tailwind background class
+// (bg-bg-default for the bar, bg-bg-tertiary for the active segments and
+// theme-toggle group) applied directly to that nested element — not a CSS
+// custom property threaded in through an inline style, which is one more
+// layer of "does this browser resolve it the way the spec says" this
+// border has already had trouble with (see .glass-border-fill's own
+// comment). Every other color on this entire site is a plain class for
+// the same reason; there's no good reason for this one piece to be the
+// exception.
+function GlassBorder({ fillClassName }: { fillClassName: string }) {
+  return (
+    <div aria-hidden className="glass-border">
+      <div className={`glass-border-fill ${fillClassName}`} />
+    </div>
+  );
+}
 
 const segmentBase = "relative flex w-[66.667px] items-center justify-center overflow-hidden px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,color] duration-150";
 const segmentActive = "rounded-[20px] bg-bg-tertiary font-medium text-text-primary shadow-[0px_2px_4px_0px_rgba(0,0,0,0.1)]";
@@ -171,7 +180,7 @@ export default function Nav() {
           where every bleed-through report concentrated rather than
           spreading evenly across the middle. */}
       <div className={`relative flex items-center gap-1 overflow-hidden rounded-full p-1 ${barPill}`}>
-        <div aria-hidden className="glass-border" style={glassFillDefault} />
+        <GlassBorder fillClassName="bg-bg-default" />
         {links.map((link) => {
           const active = pathname === link.href;
           return (
@@ -181,7 +190,7 @@ export default function Nav() {
               onClick={() => setShowContact(false)}
               className={`${segmentBase} ${active ? segmentActive : segmentInactive}`}
             >
-              {active && <div aria-hidden className="glass-border" style={glassFillTertiary} />}
+              {active && <GlassBorder fillClassName="bg-bg-tertiary" />}
               {link.label}
             </Link>
           );
@@ -192,7 +201,7 @@ export default function Nav() {
           onClick={() => setShowContact((s) => !s)}
           className={`${segmentBase} ${showContact ? segmentActive : segmentInactive}`}
         >
-          {showContact && <div aria-hidden className="glass-border" style={glassFillTertiary} />}
+          {showContact && <GlassBorder fillClassName="bg-bg-tertiary" />}
           Contact
         </button>
 
@@ -210,7 +219,7 @@ export default function Nav() {
             this control (33:9540) — an earlier pass had this group with
             no fill of its own, just the border. */}
         <div className="relative flex items-center gap-1 overflow-hidden rounded-full bg-bg-tertiary p-0.5">
-          <div aria-hidden className="glass-border" style={glassFillTertiary} />
+          <GlassBorder fillClassName="bg-bg-tertiary" />
           <button
             type="button"
             aria-label="Switch to dark mode"

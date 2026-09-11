@@ -161,14 +161,18 @@ const RESTING_PADDING = 8;
 // CONTAINER_EXPANDED_H below), keeps it clear of everything above.
 const SELECTED_X = CONTAINER_W / 2 - SELECTED_W / 2;
 const SELECTED_Y = 0;
-// Figma shows the five settled cards at essentially full color/opacity —
-// no opacity token on any of them in the export. A small amount of
-// de-emphasis (this project's own earlier fix, confirmed inside the
-// brief's own allowed 0.75–0.9 band — not the 0.3–0.5 an even earlier
-// pass used, which read as disabled) is kept anyway, since some visual
-// hierarchy between "the thing you're reading" and "the rest of the
-// deck" still reads as intentional rather than literal.
-const DIM_OPACITY = 0.82;
+// No opacity-based dimming on the card surface itself — these are meant
+// to read as opaque physical cards genuinely stacked on top of one
+// another (occlusion via z-index/geometry), not translucent panels. An
+// earlier pass used a reduced opacity here for visual hierarchy, but
+// applied to the whole card element that's exactly what let overlapping
+// neighbors show through each other's bodies — confirmed live (the blue
+// "I care about" card visibly bleeding through "Foundation," the black
+// "Building design systems" card's artwork showing through into
+// "Prototype with AI," multiple titles occupying the same space).
+// Secondary/settled emphasis is communicated by scale, position and
+// z-order alone now (see OTHER_SLOTS/OTHER_SLOT_Z below), matching
+// Figma's own settled cards, which carry no opacity token at all.
 
 // The settled row's own five fixed positions — measured directly off
 // Figma node 37:10045 (Group 5, 539x539 bounding box; get_metadata on
@@ -535,8 +539,20 @@ function Card({
         padding,
         borderRadius: radius,
         backgroundColor: card.color,
-        opacity: reducedMotion ? (dimmed ? DIM_OPACITY : 1) : visible ? (dimmed ? DIM_OPACITY : 1) : 0,
+        // Fully opaque at all times except the one-time pre-mount
+        // entrance fade (visible === false, before this card has ever
+        // been revealed) — every other state (resting, hovered,
+        // selected, or settled/dimmed while a sibling is open) stays at
+        // opacity: 1. These are meant to read as opaque physical cards
+        // occluding one another via z-index/geometry, not translucent
+        // panels a neighbor can show through.
+        opacity: reducedMotion || visible ? 1 : 0,
         boxShadow: SELECTED_SHADOW(selected ? 0.4 : 0),
+        // isolation: isolate gives this card its own stacking context so
+        // nothing about a sibling's own z-index/blend behavior can reach
+        // across into it — belt-and-suspenders alongside the opacity
+        // fix above, not a substitute for it.
+        isolation: "isolate",
         // Selected is always frontmost; hovered lifts above the resting
         // stack (but never above a selected card, since hover is already
         // disabled the instant anything is selected); among the settled
@@ -552,7 +568,7 @@ function Card({
         transition: reducedMotion
           ? undefined
           : [
-              `opacity ${SELECT_OPACITY_MS(selected, dimmed)}ms ${EASE_OUT} ${delay}ms`,
+              `opacity 400ms ${EASE_OUT} ${delay}ms`,
               `transform ${selected || dimmed ? transitionMs : hovered ? HOVER_MS : 500}ms ${EASE_OUT} ${selected || dimmed ? 0 : delay}ms`,
               `width ${transitionMs}ms ${EASE_OUT}`,
               `height ${transitionMs}ms ${EASE_OUT}`,
@@ -656,14 +672,4 @@ function Card({
       </div>
     </div>
   );
-}
-
-// Opacity keeps the mount-in stagger's own longer fade for a truly fresh
-// reveal, but should react instantly (no extra delay stacking on top of
-// an already-tuned open/close move) once the composition has been
-// through its first reveal — same reasoning `hasRevealedOnce` already
-// applies to `delay` itself, just mirrored here for the property that
-// still needs *some* duration even at 0 delay so it doesn't hard-cut.
-function SELECT_OPACITY_MS(selected: boolean, dimmed: boolean) {
-  return selected ? OPEN_MS : dimmed ? CLOSE_MS : 400;
 }

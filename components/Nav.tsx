@@ -25,34 +25,33 @@ const CONTACT_EMAIL = "adamweber54@gmail.com";
 // for the bar itself — still the site's one "floats above the page"
 // language. Used alone (no border) for the Contact-reveal panel above the
 // bar, which has no Figma spec of its own to match; the bar itself adds
-// its own Glass-effect border + overlays on top of this same base (see
-// below), rather than the plain border-border-subtle this used to carry.
+// its own Glass-effect border on top of this same base (see below),
+// rather than the plain border-border-subtle this used to carry.
 const pill = "bg-bg-default/80 backdrop-blur-[23px]";
 
 // Figma's own Glass effect (Light: -59deg angle, 80% intensity, plus
 // Refraction/Depth/Dispersion/Frost/Splay — Figma's version of Apple's
 // Liquid Glass material, confirmed against its own Inspect panel) sits on
-// the *bar itself* here (re-confirmed against a later re-fetch of this
-// same control, 33:9540 — an earlier pass had it on each active segment
-// individually instead): two full-bleed blend-mode overlays (lighten +
-// color-dodge, Figma's own codegen fallback for the effect — literal
-// fixed values, not theme tokens, since a blend mode's own math only
-// makes sense against the exact colors it was tuned for) plus a *real*
-// gradient border (.glass-border, see globals.css, since true refraction
-// can't be replicated in CSS but the directional light does produce a
-// genuine gradient along the stroke). Individual segments (the active nav
-// item, the theme-toggle group) layer their own bg-bg-tertiary fill and
-// .glass-border on top of that shared glass base, not a separate
-// full effect each.
-function GlassOverlay({ radius }: { radius: string }) {
-  return (
-    <div aria-hidden className={`pointer-events-none absolute inset-0 ${radius}`}>
-      <div className={`absolute inset-0 ${radius} bg-[rgba(255,255,255,0.06)] mix-blend-lighten`} />
-      <div className={`absolute inset-0 ${radius} bg-[rgba(94,94,94,0.18)] mix-blend-color-dodge backdrop-blur-[5px]`} />
-      <div className="glass-border" />
-    </div>
-  );
-}
+// the bar itself, not each segment individually. True refraction can't be
+// replicated in CSS — this used to also try approximating the effect's
+// own brightening with two full-bleed blend-mode layers (Figma's own
+// codegen fallback: lighten + color-dodge), dropped after they read as
+// the *whole bar* washing out unpredictably once reported live, not just
+// the intended subtle lift. Blend modes render against whatever's
+// actually behind them — for a fixed element sitting over arbitrary,
+// constantly-scrolling page content, that's never the one static
+// backdrop Figma's own single-composition render was tuned against, so
+// the same two layers that looked right in one test could (and did) blow
+// out over a brighter card or a denser cluster of dots elsewhere on the
+// page. `pill`'s own bg-bg-default/80 + backdrop-blur (below) already
+// does the actual "translucent frosted glass" job reliably, the same way
+// it does for every other floating chrome element on this site — this
+// just adds the one piece that's still a real, predictable CSS technique
+// on top of it: the gradient border (.glass-border, see globals.css),
+// since the directional light *does* produce a genuine gradient along
+// the stroke even without real refraction. Individual segments (the
+// active nav item, the theme-toggle group) layer their own bg-bg-tertiary
+// fill and .glass-border on top of this same shared base.
 
 const segmentBase = "relative flex w-[66.667px] items-center justify-center px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,color] duration-150";
 const segmentActive = "rounded-[20px] bg-bg-tertiary font-medium text-text-primary shadow-[0px_2px_4px_0px_rgba(0,0,0,0.1)]";
@@ -137,7 +136,7 @@ export default function Nav() {
       </div>
 
       <div className={`relative flex items-center gap-1 rounded-full p-1 ${pill}`}>
-        <GlassOverlay radius="rounded-full" />
+        <div aria-hidden className="glass-border" />
         {links.map((link) => {
           const active = pathname === link.href;
           return (

@@ -63,25 +63,13 @@
      white — a border has to read as "glass catching light" against
      either page background, not just the dark one Figma's export
      assumes. (The glass *fill* itself doesn't need an equivalent custom
-     token — every filled piece of this control uses bg-bg-tertiary, an
-     already-existing theme-aware token, confirmed as the actual variable
-     Figma references here rather than a value worth reverse-engineering
-     by hand.)
-
-     --glass-tint is the *bar's own* background lift, a separate thing
-     from the border above: Figma's sampled bar background read rgb(30)
-     against a rgb(13) page background, genuinely lighter than the page
-     behind it, not just a translucent dark panel matching it (solving
-     13 + (244-13)*a = 30 gives alpha ≈ 0.074). This used to be two
-     mix-blend-mode layers doing that lift (Figma's own codegen fallback
-     for the Glass effect) — dropped for reading unpredictably against
-     whatever's actually behind this fixed, scroll-persistent bar (see
-     Nav.tsx), replaced with this flat, ordinary alpha tint instead. A
-     flat overlay doesn't have blend modes' extreme backdrop-dependent
-     swings — layered under the same rgb(30)-vs-rgb(13) target either
-     way, it just makes the bar a little lighter than its surroundings,
-     predictably, regardless of what's actually scrolled behind it. */
-  --glass-tint: rgba(13, 13, 13, 0.06);
+     token — every filled piece of this control, the bar itself included,
+     uses bg-bg-default/bg-bg-tertiary, already-existing theme-aware
+     tokens, confirmed as the actual variables Figma references here
+     rather than values worth reverse-engineering by hand — an earlier
+     pass here tried exactly that, deriving a custom --glass-tint token
+     from pixel-sampling from before Figma's own export made clear the
+     bar's background is just a plain, solid bg-bg-default.) */
   --glass-border-start: rgba(13, 13, 13, 0.55);
   --glass-border-end: rgba(13, 13, 13, 0.1);
   --radius-xs: 6px;
@@ -119,7 +107,6 @@
   --dot-color: rgba(244, 244, 244, 0.12);
   --icon-cream: #fff1b5;
   --tag-icon-bg: #a16ea9;
-  --glass-tint: rgba(244, 244, 244, 0.074);
   --glass-border-start: rgba(244, 244, 244, 0.65);
   --glass-border-end: rgba(244, 244, 244, 0.15);
 }

@@ -26,19 +26,20 @@ const CONTACT_EMAIL = "adamweber54@gmail.com";
 // its own to match.
 const pill = "bg-bg-default/80 backdrop-blur-[23px]";
 
-// The segmented-control bar itself needs more than that: reported live
-// (real device, not this environment's own test browser) with page text
-// visibly bleeding through it, legible enough to overlap and garble the
-// bar's own "Home Play Contact" labels — 80% opacity plus a blur leaves
-// real text behind it too readable once backdrop-blur itself renders
-// weaker than expected (a known real-device inconsistency, not something
-// this environment's own testing reliably catches — see .glass-border's
-// own mask-composite failure earlier for the same category of gap).
-// Bumped to 95% opacity so the bar stays legible even if blur alone
-// doesn't fully carry the job — closer to how solid Figma's own rendered
-// reference actually looks anyway (its sampled bar background was a flat
-// rgb(30), not a hazy see-through one).
-const barPill = "bg-bg-default/95 backdrop-blur-[23px]";
+// The segmented-control bar itself is genuinely solid, not translucent —
+// confirmed on a later re-fetch of this control (33:9540) giving an
+// explicit bg-bg-default (this site's own ordinary opaque page-background
+// token, not a percentage of it) plus a much smaller 5px blur, not the
+// 23px this shared with the Contact-reveal panel above. Every earlier
+// attempt to fix reported live text bleeding through the bar (80%
+// opacity, then 95%) was really just approaching this same answer from
+// the wrong direction — a persistent bottom nav sitting permanently over
+// scrolling content should read as solid in the first place, the same
+// way a native app's own tab bar does, not as a frosted floating panel
+// like a dropdown or tooltip. bg-bg-default alone is fully opaque, so
+// text behind it is never visible regardless of how well backdrop-blur
+// itself happens to render on any given device.
+const barPill = "bg-bg-default backdrop-blur-[5px]";
 
 // Figma's own Glass effect (Light: -59deg angle, 80% intensity, plus
 // Refraction/Depth/Dispersion/Frost/Splay — Figma's version of Apple's
@@ -147,12 +148,6 @@ export default function Nav() {
       </div>
 
       <div className={`relative flex items-center gap-1 rounded-full p-1 ${barPill}`}>
-        {/* --glass-tint: the bar's own background genuinely reads lighter
-            than the page behind it in Figma, not just a translucent dark
-            panel blending into it — see globals.css for how that value
-            was derived and why it's a flat, predictable alpha layer
-            rather than the blend-mode lift this used originally. */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 rounded-full bg-[var(--glass-tint)]" />
         <div aria-hidden className="glass-border" />
         {links.map((link) => {
           const active = pathname === link.href;

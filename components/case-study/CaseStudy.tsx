@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Nav from "@/components/Nav";
 import { CaseStudyStage } from "@/components/case-study/CaseStudyStage";
 import { CaseStudyNav } from "@/components/case-study/CaseStudyNav";
-import { CaseStudyBackButton } from "@/components/case-study/CaseStudyBackButton";
 import type { CaseStudyPageConfig } from "@/components/case-study/types";
 
 const QUERY_KEY = "casePage";
@@ -37,7 +37,6 @@ export function CaseStudy({ pages }: { pages: CaseStudyPageConfig[] }) {
   const initialIndex = Number.isInteger(rawParam) && rawParam >= 1 && rawParam <= pages.length ? rawParam - 1 : 0;
 
   const [index, setIndex] = useState(initialIndex);
-  const [direction, setDirection] = useState<"next" | "prev" | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
@@ -66,9 +65,8 @@ export function CaseStudy({ pages }: { pages: CaseStudyPageConfig[] }) {
   }, [searchParams]);
 
   const goTo = useCallback(
-    (nextIndex: number, dir: "next" | "prev") => {
+    (nextIndex: number) => {
       if (nextIndex < 0 || nextIndex >= pages.length) return;
-      setDirection(dir);
       setIndex(nextIndex);
       const params = new URLSearchParams(searchParams);
       params.set(QUERY_KEY, String(nextIndex + 1));
@@ -77,8 +75,8 @@ export function CaseStudy({ pages }: { pages: CaseStudyPageConfig[] }) {
     [pages.length, pathname, router, searchParams],
   );
 
-  const goNext = useCallback(() => goTo(index + 1, "next"), [goTo, index]);
-  const goPrev = useCallback(() => goTo(index - 1, "prev"), [goTo, index]);
+  const goNext = useCallback(() => goTo(index + 1), [goTo, index]);
+  const goPrev = useCallback(() => goTo(index - 1), [goTo, index]);
 
   // ← / → advance the story, same as the on-screen Prev/Next — but never
   // while focus is in a text field or other editable control (brief's
@@ -96,9 +94,6 @@ export function CaseStudy({ pages }: { pages: CaseStudyPageConfig[] }) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [goNext, goPrev]);
 
-  const active = pages[index];
-  const ActiveComponent = active.Component;
-
   return (
     // No bg-bg-default of its own — ThemeProvider's own page-dots wrapper
     // (ThemeContext.tsx) already paints that as the page background, with
@@ -107,10 +102,8 @@ export function CaseStudy({ pages }: { pages: CaseStudyPageConfig[] }) {
     // layer (same z-order as any other normal content) and hide it
     // entirely, reported live as "the background dots... seem removed".
     <div>
-      <CaseStudyBackButton />
-      <CaseStudyStage pageKey={active.id} direction={direction} peek={active.peek} reducedMotion={reducedMotion}>
-        <ActiveComponent />
-      </CaseStudyStage>
+      <Nav />
+      <CaseStudyStage pages={pages} index={index} reducedMotion={reducedMotion} onSettle={goTo} />
       <CaseStudyNav index={index} count={pages.length} onPrev={goPrev} onNext={goNext} />
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { themedIcon } from "@/components/themedIcon";
 
 /**
@@ -204,11 +204,8 @@ export function BrowserFrame({ src, alt = "" }: { src?: string; alt?: string }) 
 }
 
 // A card whose body scrolls internally once its content is taller than
-// the room it's given (see CaseStudyStage's own comment on why a card
-// gets a max-height + internal scroll safety net at all, and
-// OverviewPage's on why that's a real, not just theoretical, case for
-// this system). This is the "there's more below" cue for exactly that:
-// a soft gradient + blur fade at the bottom edge, shown only while
+// the room it's given. This is the "there's more below" cue for exactly
+// that: a soft gradient + blur fade at the bottom edge, shown only while
 // there's real unscrolled content beneath it and gone once the user
 // actually reaches the end — not a static decoration, and not shown at
 // all on a card that never needed to scroll in the first place.
@@ -222,13 +219,22 @@ export function BrowserFrame({ src, alt = "" }: { src?: string; alt?: string }) 
 // removed outright. A single blur value faded by one continuous mask
 // has no such peak to compound toward; see BottomEdgeFade.tsx for the
 // fuller version of this same lesson and the same technique.
+//
+// `style` sizes the outer box — usually `aspectRatio` (see
+// HowItStartedPage), not a flat `maxHeight`: two cards sitting side by
+// side in the same filmstrip (CaseStudyStage) need to shrink by the
+// *same* formula as the viewport narrows, the same one a plain
+// aspect-ratio div like OverviewPage's own card already uses, or they
+// drift out of sync and end up visibly different heights at anything
+// but their widest width — reported live as exactly that. A bare
+// max-height cap doesn't track width at all, which is what caused it.
 export function ScrollFadeCard({
   children,
-  maxHeight,
+  style,
   className = "",
 }: {
   children: ReactNode;
-  maxHeight: string;
+  style: CSSProperties;
   className?: string;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -268,7 +274,7 @@ export function ScrollFadeCard({
     // sizing doesn't have that pitfall; min-h-0 overrides its own default
     // min-height:auto, which otherwise refuses to let a flex child shrink
     // below its content size in the first place.
-    <div className={`relative flex flex-col overflow-hidden ${className}`} style={{ maxHeight }}>
+    <div className={`relative flex flex-col overflow-hidden ${className}`} style={style}>
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto rounded-[inherit]">
         {children}
       </div>

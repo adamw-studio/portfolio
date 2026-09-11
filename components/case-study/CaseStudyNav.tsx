@@ -6,7 +6,9 @@ import { themedIcon } from "@/components/themedIcon";
 // chrome" convention Nav.tsx's own segmented control and BackButton.tsx
 // already use elsewhere on the site (see either's own doc comment for
 // why it's solid, not translucent-over-content). Deliberately just
-// Prev/Next + a secondary counter — no dots, no autoplay, per the brief.
+// Prev/Next — no counter, no dots, no autoplay, per the brief. `count`
+// still comes through as a prop (used for the atEnd bound below) even
+// with no "NN / NN" text rendering it anymore.
 export function CaseStudyNav({
   index,
   count,
@@ -22,14 +24,7 @@ export function CaseStudyNav({
   const atEnd = index === count - 1;
 
   return (
-    <div className="fixed inset-x-0 bottom-6 z-20 flex flex-col items-center gap-2 px-4">
-      {/* 03 / 08 — secondary on purpose (text-subtle, small), never the
-          primary way to tell where you are in the story; kept above the
-          pill rather than inside it so the pill's own two buttons stay
-          the only interactive targets in it. */}
-      <p className="font-sans text-[12px] tracking-[-0.06px] text-text-subtle" aria-hidden>
-        {String(index + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
-      </p>
+    <div className="fixed inset-x-0 bottom-6 z-20 flex justify-center px-4">
       <div className="flex items-center gap-1 rounded-full border border-border-disabled bg-bg-default p-1 backdrop-blur-[5px]">
         <button
           type="button"

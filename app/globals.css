@@ -28,7 +28,7 @@
      it's what makes a single color read as "light gray" against both a
      near-black and a near-white page background, just inverted per
      theme, rather than one fixed gray that would wash out on one side. */
-  --dot-color: rgba(13, 13, 13, 0.12);
+  --dot-color: rgba(13, 13, 13, 0.08);
   /* The "cream" accent used by several About/shape/dot icons (#fff1b5 in
      dark mode) has poor contrast on this light background — Figma swaps
      it for a darker gold in light mode instead. The "teal" accent
@@ -74,7 +74,7 @@
   --color-border-disabled: rgba(244, 244, 244, 0.05);
   --color-border-subtle: rgba(244, 244, 244, 0.1);
   --color-icon-subtle: rgba(244, 244, 244, 0.4);
-  --dot-color: rgba(244, 244, 244, 0.12);
+  --dot-color: rgba(244, 244, 244, 0.08);
   --icon-cream: #fff1b5;
   --tag-icon-bg: #a16ea9;
 }

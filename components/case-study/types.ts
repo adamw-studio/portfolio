@@ -18,9 +18,4 @@ export type CaseStudyPageConfig = {
    * but useful for a future page-list/jump menu and for aria-labels. */
   label: string;
   Component: ComponentType;
-  /** Opts this page into the layered "stack of cards peeking behind the
-   * active one" depth cue from the Figma reference (87:1440/87:1510) —
-   * appropriate for a single centered card composition (Overview), not
-   * for a page that uses the full canvas edge-to-edge. Off by default. */
-  peek?: boolean;
 };

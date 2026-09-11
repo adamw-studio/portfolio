@@ -4,7 +4,6 @@ import { Chip } from "@/components/Chip";
 import { Tag } from "@/components/Tag";
 import AboutCardStack from "@/components/AboutCardStack";
 import SelectedWorks from "@/components/SelectedWorks";
-import Experience from "@/components/Experience";
 import HomeFooter from "@/components/HomeFooter";
 import { ThemeProvider } from "@/components/ThemeContext";
 import { themedIcon } from "@/components/themedIcon";
@@ -130,24 +129,15 @@ export default function Home() {
           </div>
 
           <SelectedWorks />
-
-          {/* Figma 19:7737 — same short 40px centered rule as the one
-              above Selected works (15:7412), reused here between Selected
-              works and Experience. */}
-          <div className="flex w-full justify-center">
-            <div aria-hidden className="h-px w-10 bg-border-subtle" />
-          </div>
-
-          <Experience />
         </div>
       </div>
 
       {/* HomeFooter renders as its own full-bleed <footer> outside this
           column (it does its own 688px centering + horizontal page
           padding, since Robotics/Beacon/Documentary also render it
-          directly with no such column around it) — so unlike Experience
-          and everything above it, it gets none of the gap-[100px] flex
-          spacing for free. Figma's own footer content (15:7443) is a
+          directly with no such column around it) — so unlike Selected
+          works and everything above it, it gets none of the gap-[100px]
+          flex spacing for free. Figma's own footer content (15:7443) is a
           full member of that same 100px-gapped column, so this margin
           reproduces that gap by hand instead, without changing
           HomeFooter itself and risking the spacing every other page

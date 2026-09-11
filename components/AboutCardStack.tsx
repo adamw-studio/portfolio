@@ -5,11 +5,16 @@ import { useEffect, useRef, useState } from "react";
 type CardData = {
   id: string;
   color: string;
-  /** Title color, both at rest and expanded — confirmed identical in both
-   * states once each card's own resting "Card / Default" node (33:9790
-   * etc.) was fetched directly; an earlier pass had "details" guessing
-   * #93ffff at rest from its old video-hover-era value, which never
-   * actually matched Figma's own resting node. */
+  /** Title color, used at rest and (mostly) at expanded too — four of six
+   * cards genuinely share one value across both states, confirmed directly
+   * against each card's own resting AND expanded nodes (76:293/76:299 etc.);
+   * "prototype" and "details" are the two real exceptions, whose expanded
+   * nodes (76:315/76:325) both independently converge on the same new
+   * #ede3e9 rather than their own resting color — not a fetch glitch, since
+   * two unrelated cards landing on the identical value isn't a coincidence.
+   * This field always reflects the *current*, most-recently-confirmed
+   * color, so those two no longer match what an older pass had recorded
+   * for them at rest. */
   textColor: string;
   text: string;
   /** Expanded-only body copy (Figma's "Card / Default" nodes, 33:9837 etc.)
@@ -74,13 +79,18 @@ const CARDS: CardData[] = [
   },
   {
     id: "prototype",
-    color: "#f83e00",
-    textColor: "#ffffbc",
+    // Figma 76:268/76:315 — red now (#ee3334), not the old orange
+    // (#f83e00); textColor #ede3e9, not #ffffbc — confirmed on both the
+    // resting AND expanded nodes directly, not carried over from the
+    // much older #f83e00/#ffffbc pair this had before today's redesign.
+    color: "#ee3334",
+    textColor: "#ede3e9",
     text: "Foundation",
-    // Figma 57:24536 — "That foundation I got from my parents..." not
+    // Figma 57:24536/76:315 — "...today: with curiosity, craftsmanship..."
+    // (adds "with"), and "That foundation I got from my parents..." not
     // "The foundation...", adding back who it came from.
     description:
-      "That foundation I got from my parents continues to shape how I approach designing today: curiosity, craftsmanship and a deep respect for the people who touch, feel or use the things I design.",
+      "That foundation I got from my parents continues to shape how I approach designing today: with curiosity, craftsmanship and a deep respect for the people who touch, feel or use the things I design.",
     x: 123,
     y: 23,
     rotate: 5.09,
@@ -89,10 +99,12 @@ const CARDS: CardData[] = [
   {
     id: "details",
     // Figma 76:273 — purple now, not the old blue, and the title grew
-    // to "What do I care about" (was "I care about"); textColor lightened
-    // to match (#eceaf8, not the old #f8ecd7 cream).
+    // to "What do I care about" (was "I care about"). textColor #ede3e9,
+    // not #eceaf8 — an earlier pass landed a few hex digits off; 76:325's
+    // expanded node independently confirms #ede3e9 too (the same value
+    // Foundation's own title also converged on), which is what caught it.
     color: "#6458c3",
-    textColor: "#eceaf8",
+    textColor: "#ede3e9",
     text: "What do I care about",
     description: "The details people might never notice. A few pixels, the right word or a transition that feels just right.",
     x: 225,
@@ -158,14 +170,14 @@ const SELECTED_H = 400;
 const SELECTED_RADIUS = 20;
 const SELECTED_PADDING = 12;
 const SELECTED_VIDEO_H = 170;
-// font-serif not-italic here specifically, not shared with RESTING_TEXT
-// below anymore: this is the *expanded* title's own font (Figma's
-// "Card / Default" expanded nodes, e.g. Foundation's own 57:24536, uses
-// Gentium Book Plus) — genuinely different from the resting title's own
-// font now that RESTING_TEXT carries its own real typeface too, not the
-// two sharing one `font-serif not-italic` applied by the template
-// literal that used to wrap both.
-const SELECTED_TITLE_TEXT = "font-serif not-italic text-[24px] leading-[28px] tracking-[-0.192px]";
+// Same font as RESTING_TEXT's own title (PP Neue Montreal Extrabold
+// Italic, see its comment below) at the expanded size instead — Figma's
+// six expanded "Card / Default" nodes (76:299/76:315/76:325/76:335/
+// 76:348/76:358) all confirm this directly. An earlier, separate fetch
+// of just Foundation's own expanded node (57:24536, from before today's
+// font swap) had this as Gentium Book Plus serif; this newer, complete
+// re-check across all six supersedes that.
+const SELECTED_TITLE_TEXT = "font-sans font-extrabold text-[24px] leading-[28px] tracking-[-0.192px]";
 // Figma's own "elevation/subtle" effect style (DROP_SHADOW #17171766,
 // offset 0/1, radius 2) — only ever on the selected card. Both ends of
 // this string share the same offset/blur and differ only in alpha, so a
@@ -183,6 +195,25 @@ const SELECTED_SHADOW = (alpha: number) => `0px 1px 2px 0px rgba(23,23,23,${alph
 // ExtraboldItalic style loaded into --font-sans (layout.tsx) resolving
 // for that weight, not from font-style at all.
 const RESTING_TEXT = "font-sans font-extrabold text-[16px] leading-[18px] tracking-[-0.128px]";
+
+// Figma's expanded description text isn't `card.textColor` at full
+// strength — it's that same color at 0.8 alpha (five of six expanded
+// nodes read exactly this; "design"'s own node says 0.5, but five
+// independent cards agreeing points to 0.8 being the real intended
+// value and "design" being the one not yet refreshed, same judgment
+// call as the divider-color and textColor corrections above). Baked
+// into the `color` value itself via this helper, not left to a
+// separate `opacity` — that CSS property is already spoken for by this
+// same paragraph's own open/close reveal transition (0 hidden -> 1
+// shown), so the 0.8 has to live in the color, not stack as a second
+// multiplied opacity on top of it.
+function withAlpha(hex: string, alpha: number) {
+  const n = parseInt(hex.replace("#", ""), 16);
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 const RESTING_PADDING = 8;
 
 // Selected card centers horizontally in the container and sits with its
@@ -677,6 +708,16 @@ function Card({
         >
           {card.text}
         </p>
+        {/* Figma's six expanded "Card / Default" nodes all add this same
+            hairline divider directly below the title (absent from every
+            resting node, which instead has it above the title, between
+            it and the video — a structural flip, not the same element
+            just restyled). Rendered only when selected, matching Figma's
+            own expanded-only placement; no open/close transition of its
+            own since the title/description around it don't fade this in
+            gradually either — it's part of the same one-beat font/color
+            swap those already do. */}
+        {selected && <div className="h-px w-full shrink-0" style={{ backgroundColor: card.textColor }} />}
         {/* Collapsed to zero layout height via the grid-rows 0fr/1fr trick
             (not just opacity: 0) whenever this card isn't selected — kept
             mounted throughout (not conditionally rendered) so it still
@@ -706,8 +747,8 @@ function Card({
             aria-hidden={!selected}
             className="w-full min-h-0 overflow-hidden break-words font-sans text-[16px] leading-[normal] tracking-[-0.128px]"
             style={{
-              color: card.textColor,
-              opacity: selected ? 0.5 : 0,
+              color: withAlpha(card.textColor, 0.8),
+              opacity: selected ? 1 : 0,
               transform: `translateY(${selected ? 0 : 8}px)`,
               transition: reducedMotion
                 ? undefined

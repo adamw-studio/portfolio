@@ -136,6 +136,12 @@ export default function Nav() {
       </div>
 
       <div className={`relative flex items-center gap-1 rounded-full p-1 ${pill}`}>
+        {/* --glass-tint: the bar's own background genuinely reads lighter
+            than the page behind it in Figma, not just a translucent dark
+            panel blending into it — see globals.css for how that value
+            was derived and why it's a flat, predictable alpha layer
+            rather than the blend-mode lift this used originally. */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 rounded-full bg-[var(--glass-tint)]" />
         <div aria-hidden className="glass-border" />
         {links.map((link) => {
           const active = pathname === link.href;

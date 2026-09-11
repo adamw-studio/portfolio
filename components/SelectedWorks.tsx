@@ -189,7 +189,7 @@ export default function SelectedWorks() {
   // Drag-to-scroll state lives in a ref, not useState — it's read/written
   // every pointermove and must never itself trigger a re-render (that
   // would fight the scrollLeft writes below on every frame of the drag).
-  const drag = useRef({ dragging: false, startX: 0, startScrollLeft: 0, moved: false });
+  const drag = useRef({ dragging: false, startX: 0, startScrollLeft: 0, moved: false, pointerId: 0 });
 
   // Mouse-only: a real mouse has no native way to drag a horizontal
   // row (no trackpad-style two-finger swipe, and a vertical wheel
@@ -202,23 +202,48 @@ export default function SelectedWorks() {
     if (e.pointerType !== "mouse") return;
     const el = scrollerRef.current;
     if (!el) return;
-    drag.current = { dragging: true, startX: e.clientX, startScrollLeft: el.scrollLeft, moved: false };
-    try {
-      el.setPointerCapture(e.pointerId);
-    } catch {
-      // Safari/older browsers can reject capture for a pointerId that's
-      // already gone by the time this runs (a very fast click) — the
-      // drag state above is already set either way, so this is safe to
-      // ignore rather than let it throw out of the handler.
-    }
+    drag.current = { dragging: true, startX: e.clientX, startScrollLeft: el.scrollLeft, moved: false, pointerId: e.pointerId };
+    // No setPointerCapture here anymore — see onPointerMove's own comment
+    // for why capturing eagerly on every pointerdown, before knowing this
+    // is actually a drag, was the real bug behind every card's own click-
+    // through silently doing nothing.
   };
 
+  // 8px, up from 3 for the same reason this now defers pointer capture
+  // (below): a little headroom for a real click's own incidental
+  // movement (cursor settling, trackpad/automation jitter) before
+  // treating it as a drag at all, on top of the capture fix actually
+  // being what unblocks the click.
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = scrollerRef.current;
     const state = drag.current;
     if (!el || !state.dragging) return;
     const dx = e.clientX - state.startX;
-    if (Math.abs(dx) > 3) state.moved = true;
+    if (!state.moved && Math.abs(dx) > 8) {
+      state.moved = true;
+      // Capturing only now — once this has genuinely become a drag, not
+      // on every pointerdown regardless of what it turns out to be.
+      // Reported live as every card's own Link click doing nothing:
+      // setPointerCapture doesn't just keep routing *pointer* events to
+      // this element past the target's own bounds (its documented,
+      // intended job for a real drag) — per the Pointer Events spec it
+      // also redirects the mouse-compatibility events browsers
+      // synthesize alongside them, including `click`, so the click
+      // event's own target became this scroll container instead of
+      // whichever card the pointer was actually over, and a click
+      // targeted at an *ancestor* of the Link never passes through it on
+      // the way up — Link's own onClick simply never ran. A plain click
+      // (this branch never runs, capture never happens) now reaches its
+      // card's Link exactly the way a click outside this component
+      // already always did.
+      try {
+        el.setPointerCapture(state.pointerId);
+      } catch {
+        // Safari/older browsers can reject capture for a pointerId
+        // that's already gone by the time this runs — state.moved is
+        // already set either way, so this is safe to ignore.
+      }
+    }
     el.scrollLeft = state.startScrollLeft - dx;
   };
 

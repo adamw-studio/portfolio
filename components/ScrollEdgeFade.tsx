@@ -18,30 +18,38 @@ import { useEffect, useState } from "react";
 // reproduces the same multi-layer approach rather than Figma's literal
 // (flatter) spec.
 //
-// MAX_BLUR_PX — an earlier pass matched this closer to the reference's
-// own 20-25px peak, which reads fine over that reference's own hero
-// image but was reported live as genuinely breaking on this page: this
-// site's edges sit over dense body paragraphs (not a photo), and a
-// 20px blur over 14-16px text doesn't read as "softly hazy," it reads
-// as "this sentence is gone" — confirmed in the report itself, a full
-// line of real "What I do" copy rendered fully illegible mid-scroll,
-// not just at the true screen edge where content is about to exit
-// anyway. 5px keeps the graduated-layer technique (still ramps smoothly
-// via the same 8-layer approach) but stays genuinely subtle over text,
-// closer to Figma's own much gentler 2px spec than to the reference
-// site's own value, which was tuned for different underlying content.
-// STRIP_HEIGHT_PX trimmed alongside it so less real content sits inside
-// the affected band in the first place.
+// MAX_BLUR_PX / STRIP_HEIGHT_PX — two rounds of live feedback here, and
+// the second one pointed at the actual root cause the first fix missed.
+// Round 1 (20px blur, 96px strip): a whole line of real body copy
+// rendered fully illegible mid-scroll — fixed by dropping the blur to
+// 5px. Round 2, with that gentler blur still in place: ONE line came
+// back fully blurred while the lines immediately above *and below* it
+// stayed sharp — a sandwiched, glitchy-looking artifact, not a smooth
+// fade. That's a height problem, not a blur-strength one: body text
+// runs a 24px line-height, and a 64px-tall band gives this graduated
+// technique's own *cumulative* blur (several overlapping layers
+// compounding near the strip's inner edge, per its own doubling
+// design) enough room to peak squarely in the middle of one line while
+// its neighbors — a half-line-height away in either direction — sit
+// far enough outside that peak to stay comparatively sharp. Shrinking
+// the strip to roughly one line height removes the room for that
+// peak-then-clean-neighbor discontinuity to ever land mid-paragraph;
+// at most the bottom portion of whichever line is actually at the true
+// edge fades, the same way a real edge vignette should read. 3px (down
+// from 5) on top of that is extra margin, now closer to Figma's own
+// 2px spec than any of the reference site's own values, which were
+// tuned for a hero photo, not dense text — the throughline both rounds
+// of feedback were actually pointing at.
 //
-// bg-bg-default/80 (not a hardcoded rgba) is what makes the tint layer
+// bg-bg-default (not a hardcoded rgba) is what makes the tint layer
 // theme-aware for free — resolves through the project's existing
 // bg-default token, so light mode gets its own correct value
 // automatically the same way every other themed surface on this site
 // does, rather than only working in the one theme a literal value would
 // have matched.
 const LAYER_COUNT = 8;
-const MAX_BLUR_PX = 5;
-const STRIP_HEIGHT_PX = 64;
+const MAX_BLUR_PX = 3;
+const STRIP_HEIGHT_PX = 28;
 
 // Layer i (0-indexed) blurs at MAX_BLUR_PX / 2^(LAYER_COUNT-1-i) — the
 // same doubling progression measured on the reference (…, 5, 10, 20).

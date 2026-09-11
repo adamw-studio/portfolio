@@ -158,14 +158,31 @@ const SELECTED_H = 400;
 const SELECTED_RADIUS = 20;
 const SELECTED_PADDING = 12;
 const SELECTED_VIDEO_H = 170;
-const SELECTED_TITLE_TEXT = "text-[24px] leading-[28px] tracking-[-0.192px]";
+// font-serif not-italic here specifically, not shared with RESTING_TEXT
+// below anymore: this is the *expanded* title's own font (Figma's
+// "Card / Default" expanded nodes, e.g. Foundation's own 57:24536, uses
+// Gentium Book Plus) — genuinely different from the resting title's own
+// font now that RESTING_TEXT carries its own real typeface too, not the
+// two sharing one `font-serif not-italic` applied by the template
+// literal that used to wrap both.
+const SELECTED_TITLE_TEXT = "font-serif not-italic text-[24px] leading-[28px] tracking-[-0.192px]";
 // Figma's own "elevation/subtle" effect style (DROP_SHADOW #17171766,
 // offset 0/1, radius 2) — only ever on the selected card. Both ends of
 // this string share the same offset/blur and differ only in alpha, so a
 // plain CSS transition on `box-shadow` interpolates it smoothly rather
 // than needing a separate opacity layer.
 const SELECTED_SHADOW = (alpha: number) => `0px 1px 2px 0px rgba(23,23,23,${alpha})`;
-const RESTING_TEXT = "text-[16px] leading-[18px] tracking-[-0.128px]";
+// Figma 76:293 (and its five siblings, 76:268/76:273/76:278/76:283/
+// 76:288) — font-['PP_Neue_Montreal:Extrabold_Italic'], not this card's
+// former font-serif. "Extrabold Italic" is the actual font FILE selected
+// (the glyphs themselves are drawn slanted), not a CSS italic applied on
+// top of an upright cut — Figma's own `not-italic` on these nodes is
+// just confirming the CSS font-style property is normal, which is
+// exactly what `italic` (Tailwind's font-style utility) is deliberately
+// NOT set to here; the slant comes from font-extrabold + the
+// ExtraboldItalic style loaded into --font-sans (layout.tsx) resolving
+// for that weight, not from font-style at all.
+const RESTING_TEXT = "font-sans font-extrabold text-[16px] leading-[18px] tracking-[-0.128px]";
 const RESTING_PADDING = 8;
 
 // Selected card centers horizontally in the container and sits with its
@@ -609,23 +626,38 @@ function Card({
           resting "Card / Default" node, e.g. 33:9845, gives this area the
           same 8px radius as the selected state — an earlier pass had this
           at 0 at rest, unrounded, which was never actually right). */}
-      <div
-        className="relative w-full shrink-0 overflow-hidden rounded-[8px]"
-        style={{
-          height: selected ? SELECTED_VIDEO_H : 60,
-          transition: reducedMotion ? undefined : `height ${transitionMs}ms ${EASE_OUT}`,
-        }}
-      >
-        {card.video && (
-          <video
-            src={`/videos/about-cards/${card.video}`}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="size-full object-cover"
-          />
-        )}
+      <div className="flex w-full shrink-0 flex-col gap-2">
+        <div
+          className="relative w-full shrink-0 overflow-hidden rounded-[8px]"
+          style={{
+            height: selected ? SELECTED_VIDEO_H : 60,
+            transition: reducedMotion ? undefined : `height ${transitionMs}ms ${EASE_OUT}`,
+          }}
+        >
+          {card.video && (
+            <video
+              src={`/videos/about-cards/${card.video}`}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="size-full object-cover"
+            />
+          )}
+        </div>
+        {/* Figma 76:293 etc. — a hairline divider (0.5px stroke, "Vector
+            10") between the video and the title, present only in the
+            *resting* card (this same card's own expanded node, e.g.
+            Foundation's 57:24536, has no such line at all — confirmed
+            absent, not just unfetched). Colored per-card to match that
+            card's own textColor: five of the six cards' own divider
+            assets literally are that exact hex; the sixth ("I care
+            about", #EDE3E9 vs. its own title's #eceaf8) is close enough
+            to read as the same intended pair that it's almost certainly
+            Figma's own asset not getting re-exported after that card's
+            text color was last tweaked — textColor used uniformly here
+            rather than hardcoding one card's own slightly-off exception. */}
+        {!selected && <div className="h-px w-full shrink-0" style={{ backgroundColor: card.textColor }} />}
       </div>
       <div className="flex w-full flex-col gap-2">
         {/* Stays visible on a settled (dimmed) card — Figma's own
@@ -637,7 +669,7 @@ function Card({
             that collision; fixing the positions properly removed the
             actual cause, so the title stays. */}
         <p
-          className={`w-full break-words font-serif not-italic ${selected ? SELECTED_TITLE_TEXT : RESTING_TEXT}`}
+          className={`w-full break-words ${selected ? SELECTED_TITLE_TEXT : RESTING_TEXT}`}
           style={{
             color: card.textColor,
             transition: reducedMotion ? undefined : `font-size ${transitionMs}ms ${EASE_OUT}, color ${transitionMs}ms ${EASE_OUT}`,

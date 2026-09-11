@@ -24,18 +24,31 @@ const gentiumBasic = localFont({
 // to Semibold as the closest weight this family ships since it has no
 // true 700/Bold cut of its own between Semibold/600 and Extrabold/800),
 // plus the plain Italic style — Figma 74:191's own project-card captions
-// (SelectedWorks.tsx) use it for the "Lead designer / 2026" row, the
-// first italic text anywhere on this site. The purchased pack also
-// includes Light/Book/Extrabold/Black/Hairline and a whole second "Text"
-// optical-size subfamily (plus Medium/Semibold/Extrabold *italics*),
-// none of which any current class on this site reaches for — not
-// loaded, to avoid shipping webfont weight nobody uses.
+// (SelectedWorks.tsx) use it for the "Lead designer / 2026" row — and
+// Extrabold Italic, all six About-card resting titles' own literal font
+// (AboutCardStack.tsx's RESTING_TEXT, Figma 76:293 etc.). The purchased
+// pack also includes Light/Book/Black/Hairline and a whole second "Text"
+// optical-size subfamily (plus Medium/Semibold italics), none of which
+// any current class on this site reaches for — not loaded, to avoid
+// shipping webfont weight nobody uses.
 const neueMontreal = localFont({
   src: [
     { path: "../public/fonts/PPNeueMontreal-Regular.woff2", weight: "400", style: "normal" },
     { path: "../public/fonts/PPNeueMontreal-Medium.woff2", weight: "500", style: "normal" },
     { path: "../public/fonts/PPNeueMontreal-Semibold.woff2", weight: "600 700", style: "normal" },
     { path: "../public/fonts/PPNeueMontreal-Italic.woff2", weight: "400", style: "italic" },
+    // style: "normal" here, not "italic" — even though the file itself
+    // is the ExtraboldItalic cut (its glyphs are genuinely drawn
+    // slanted). Figma's own node marks this text `not-italic`, i.e. its
+    // *CSS* font-style is meant to read as normal (screen readers won't
+    // announce it as italic, and nothing needs `italic`/font-style:
+    // italic in AboutCardStack.tsx to select it) — this is a foundry-
+    // supplied *display* cut used as its own distinct weight/style
+    // choice, not a grammatical italic. Registering it as "italic" here
+    // would mean only font-style:italic elements could ever match it;
+    // registering it as "normal" is what makes plain `font-extrabold`
+    // (no `italic` class) resolve to this file.
+    { path: "../public/fonts/PPNeueMontreal-ExtraboldItalic.woff2", weight: "800", style: "normal" },
   ],
   variable: "--font-neue-montreal",
   display: "swap",

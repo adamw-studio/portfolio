@@ -21,44 +21,41 @@ const links = [
 
 const CONTACT_EMAIL = "adamweber54@gmail.com";
 
-// Same pill treatment the old top nav used (border-subtle + bg-default/80
-// + heavy blur) for the bar itself — still the site's one "floats above
-// the page" language, just carried by a single element again now that
-// everything lives in one row.
-const pill = "border border-border-subtle bg-bg-default/80 backdrop-blur-[23px]";
+// Same pill treatment the old top nav used (bg-default/80 + heavy blur)
+// for the bar itself — still the site's one "floats above the page"
+// language. Used alone (no border) for the Contact-reveal panel above the
+// bar, which has no Figma spec of its own to match; the bar itself adds
+// its own Glass-effect border + overlays on top of this same base (see
+// below), rather than the plain border-border-subtle this used to carry.
+const pill = "bg-bg-default/80 backdrop-blur-[23px]";
 
-// Figma's own active-segment treatment is a native "Glass" effect (Light:
-// -59deg angle, 80% intensity, plus Refraction/Depth/Dispersion/Frost/
-// Splay) — Figma's version of Apple's Liquid Glass material, confirmed
-// against its own Inspect panel. True refraction can't be replicated in
-// CSS, so this approximates the same *read* with what CSS actually has: a
-// soft drop shadow, a flat semi-transparent fill (--glass-fill) for the
-// glassy body, and a *real* gradient border (.glass-border, see
-// globals.css) for the directional light-catching edge.
-//
-// The fill used to be two full-bleed blend-mode overlays instead (lighten
-// + color-dodge) — Figma's own codegen fallback for the effect. Dropped
-// after pixel-sampling Figma's actual rendered output showed those two
-// layers reading far too dark against this page's real background (the
-// button's own interior should read distinctly lighter than the bar
-// around it, not barely different from it), and color-dodge in
-// particular behaves completely differently over a light backdrop than
-// the dark one it was tuned against — the direct cause of the segment
-// rendering as a solid white blowout once reported live in light mode.
-// --glass-fill (see globals.css) is calibrated from that same pixel
-// sample instead of guessed blend-mode math, and — like the border —
-// uses this site's own light/dark tokens rather than a value only tuned
-// for one theme.
-function ActiveSegmentGlass() {
+// Figma's own Glass effect (Light: -59deg angle, 80% intensity, plus
+// Refraction/Depth/Dispersion/Frost/Splay — Figma's version of Apple's
+// Liquid Glass material, confirmed against its own Inspect panel) sits on
+// the *bar itself* here (re-confirmed against a later re-fetch of this
+// same control, 33:9540 — an earlier pass had it on each active segment
+// individually instead): two full-bleed blend-mode overlays (lighten +
+// color-dodge, Figma's own codegen fallback for the effect — literal
+// fixed values, not theme tokens, since a blend mode's own math only
+// makes sense against the exact colors it was tuned for) plus a *real*
+// gradient border (.glass-border, see globals.css, since true refraction
+// can't be replicated in CSS but the directional light does produce a
+// genuine gradient along the stroke). Individual segments (the active nav
+// item, the theme-toggle group) layer their own bg-bg-tertiary fill and
+// .glass-border on top of that shared glass base, not a separate
+// full effect each.
+function GlassOverlay({ radius }: { radius: string }) {
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 rounded-[20px] bg-[var(--glass-fill)]">
+    <div aria-hidden className={`pointer-events-none absolute inset-0 ${radius}`}>
+      <div className={`absolute inset-0 ${radius} bg-[rgba(255,255,255,0.06)] mix-blend-lighten`} />
+      <div className={`absolute inset-0 ${radius} bg-[rgba(94,94,94,0.18)] mix-blend-color-dodge backdrop-blur-[5px]`} />
       <div className="glass-border" />
     </div>
   );
 }
 
 const segmentBase = "relative flex w-[66.667px] items-center justify-center px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,color] duration-150";
-const segmentActive = "rounded-[20px] font-medium text-text-primary shadow-[0px_2px_4px_0px_rgba(0,0,0,0.1)]";
+const segmentActive = "rounded-[20px] bg-bg-tertiary font-medium text-text-primary shadow-[0px_2px_4px_0px_rgba(0,0,0,0.1)]";
 const segmentInactive = "rounded-full font-normal text-text-secondary";
 
 export default function Nav() {
@@ -122,7 +119,7 @@ export default function Nav() {
           intercepting a click meant for the page behind it. Anchored to
           the bar's own top edge, where the two meet. */}
       <div
-        className={`rounded-m p-1.5 transition-[opacity,transform] ${EASE_OUT} ${MOTION_REDUCE} ${pill} ${
+        className={`rounded-m border border-border-subtle p-1.5 transition-[opacity,transform] ${EASE_OUT} ${MOTION_REDUCE} ${pill} ${
           showContact ? "translate-y-0 scale-100 opacity-100 duration-200" : "pointer-events-none translate-y-1 scale-95 opacity-0 duration-150"
         }`}
         style={{ transformOrigin: "bottom center" }}
@@ -139,7 +136,8 @@ export default function Nav() {
         </div>
       </div>
 
-      <div className={`flex items-center gap-1 rounded-full p-1 ${pill}`}>
+      <div className={`relative flex items-center gap-1 rounded-full p-1 ${pill}`}>
+        <GlassOverlay radius="rounded-full" />
         {links.map((link) => {
           const active = pathname === link.href;
           return (
@@ -149,7 +147,7 @@ export default function Nav() {
               onClick={() => setShowContact(false)}
               className={`${segmentBase} ${active ? segmentActive : segmentInactive}`}
             >
-              {active && <ActiveSegmentGlass />}
+              {active && <div aria-hidden className="glass-border" />}
               {link.label}
             </Link>
           );
@@ -160,7 +158,7 @@ export default function Nav() {
           onClick={() => setShowContact((s) => !s)}
           className={`${segmentBase} ${showContact ? segmentActive : segmentInactive}`}
         >
-          {showContact && <ActiveSegmentGlass />}
+          {showContact && <div aria-hidden className="glass-border" />}
           Contact
         </button>
 
@@ -168,18 +166,16 @@ export default function Nav() {
             swapping between them) — Figma's own two-state segmented
             control, matching the three route segments' own look-and-feel
             rather than reusing the single-icon-button this bar replaced.
-            bg-bg-tertiary marks whichever theme is *current*, not which
-            one tapping would switch to (opposite of the old single-button
-            version's own icon-picking rule, since both options are always
-            on screen here — there's no "next state" to hint at). Same
-            0.5px rgba(255,255,255,0.4) stroke as the active segments' own
-            Glass-effect border (re-confirmed against 33:9540 — an earlier
-            fetch had this group's own border at a plain Tailwind `border`
-            width, 1px, not the 0.5px it actually is), so this reuses the
-            exact same gradient-border technique rather than the flat
-            border-border-subtle every other bordered pill on the site
-            uses. */}
-        <div className="relative flex items-center gap-1 rounded-full p-0.5">
+            The *inner* icon's own bg-bg-tertiary marks whichever theme is
+            *current*, not which one tapping would switch to (opposite of
+            the old single-button version's own icon-picking rule, since
+            both options are always on screen here — there's no "next
+            state" to hint at); this *outer* group also gets its own
+            bg-bg-tertiary + glass-border, the same "elevated" treatment
+            as the active nav segment, confirmed on a later re-fetch of
+            this control (33:9540) — an earlier pass had this group with
+            no fill of its own, just the border. */}
+        <div className="relative flex items-center gap-1 rounded-full bg-bg-tertiary p-0.5">
           <div aria-hidden className="glass-border" />
           <button
             type="button"

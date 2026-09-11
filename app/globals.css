@@ -42,35 +42,31 @@
      rather than dark gray — confirmed against every other tag's node in
      Figma 270:5949 after this one was wrongly assumed to just be #191919. */
   --tag-icon-bg: #e8e8e8;
-  /* Nav's active segment/theme-toggle Glass effect (Figma 33:9346 etc.) —
-     a native Figma "Glass" effect (Light: -59deg angle, 80% intensity,
-     plus Refraction/Depth/Dispersion/Frost/Splay), Figma's own version of
-     Apple's Liquid Glass material. Real refraction can't be replicated in
-     CSS — these values are reverse-engineered from actually sampling
-     Figma's own rendered output pixel-by-pixel (a dark-mode render, then
-     converted to this light-mode equivalent the same way every other
-     token on this page swaps), not estimated from the blend-mode math a
-     first pass tried and got visibly wrong in both themes:
-     - Fill (--glass-fill): the button interior sampled flat at rgb(48)
-       against a rgb(30) bar background — solving 30 + (255-30)*a = 48
-       gives alpha ≈ 0.08. This replaced two mix-blend-mode overlay layers
-       (Figma's own codegen approximation of the effect) that read far too
-       dark against this page's actual near-black background, and risked
-       blowing out to solid white in light mode — color-dodge in
-       particular behaves completely differently over a light backdrop
-       than the dark one it was tuned against, which is exactly the "solid
-       white fill" bug reported live.
-     - Border (--glass-border-start/-end): the brightest sampled point (a
-       corner where the -59deg light hits most directly) read rgb(87), well
-       above the rgb(48) fill next to it — while the opposite corner showed
-       no brightening at all, fading straight to background. The gradient
-       stops mirror that: a real peak at the start, and an end value close
-       to the fill itself rather than a hard cutoff.
-     Both built from text-primary/its light-mode equivalent rather than a
-     hardcoded white — a real border and fill have to read as "glass
-     catching light" against either page background, not just the dark one
-     Figma's own export assumes. */
-  --glass-fill: rgba(13, 13, 13, 0.06);
+  /* Nav's Glass-effect border (Figma 33:9345/33:9346/33:9550 etc.) — a
+     native Figma "Glass" effect (Light: -59deg angle, 80% intensity, plus
+     Refraction/Depth/Dispersion/Frost/Splay), Figma's own version of
+     Apple's Liquid Glass material, confirmed against its own Inspect
+     panel. True refraction can't be replicated in CSS, but the
+     directional light does produce a genuine gradient along the stroke —
+     brighter on the edge facing the light, dimmer on the edge facing
+     away — which these two stops approximate as a real `linear-gradient`
+     border (see .glass-border below) rather than the flat rgba(...,0.4)
+     Figma's own codegen simplifies every one of this control's borders
+     to. Calibrated against Figma's actual rendered output, sampled
+     pixel-by-pixel rather than estimated: the brightest point (a corner
+     where the light hits most directly) read rgb(87) against a rgb(48)
+     fill right next to it, while the opposite corner showed no
+     brightening at all, fading straight to background — the gradient
+     stops mirror that: a real peak at the start, and an end value close
+     to the fill itself rather than a hard cutoff. Built from
+     text-primary/its light-mode equivalent rather than a hardcoded
+     white — a border has to read as "glass catching light" against
+     either page background, not just the dark one Figma's export
+     assumes. (The glass *fill* itself doesn't need an equivalent custom
+     token — every filled piece of this control uses bg-bg-tertiary, an
+     already-existing theme-aware token, confirmed as the actual variable
+     Figma references here rather than a value worth reverse-engineering
+     by hand.) */
   --glass-border-start: rgba(13, 13, 13, 0.55);
   --glass-border-end: rgba(13, 13, 13, 0.1);
   --radius-xs: 6px;
@@ -108,7 +104,6 @@
   --dot-color: rgba(244, 244, 244, 0.12);
   --icon-cream: #fff1b5;
   --tag-icon-bg: #a16ea9;
-  --glass-fill: rgba(244, 244, 244, 0.08);
   --glass-border-start: rgba(244, 244, 244, 0.65);
   --glass-border-end: rgba(244, 244, 244, 0.15);
 }

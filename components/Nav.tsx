@@ -22,12 +22,23 @@ const links = [
 const CONTACT_EMAIL = "adamweber54@gmail.com";
 
 // Same pill treatment the old top nav used (bg-default/80 + heavy blur)
-// for the bar itself — still the site's one "floats above the page"
-// language. Used alone (no border) for the Contact-reveal panel above the
-// bar, which has no Figma spec of its own to match; the bar itself adds
-// its own Glass-effect border on top of this same base (see below),
-// rather than the plain border-border-subtle this used to carry.
+// for the Contact-reveal panel above the bar, which has no Figma spec of
+// its own to match.
 const pill = "bg-bg-default/80 backdrop-blur-[23px]";
+
+// The segmented-control bar itself needs more than that: reported live
+// (real device, not this environment's own test browser) with page text
+// visibly bleeding through it, legible enough to overlap and garble the
+// bar's own "Home Play Contact" labels — 80% opacity plus a blur leaves
+// real text behind it too readable once backdrop-blur itself renders
+// weaker than expected (a known real-device inconsistency, not something
+// this environment's own testing reliably catches — see .glass-border's
+// own mask-composite failure earlier for the same category of gap).
+// Bumped to 95% opacity so the bar stays legible even if blur alone
+// doesn't fully carry the job — closer to how solid Figma's own rendered
+// reference actually looks anyway (its sampled bar background was a flat
+// rgb(30), not a hazy see-through one).
+const barPill = "bg-bg-default/95 backdrop-blur-[23px]";
 
 // Figma's own Glass effect (Light: -59deg angle, 80% intensity, plus
 // Refraction/Depth/Dispersion/Frost/Splay — Figma's version of Apple's
@@ -135,7 +146,7 @@ export default function Nav() {
         </div>
       </div>
 
-      <div className={`relative flex items-center gap-1 rounded-full p-1 ${pill}`}>
+      <div className={`relative flex items-center gap-1 rounded-full p-1 ${barPill}`}>
         {/* --glass-tint: the bar's own background genuinely reads lighter
             than the page behind it in Figma, not just a translucent dark
             panel blending into it — see globals.css for how that value

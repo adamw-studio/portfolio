@@ -79,27 +79,32 @@ export default function Home() {
       <Nav />
 
       <div className="mx-auto w-full max-w-[688px] pt-[180px]">
-        {/* Figma 51:10930 — one flat 100px gap among the intro block, the
+        {/* Figma 51:10930 — one flat 80px gap among the intro block, the
             card cluster, and "What I do", not the nested 100/120 two-
             rhythm structure (and flourish-divider elements) an earlier,
-            different fetch (46:10661) had specified. This node's own
-            code export literally sets `gap-[100px]` on their shared
-            parent, and its metadata tree has no divider node anywhere
-            between them — confirmed live, on direct instruction, rather
-            than assumed to still be a truncation artifact of such a
-            large fetch. */}
-        <div className="flex flex-col gap-[100px]">
+            different fetch (46:10661) had specified. 80px, not the
+            100px this page carried until a fresh re-check of this same
+            node's own metadata: its code export's own `gap-[100px]`
+            class was trusted over two consistent direct pixel
+            measurements of both internal gaps (each independently
+            measuring 80px, not 100, across two different snapshots of
+            this file) — that measured reality wins now rather than the
+            class name, which apparently doesn't survive this node's own
+            rotated-content children cleanly. */}
+        <div className="flex flex-col gap-20">
           {/* Figma 51:10930 — the intro is left-aligned again (a prior,
               more specific fetch of just this paragraph, 46:10668, had it
               centered with the bio split into 3 explicit lines; this
               later full-page fetch reverts both of those, confirmed live
               rather than assumed from the fetch alone). "What shapes me"
               stays gone from this design outright, not just relocated. */}
-          <div className="mx-auto flex w-full max-w-[512px] flex-col items-start gap-6">
-            {/* 24px specifically for this heading, not the shared
-                `heading` token's own 20px — "What I do" (the token's
-                other call site) stays at 20px, so this can't just bump
-                the shared value. The small circle-"i" glyph (Figma
+          <div className="mx-auto flex w-full max-w-[512px] flex-col items-start gap-4">
+            {/* gap-4 (16px) between the heading row and the bio text, not
+                24px — tightened alongside the heading's own move off the
+                24px serif treatment onto the smaller 16px sans one (see
+                pageHeading), confirmed via this node's own metadata, not
+                assumed to stay unchanged just because the surrounding
+                layout didn't move. The small circle-"i" glyph (Figma
                 53:11343) is purely decorative: no href, tooltip, or
                 click behavior is specified on this node, so it renders
                 inert (aria-hidden) rather than inventing an interaction
@@ -168,20 +173,20 @@ export default function Home() {
               its own full-width section the way it once did. */}
           <AboutCardStack />
 
-          {/* Figma 57:24399 — this section's own real nesting: 24px
-              between the heading and everything below it, but *within*
-              that "everything below" group, only 12px separates the
-              paragraph pair from the tag row (and 12px again between the
-              two paragraphs themselves) — not one flat 24px gap among
-              all four children, which an earlier, coarser full-page
-              fetch (51:10930) had suggested instead. This more specific,
-              later fetch of just this section supersedes that. */}
-          <div className="mx-auto flex w-full max-w-[512px] flex-col items-start gap-6">
+          {/* Figma 51:10930 — this section's own real nesting, re-checked
+              fresh alongside the header-spacing fixes above: 16px
+              between the heading and everything below it (tightened from
+              24px, same heading-shrink reasoning as the bio block), then
+              16px again from the paragraph pair down to the tag row
+              (widened from an earlier, more specific fetch's own 12px,
+              57:24399 — this later full-page re-check supersedes that),
+              while the two paragraphs themselves stay 12px apart. */}
+          <div className="mx-auto flex w-full max-w-[512px] flex-col items-start gap-4">
             <div className="flex items-center gap-2.5">
               <HeadingFlourish />
               <h2 className={pageHeading}>What I do</h2>
             </div>
-            <div className="flex w-full flex-col items-start gap-3">
+            <div className="flex w-full flex-col items-start gap-4">
               <div className="flex w-full flex-col items-start gap-3">
                 <p className={bodyText}>
                   I own my work end to end, from early concepts to shipped outcomes. I’ve worked on large
@@ -203,13 +208,17 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ~80px, not this page's own 100/120 rhythm — Figma 51:10930's
-            own metadata places this cards row 1064px from its frame's
-            top, against the intro block's own measured bottom edge of
-            ~984px at that same top offset: a gap of its own, not part of
-            any shared auto-layout "gap" (the two aren't siblings inside
-            one flex parent in Figma either — both are independently
-            absolute-positioned directly on the page canvas). */}
+        {/* 80px — re-confirmed against a fresh re-check of Figma
+            51:10930's own metadata: the intro block and the Selected
+            Works row are both children of one shared wrapper frame now
+            (76:344), the intro block's own height (793.54) plus this
+            80px lands exactly on the cards row's own y (873.54). Not
+            part of the gap-20 rhythm above them (that flex column ends
+            at the intro block; this is its own margin below it, not a
+            shared gap value), and it isn't a coincidence that it's the
+            same 80px either — same rhythm, just expressed as a margin
+            here since Selected Works itself breaks out of this column
+            for its own full-bleed row. */}
         <div className="mt-20">
           <SelectedWorks />
         </div>

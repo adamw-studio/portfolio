@@ -9,16 +9,17 @@ import { themedIcon } from "@/components/themedIcon";
 import { bodyText } from "@/components/typography";
 
 // Both this page's own headings ("Hey, I'm Adam" and "What I do") share
-// one literal size now — 24px, not the shared `heading` typography
-// token's own 20px, which no longer has any call site on this page (it's
-// still exported for whatever else might want the 20px scale later).
-// Figma 51:10930's own text nodes for both (52:11110 and 52:11135) also
-// share an identical -0.96px tracking value — this page's own h1 had
-// drifted to -0.8px from an earlier, separate fetch of just that
-// heading, before this current redesign; corrected here alongside "What
-// I do" so the two stay visually consistent, not just coincidentally
-// the same size.
-const pageHeading = "font-serif text-[24px] leading-6 tracking-[-0.96px] text-text-primary";
+// one literal style — confirmed identical across both, node for node
+// (52:11108 and 52:11133). No longer the serif/24px treatment these
+// carried through this whole redesign: Figma's own text nodes for both
+// now read font-['PP_Neue_Montreal:Semibold'] at 16px/leading-6/
+// tracking-[-0.32px] — the same purchased sans this page's body copy
+// already switched to (globals.css's own --font-sans), just at
+// font-semibold here instead of font-normal/font-medium. font-serif
+// (Gentium Basic) stays in use elsewhere on the site (case-study
+// headings, etc.) — this is specifically these two headings moving off
+// of it, not the serif family being retired outright.
+const pageHeading = "font-sans font-semibold text-[16px] leading-6 tracking-[-0.32px] text-text-primary";
 
 // The small hand-drawn squiggle (Figma "Vector 9") that sits directly
 // before both "Hey, I'm Adam" and "What I do" in 51:10930 — a *different*

@@ -8,18 +8,15 @@ import { ThemeProvider } from "@/components/ThemeContext";
 import { themedIcon } from "@/components/themedIcon";
 import { bodyText } from "@/components/typography";
 
-// Both this page's own headings ("Hey, I'm Adam" and "What I do") share
-// one literal style — confirmed identical across both, node for node
-// (52:11108 and 52:11133). No longer the serif/24px treatment these
-// carried through this whole redesign: Figma's own text nodes for both
-// now read font-['PP_Neue_Montreal:Semibold'] at 16px/leading-6/
-// tracking-[-0.32px] — the same purchased sans this page's body copy
-// already switched to (globals.css's own --font-sans), just at
-// font-semibold here instead of font-normal/font-medium. font-serif
-// (Gentium Basic) stays in use elsewhere on the site (case-study
-// headings, etc.) — this is specifically these two headings moving off
-// of it, not the serif family being retired outright.
-const pageHeading = "font-sans font-semibold text-[16px] leading-6 tracking-[-0.32px] text-text-primary";
+// Both this page's own headings ("Hey, I am Adam" and "What I do") share
+// one literal style. Figma 84:1045 bumps this to 20px/tracking-[-0.8px],
+// up from the 16px/tracking-[-0.32px] this had right after the font
+// swap — still font-['PP_Neue_Montreal:Semibold'] at leading-6, same
+// family/weight as before, just larger. font-serif (Gentium Basic) stays
+// in use elsewhere on the site (case-study headings, etc.) — these two
+// headings are still off of it, not the serif family being retired
+// outright.
+const pageHeading = "font-sans font-semibold text-[20px] leading-6 tracking-[-0.8px] text-text-primary";
 
 // The small hand-drawn squiggle (Figma "Vector 9") that sits directly
 // before both "Hey, I'm Adam" and "What I do" in 51:10930 — a *different*
@@ -118,7 +115,7 @@ export default function Home() {
             <div className="flex w-full items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <HeadingFlourish />
-                <h1 className={pageHeading}>Hey, I’m Adam</h1>
+                <h1 className={pageHeading}>Hey, I am Adam</h1>
               </div>
               <svg aria-hidden viewBox="0 0 26 26" width={24} height={24} fill="none" className="shrink-0">
                 <circle cx="13" cy="13" r="12" fill="var(--color-bg-default)" stroke="var(--color-border-subtle)" />

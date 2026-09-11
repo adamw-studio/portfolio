@@ -4,6 +4,7 @@ import { Chip } from "@/components/Chip";
 import { Tag } from "@/components/Tag";
 import AboutCardStack from "@/components/AboutCardStack";
 import FlourishDivider from "@/components/FlourishDivider";
+import ScrollEdgeFade from "@/components/ScrollEdgeFade";
 import SelectedWorks from "@/components/SelectedWorks";
 import HomeFooter from "@/components/HomeFooter";
 import { ThemeProvider } from "@/components/ThemeContext";
@@ -43,6 +44,11 @@ export default function Home() {
           read as cramped directly under a fixed bar rather than as an
           intentional gap. */}
       <Nav />
+
+      {/* Purely decorative — see ScrollEdgeFade's own comment. Rendered
+          once here, fixed to the viewport so it doesn't scroll with page
+          content or need repositioning per section. */}
+      <ScrollEdgeFade />
 
       <div className="mx-auto w-full max-w-[688px] pt-[180px]">
         {/* Figma 46:10661 — two rhythms, not one flat gap throughout: the

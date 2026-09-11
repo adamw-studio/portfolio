@@ -16,9 +16,22 @@ import { useEffect, useState } from "react";
 // from "0 blur" to "2px blur" in one step. A single backdrop-filter
 // can't do this — it's one flat value for the whole element — so this
 // reproduces the same multi-layer approach rather than Figma's literal
-// (flatter) spec, adapted to this site's own 96px zone and a gentler
-// 20px max blur (half the reference's own 25px, matched to a smaller
-// zone) rather than copied at the reference's exact pixel values.
+// (flatter) spec.
+//
+// MAX_BLUR_PX — an earlier pass matched this closer to the reference's
+// own 20-25px peak, which reads fine over that reference's own hero
+// image but was reported live as genuinely breaking on this page: this
+// site's edges sit over dense body paragraphs (not a photo), and a
+// 20px blur over 14-16px text doesn't read as "softly hazy," it reads
+// as "this sentence is gone" — confirmed in the report itself, a full
+// line of real "What I do" copy rendered fully illegible mid-scroll,
+// not just at the true screen edge where content is about to exit
+// anyway. 5px keeps the graduated-layer technique (still ramps smoothly
+// via the same 8-layer approach) but stays genuinely subtle over text,
+// closer to Figma's own much gentler 2px spec than to the reference
+// site's own value, which was tuned for different underlying content.
+// STRIP_HEIGHT_PX trimmed alongside it so less real content sits inside
+// the affected band in the first place.
 //
 // bg-bg-default/80 (not a hardcoded rgba) is what makes the tint layer
 // theme-aware for free — resolves through the project's existing
@@ -27,8 +40,8 @@ import { useEffect, useState } from "react";
 // does, rather than only working in the one theme a literal value would
 // have matched.
 const LAYER_COUNT = 8;
-const MAX_BLUR_PX = 20;
-const STRIP_HEIGHT_PX = 96;
+const MAX_BLUR_PX = 5;
+const STRIP_HEIGHT_PX = 64;
 
 // Layer i (0-indexed) blurs at MAX_BLUR_PX / 2^(LAYER_COUNT-1-i) — the
 // same doubling progression measured on the reference (…, 5, 10, 20).
@@ -70,10 +83,13 @@ function FrostStrip({ edge }: { edge: "top" | "bottom" }) {
           }}
         />
       ))}
-      {/* A light theme-aware tint on top of the graduated blur — Figma's
-          own bg-bg-default/80, applied once (not per-layer) since it
-          doesn't need to ramp the way the blur amount does. */}
-      <div className="absolute inset-0 bg-bg-default/40" />
+      {/* A light theme-aware tint on top of the graduated blur, applied
+          once (not per-layer) since it doesn't need to ramp the way the
+          blur amount does — trimmed from Figma's own literal 80% down to
+          25%, same "genuinely subtle over real text" reasoning as
+          MAX_BLUR_PX above; 80% read as a near-solid curtain once
+          layered on top of even a gentle blur. */}
+      <div className="absolute inset-0 bg-bg-default/25" />
     </div>
   );
 }

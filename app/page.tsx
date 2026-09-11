@@ -145,21 +145,26 @@ export default function Home() {
 
             {/* Figma 52:11143 — a new Email/LinkedIn/Instagram row
                 under the bio, absent from every earlier fetch of this
-                paragraph. LinkedIn/Instagram use the same "#" placeholder
-                href Footer.tsx's own Instagram/LinkedIn links already
-                use (no real profile URLs exist anywhere in this
-                codebase to point at instead) — matching that established
-                convention rather than inventing a different placeholder
-                scheme here. Email is a real mailto, reusing the same
+                paragraph. Email is a real mailto, reusing the same
                 address HomeFooter's own copy-chip already shows. */}
             <div className={`flex items-center gap-6 text-text-subtle ${bodyText}`}>
               <a href="mailto:weberadam54@gmail.com" className="transition-colors duration-150 hover:text-text-primary">
                 Email
               </a>
-              <a href="#" className="transition-colors duration-150 hover:text-text-primary">
+              <a
+                href="https://www.linkedin.com/in/adam-weber-b6a75616b/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors duration-150 hover:text-text-primary"
+              >
                 LinkedIn
               </a>
-              <a href="#" className="transition-colors duration-150 hover:text-text-primary">
+              <a
+                href="https://www.instagram.com/awds.lab/?hl=en"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors duration-150 hover:text-text-primary"
+              >
                 Instagram
               </a>
             </div>

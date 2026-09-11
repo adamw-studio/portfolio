@@ -127,22 +127,27 @@ const CARDS: CardData[] = [
 const CONTAINER_W = 655;
 const CONTAINER_H = 199;
 
-// Expanded-card size — deliberately NOT Figma's own literal 301x400
-// (33:9848 etc.). That value read live as a near-modal feature card
-// sitting flush against the deck underneath it with zero gap (see the
-// live-reported "feels like a large card placed on top of the stack"
-// bug this was rebuilt to fix) — a plain 2x scale of the resting card
-// (130x162), landing inside the requested 1.8–2.2x range, stays clearly
-// "a card lifted out and enlarged" rather than "a different, bigger
-// card." Radius/padding/video-area scale by roughly the same factor
-// rather than Figma's own literal 20/12/170 numbers, for the same
-// reason.
-const SELECTED_W = CARD_W * 2; // 260
-const SELECTED_H = CARD_H * 2; // 324
-const SELECTED_RADIUS = 16;
-const SELECTED_PADDING = 10;
-const SELECTED_VIDEO_H = 128;
-const SELECTED_TITLE_TEXT = "text-[20px] leading-[24px] tracking-[-0.16px]";
+// Expanded-card size — Figma's own literal numbers (node 37:10045,
+// "Card / Default" 34:10015), not a scaled-up version of the resting
+// card. An earlier pass here deliberately shrank this to a 2x scale
+// (260x324) in response to live feedback that it read as a near-modal
+// feature card — but the actual cause of that (confirmed against this
+// same node's own screenshot) was the settled row sitting with no real
+// negative space below it and its titles hidden, not the literal size.
+// With the settled row now using Figma's own fixed positions (see
+// OTHER_SLOTS below) this reverts to the real numbers.
+const SELECTED_W = 301;
+const SELECTED_H = 400;
+const SELECTED_RADIUS = 20;
+const SELECTED_PADDING = 12;
+const SELECTED_VIDEO_H = 170;
+const SELECTED_TITLE_TEXT = "text-[24px] leading-[28px] tracking-[-0.192px]";
+// Figma's own "elevation/subtle" effect style (DROP_SHADOW #17171766,
+// offset 0/1, radius 2) — only ever on the selected card. Both ends of
+// this string share the same offset/blur and differ only in alpha, so a
+// plain CSS transition on `box-shadow` interpolates it smoothly rather
+// than needing a separate opacity layer.
+const SELECTED_SHADOW = (alpha: number) => `0px 1px 2px 0px rgba(23,23,23,${alpha})`;
 const RESTING_TEXT = "text-[16px] leading-[18px] tracking-[-0.128px]";
 const RESTING_PADDING = 8;
 
@@ -156,46 +161,64 @@ const RESTING_PADDING = 8;
 // CONTAINER_EXPANDED_H below), keeps it clear of everything above.
 const SELECTED_X = CONTAINER_W / 2 - SELECTED_W / 2;
 const SELECTED_Y = 0;
-// Kept close to the resting-state opacity (1) on purpose — "reduce
-// emphasis only subtly... do not heavily darken them" was a direct fix
-// request against an earlier, much lower value (0.5) that, stacked
-// across several overlapping translucent cards, read as disabled rather
-// than secondary.
+// Figma shows the five settled cards at essentially full color/opacity —
+// no opacity token on any of them in the export. A small amount of
+// de-emphasis (this project's own earlier fix, confirmed inside the
+// brief's own allowed 0.75–0.9 band — not the 0.3–0.5 an even earlier
+// pass used, which read as disabled) is kept anyway, since some visual
+// hierarchy between "the thing you're reading" and "the rest of the
+// deck" still reads as intentional rather than literal.
 const DIM_OPACITY = 0.82;
 
-// The five non-selected cards drop down from their own resting spot,
-// keep their own individual rotation (Figma's own worked example,
-// 37:10045, doesn't flatten them either — a loosely overlapping huddle
-// reads as "the rest of the stack this was picked from," where a
-// flattened row reads as a second, disconnected composition), and
-// alternate a small amount of extra y so the row itself doesn't read as
-// a stiff, perfectly ruled line. OTHER_GAP is a real, explicit gap below
-// the selected card's own bottom edge — the previous value (345) put the
-// deck's own top 55px *above* where the selected card's bottom (400)
-// actually landed, so the two visually collided rather than sitting in
-// clear top/bottom bands; DIM_STEP is wide enough that adjacent cards no
-// longer overlap by more (130-48=82px, 63%) than each card's own title
-// text needs to stay legible — title/description are hidden entirely on
-// a dimmed card regardless (see Card below), so this only needs to keep
-// each card's own color+artwork identifiable, not its full text.
-const OTHER_GAP = 36;
-const OTHER_ROW_Y = SELECTED_H + OTHER_GAP;
-const OTHER_STEP = 68;
-const OTHER_ROW_W = CARD_W + OTHER_STEP * 4; // 5 cards
-const OTHER_ROW_X = CONTAINER_W / 2 - OTHER_ROW_W / 2;
-const OTHER_JITTER = 7; // alternating +/- y per card, see otherIndex use below
+// The settled row's own five fixed positions — measured directly off
+// Figma node 37:10045 (Group 5, 539x539 bounding box; get_metadata on
+// each of its five card children), not computed generically. Figma gives
+// exactly one worked example (Foundation open, the other five settled)
+// but its own screenshot makes the geometry's intent unambiguous: each
+// card keeps its own native rotation (confirmed — every settled card's
+// rotation here exactly matches that card's own CARDS[].rotate value)
+// and drops into one of five slots that read, left to right, in the
+// SAME order the cards themselves are listed in CARDS (learning, details,
+// workflows, design, shipcode) — i.e. the slots are a property of
+// "this card's position among the ones still in the deck," not of any
+// specific card identity. That's exactly what `otherIndex` already
+// tracks, so OTHER_SLOTS[otherIndex] generalizes cleanly to any card
+// being the one pulled out, not just Foundation.
+//
+// Each rotated card's own Figma export is a non-rotated wrapper sized to
+// its rotated bounding box with the real 130x162 card centered inside —
+// same back-computation as CARDS[].x/y (see the top-of-file comment):
+// wrapperCenterX/Y = wrapperX/Y + wrapperW/H / 2, then this card's own
+// pre-rotation top-left = wrapperCenter - (65, 81). The two unrotated
+// cards (workflows, shipcode) needed no such step.
+//
+// x values are relative to Group 5's own left edge; OPEN_ORIGIN_X
+// re-bases that onto this component's own coordinate frame using the
+// selected card's own known offset within Group 5 (118px) against
+// SELECTED_X, so the settled row and the active card share one
+// consistent origin regardless of CONTAINER_W.
+const OPEN_ORIGIN_X = SELECTED_X - 118;
+const OTHER_SLOTS: { x: number; y: number }[] = [
+  { x: OPEN_ORIGIN_X + 21.3, y: 364.45 }, // learning ("What shaped me through the years")
+  { x: OPEN_ORIGIN_X + 108.7, y: 359.91 }, // details ("I care about")
+  { x: OPEN_ORIGIN_X + 198.7, y: 367.04 }, // workflows ("Loves a good design critique")
+  { x: OPEN_ORIGIN_X + 326.98, y: 367.04 }, // design ("Building design systems")
+  { x: OPEN_ORIGIN_X + 409.0, y: 367.0 }, // shipcode ("Prototype with AI")
+];
+// Figma's own paint order for the settled row isn't strictly left-to-
+// right — the "design" card (slot 3) sits topmost despite "shipcode"
+// (slot 4) being further right — so this is measured off the export's
+// own DOM order (later = higher) rather than assumed from slot index.
+const OTHER_SLOT_Z = [1, 2, 3, 5, 4];
 
-// Reserves enough height for the fully expanded state (selected card 0
-// to SELECTED_H, other-cards row starting OTHER_GAP below that and
-// running CARD_H+OTHER_JITTER tall) at all times, animated rather than a
-// fixed always-tall box — an explicit exception to "only animate
-// transform/opacity" (see the `animate` skill's own accordion
-// exception): the whole point is for the page content *below* this
-// component to actually move out of the way while a card is expanded,
-// which only a real layout property can do — transform never affects
-// surrounding layout, that's exactly why it's normally the safe one to
-// animate.
-const CONTAINER_EXPANDED_H = SELECTED_H + OTHER_GAP + CARD_H + OTHER_JITTER + 24;
+// Tallest point of the settled row's own rotated bounding boxes (the
+// "design" card reaches deepest, to 539.14px below Group 5's own top —
+// matching Group 5's own measured height exactly), plus a little
+// breathing room below it — not a formula off SELECTED_H, since the row
+// no longer sits at a fixed offset from the active card's own bottom
+// edge (see OTHER_SLOTS above; it partially tucks behind it instead, the
+// same way Figma's own composition does).
+const CONTAINER_EXPANDED_H = 556;
 
 // On a narrow viewport the whole composition already scales down (see
 // `scale` below) so all six cards stay fully on-screen at rest — but
@@ -205,7 +228,7 @@ const CONTAINER_EXPANDED_H = SELECTED_H + OTHER_GAP + CARD_H + OTHER_JITTER + 24
 // than a phone's own status bar icons, nowhere near comfortably
 // readable. While a card is selected, the composition's own scale is
 // floored at this value instead — the expanded card (already centered)
-// stays comfortably legible; the now-secondary dimmed cards may clip at
+// stays comfortably legible; the now-secondary settled cards may clip at
 // the composition's own left/right edges under `overflow-hidden`, which
 // is an acceptable trade: attention is supposed to be on the open card.
 const MIN_SELECTED_SCALE = 0.78;
@@ -221,20 +244,21 @@ const STAGGER_MS = 60;
 const OPEN_MS = 450;
 const CLOSE_MS = 350;
 const HOVER_MS = 180;
-// Description fade/slide starts this far into the open motion rather than
-// alongside it from frame zero — "reveal the description as part of the
-// same motion... can fade/slide in slightly after the card begins
-// expanding... do not make the text simply pop into existence." Closing
-// has no such delay: the copy should be gone well before the card has
+// Description fade/slide starts ~65% through the open motion (290 of
+// 450ms) rather than alongside it from frame zero — "reveal the body
+// content approximately 60–70% through the expansion... do not reveal
+// the description immediately while the card is still tiny." Closing has
+// no such delay: the copy should be gone well before the card has
 // finished shrinking back down, not still lingering in a card too small
 // for it.
-const DESCRIPTION_OPEN_DELAY_MS = 160;
-const DESCRIPTION_MS = 280;
-// A hovered card lifts slightly and eases about halfway out of its own
-// resting tilt — enough to read as "this one's selectable" without
-// flattening it the way selecting it for real does, which would leave
-// hover and selected reading as the same amount of commitment.
-const HOVER_LIFT = 10;
+const DESCRIPTION_OPEN_DELAY_MS = 290;
+const DESCRIPTION_MS = 220;
+// A hovered card lifts slightly (10–16px per the brief) and eases about
+// halfway out of its own resting tilt — enough to read as "this one's
+// selectable" without flattening it the way selecting it for real does,
+// which would leave hover and selected reading as the same amount of
+// commitment.
+const HOVER_LIFT = 12;
 const HOVER_ROTATE_FACTOR = 0.45;
 // Immediate horizontal neighbors nudge a few px further away on hover —
 // "nearby cards can move apart... to create space" — anything past that
@@ -466,22 +490,18 @@ function Card({
   onHoverChange: (hovered: boolean) => void;
 }) {
   // dimmed here doubles as "some other card is selected" — that's
-  // exactly when this one belongs in the stacked row instead of its own
-  // resting spot, not just visually faded there.
-  const x = selected ? SELECTED_X : dimmed ? OTHER_ROW_X + otherIndex * OTHER_STEP : card.x + neighborNudge;
-  // Alternating +/- jitter per position in the row, not a perfectly
-  // ruled line — a real hand-dealt deck never lands flush, and the tiny
-  // stagger also helps separate each card's own visible edge from its
-  // immediate neighbors.
-  const y = selected ? SELECTED_Y : dimmed ? OTHER_ROW_Y + (otherIndex % 2 === 0 ? -OTHER_JITTER : OTHER_JITTER) : card.y - (hovered ? HOVER_LIFT : 0);
+  // exactly when this one belongs in its own fixed settled slot (see
+  // OTHER_SLOTS) instead of its own resting spot.
+  const slot = OTHER_SLOTS[otherIndex];
+  const x = selected ? SELECTED_X : dimmed ? slot.x : card.x + neighborNudge;
+  const y = selected ? SELECTED_Y : dimmed ? slot.y : card.y - (hovered ? HOVER_LIFT : 0);
   // Selected straightens all the way to 0 (the "this one's in focus" cue
   // Tag.tsx's own hover state also uses); dimmed keeps its own natural
-  // tilt now instead of flattening to 0 — a loosely overlapping huddle of
-  // still-tilted cards reads as "the rest of the stack this was picked
-  // from," where a flattened, evenly-spaced row read as a second,
-  // disconnected composition (see OTHER_ROW_Y's own comment). Hover eases
-  // partway toward flat without fully committing to it, the same
-  // "selectable, not yet selected" distinction its lift/scale get.
+  // tilt — every settled card in Figma's own worked example keeps
+  // exactly its own resting rotation, not a flattened or slot-specific
+  // one. Hover eases partway toward flat without fully committing to it,
+  // the same "selectable, not yet selected" distinction its lift/scale
+  // get.
   const rotate = selected ? 0 : dimmed ? card.rotate : card.rotate * (hovered ? 1 - HOVER_ROTATE_FACTOR : 1);
   const entranceScale = reducedMotion || visible ? 1 : 0.92; // only the mount-in animation ever uses transform:scale — the selected-size change uses real width/height instead, see the module doc comment above
   const hoverScale = hovered ? 1.03 : 1;
@@ -516,16 +536,18 @@ function Card({
         borderRadius: radius,
         backgroundColor: card.color,
         opacity: reducedMotion ? (dimmed ? DIM_OPACITY : 1) : visible ? (dimmed ? DIM_OPACITY : 1) : 0,
+        boxShadow: SELECTED_SHADOW(selected ? 0.4 : 0),
         // Selected is always frontmost; hovered lifts above the resting
         // stack (but never above a selected card, since hover is already
-        // disabled the instant anything is selected); among the stacked
-        // others, later otherIndex (further right) sits on top of
-        // earlier ones, the same left-under-right layering an ordinary
-        // fanned hand of cards would have. z-index isn't part of the
+        // disabled the instant anything is selected); among the settled
+        // row, OTHER_SLOT_Z reproduces Figma's own paint order for that
+        // slot rather than assuming later-otherIndex-on-top, since Figma's
+        // own composition doesn't actually layer them left-to-right (see
+        // OTHER_SLOT_Z's own comment). z-index isn't part of the
         // `transition` list below — it switches the instant this card
         // becomes selected, not partway through the move, so it always
         // passes over its neighbors immediately rather than partway.
-        zIndex: selected ? 10 : hovered ? 6 : dimmed ? 2 + otherIndex : 1,
+        zIndex: selected ? 10 : hovered ? 6 : dimmed ? 2 + OTHER_SLOT_Z[otherIndex] : 1,
         transform: `translate3d(${x}px, ${y}px, 0) rotate(${rotate}deg) scale(${entranceScale * hoverScale})`,
         transition: reducedMotion
           ? undefined
@@ -536,6 +558,7 @@ function Card({
               `height ${transitionMs}ms ${EASE_OUT}`,
               `padding ${transitionMs}ms ${EASE_OUT}`,
               `border-radius ${transitionMs}ms ${EASE_OUT}`,
+              `box-shadow ${transitionMs}ms ${EASE_OUT}`,
             ].join(", "),
       }}
     >
@@ -572,40 +595,37 @@ function Card({
         )}
       </div>
       <div className="flex w-full flex-col gap-2">
-        {/* Hidden (not just dimmed) once this card drops into the
-            secondary row — five overlapping titles all pinned to the
-            same bottom band was the actual source of the reported "messy
-            pile" / "overlapping typography" underneath the active card.
-            Each dimmed card still reads fine by color + artwork alone
-            (per "show mainly their upper portions/artwork rather than
-            overlapping titles"), and stays clickable regardless. */}
+        {/* Stays visible on a settled (dimmed) card — Figma's own
+            37:10045 renders every settled card's title in full (no
+            opacity token on any of them), and OTHER_SLOTS' real Figma
+            positions give each one enough of its own space that titles
+            don't collide the way an evenly-spaced generic row's did. An
+            earlier pass hid this entirely on dimmed cards to paper over
+            that collision; fixing the positions properly removed the
+            actual cause, so the title stays. */}
         <p
-          aria-hidden={dimmed}
           className={`w-full break-words font-serif not-italic ${selected ? SELECTED_TITLE_TEXT : RESTING_TEXT}`}
           style={{
             color: card.textColor,
-            opacity: dimmed ? 0 : 1,
-            transition: reducedMotion
-              ? undefined
-              : `font-size ${transitionMs}ms ${EASE_OUT}, color ${transitionMs}ms ${EASE_OUT}, opacity ${transitionMs}ms ${EASE_OUT}`,
+            transition: reducedMotion ? undefined : `font-size ${transitionMs}ms ${EASE_OUT}, color ${transitionMs}ms ${EASE_OUT}`,
           }}
         >
           {card.text}
         </p>
-        {/* Delayed relative to the card's own move (DESCRIPTION_OPEN_DELAY_MS)
-            on the way in, no delay on the way out — "reveal the
-            description as part of the same motion... can fade/slide in
-            slightly after the card begins expanding... do not make the
-            text simply pop into existence." Kept mounted at all times
-            (not conditionally rendered) so it has something to animate
-            *out* of when closing, rather than just vanishing. */}
+        {/* Delayed relative to the card's own move (DESCRIPTION_OPEN_DELAY_MS,
+            ~65% through OPEN_MS) on the way in, no delay on the way out —
+            "reveal the body content approximately 60–70% through the
+            expansion... do not reveal the description immediately while
+            the card is still tiny." Kept mounted at all times (not
+            conditionally rendered) so it has something to animate *out*
+            of when closing, rather than just vanishing. */}
         <p
           aria-hidden={!selected}
           className="w-full break-words font-sans text-[16px] leading-[normal] tracking-[-0.128px]"
           style={{
             color: card.textColor,
             opacity: selected ? 0.5 : 0,
-            transform: `translateY(${selected ? 0 : 6}px)`,
+            transform: `translateY(${selected ? 0 : 8}px)`,
             transition: reducedMotion
               ? undefined
               : `opacity ${DESCRIPTION_MS}ms ${EASE_OUT} ${selected ? DESCRIPTION_OPEN_DELAY_MS : 0}ms, transform ${DESCRIPTION_MS}ms ${EASE_OUT} ${selected ? DESCRIPTION_OPEN_DELAY_MS : 0}ms`,

@@ -64,7 +64,11 @@ export default function Home() {
                 height={5}
                 className={`flourish-draw ${themedIcon}`}
               />
-              <h1 className={heading}>Hey, I’m Adam</h1>
+              {/* 24px specifically for this heading, not the shared
+                  `heading` token's own 20px — "What I do" and "Selected
+                  works" (the token's other two call sites) stay at 20px,
+                  so this can't just bump the shared value. */}
+              <h1 className="font-serif text-[24px] leading-6 tracking-[-0.8px] text-text-primary">Hey, I’m Adam</h1>
             </div>
             {/* Figma 46:10668 — three explicit lines, not one flowing
                 paragraph left to wrap on its own: line 2 in particular

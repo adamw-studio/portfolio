@@ -31,28 +31,27 @@ const pill = "border border-border-subtle bg-bg-default/80 backdrop-blur-[23px]"
 // -59deg angle, 80% intensity, plus Refraction/Depth/Dispersion/Frost/
 // Splay) — Figma's version of Apple's Liquid Glass material, confirmed
 // against its own Inspect panel. True refraction can't be replicated in
-// CSS, so this approximates the same *read* with what CSS actually has:
-// a soft drop shadow, two full-bleed blend-mode overlays (lighten +
-// color-dodge, Figma's own codegen fallback for the effect — literal
-// fixed values, not theme tokens, since a blend mode's math only makes
-// sense against the exact colors it was tuned for) for the glassy fill,
-// and a *real* gradient border (.glass-border, see globals.css) for the
-// directional light-catching edge the flat rgba(...,0.4) codegen
-// otherwise simplifies the stroke down to — unlike the overlays, the
-// border does use this site's own light/dark tokens
-// (--glass-border-start/-end), because a border has to read as "an edge
-// catching light" against either page background, not just the dark one
-// Figma's export assumes. Text does differentiate active/inactive after
-// all (re-confirmed against a later re-fetch of this same control,
-// 33:9540) — active is text-primary/medium, inactive is text-secondary/
-// regular, the ordinary active-vs-inactive text treatment this site
-// already uses everywhere else (Nav's own old top pill included), not an
-// exception unique to this bar the way the glass treatment is.
+// CSS, so this approximates the same *read* with what CSS actually has: a
+// soft drop shadow, a flat semi-transparent fill (--glass-fill) for the
+// glassy body, and a *real* gradient border (.glass-border, see
+// globals.css) for the directional light-catching edge.
+//
+// The fill used to be two full-bleed blend-mode overlays instead (lighten
+// + color-dodge) — Figma's own codegen fallback for the effect. Dropped
+// after pixel-sampling Figma's actual rendered output showed those two
+// layers reading far too dark against this page's real background (the
+// button's own interior should read distinctly lighter than the bar
+// around it, not barely different from it), and color-dodge in
+// particular behaves completely differently over a light backdrop than
+// the dark one it was tuned against — the direct cause of the segment
+// rendering as a solid white blowout once reported live in light mode.
+// --glass-fill (see globals.css) is calibrated from that same pixel
+// sample instead of guessed blend-mode math, and — like the border —
+// uses this site's own light/dark tokens rather than a value only tuned
+// for one theme.
 function ActiveSegmentGlass() {
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 rounded-[20px]">
-      <div className="absolute inset-0 rounded-[20px] bg-[rgba(255,255,255,0.06)] mix-blend-lighten" />
-      <div className="absolute inset-0 rounded-[20px] bg-[rgba(94,94,94,0.18)] mix-blend-color-dodge" />
+    <div aria-hidden className="pointer-events-none absolute inset-0 rounded-[20px] bg-[var(--glass-fill)]">
       <div className="glass-border" />
     </div>
   );

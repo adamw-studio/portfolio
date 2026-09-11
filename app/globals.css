@@ -42,24 +42,37 @@
      rather than dark gray — confirmed against every other tag's node in
      Figma 270:5949 after this one was wrongly assumed to just be #191919. */
   --tag-icon-bg: #e8e8e8;
-  /* Nav's active segment/theme-toggle border (Figma 33:9346 etc.) — a
-     native Figma "Glass" effect (Light: -59deg angle, 80% intensity, plus
-     Refraction/Depth/Dispersion/Frost/Splay), Figma's own version of
+  /* Nav's active segment/theme-toggle Glass effect (Figma 33:9346 etc.) —
+     a native Figma "Glass" effect (Light: -59deg angle, 80% intensity,
+     plus Refraction/Depth/Dispersion/Frost/Splay), Figma's own version of
      Apple's Liquid Glass material. Real refraction can't be replicated in
-     CSS, but the directional light *does* produce a genuine gradient
-     along the stroke — brighter on the edge facing the light, dimmer on
-     the edge facing away — which these two stops approximate as a real
-     `linear-gradient` border (see .glass-border below) rather than the
-     single flat rgba(...,0.4) Figma's own codegen simplifies it to.
-     Built from text-primary, not a hardcoded white: unlike the two
-     blend-mode overlay layers next to this border in Nav.tsx (which stay
-     literal per-Figma values — a blend mode's own math only makes sense
-     against the exact colors it was tuned for), a *border* has to read as
-     "light catching an edge" against either background, which means it
-     needs the light/dark swap every other border token on this page
-     already gets. */
+     CSS — these values are reverse-engineered from actually sampling
+     Figma's own rendered output pixel-by-pixel (a dark-mode render, then
+     converted to this light-mode equivalent the same way every other
+     token on this page swaps), not estimated from the blend-mode math a
+     first pass tried and got visibly wrong in both themes:
+     - Fill (--glass-fill): the button interior sampled flat at rgb(48)
+       against a rgb(30) bar background — solving 30 + (255-30)*a = 48
+       gives alpha ≈ 0.08. This replaced two mix-blend-mode overlay layers
+       (Figma's own codegen approximation of the effect) that read far too
+       dark against this page's actual near-black background, and risked
+       blowing out to solid white in light mode — color-dodge in
+       particular behaves completely differently over a light backdrop
+       than the dark one it was tuned against, which is exactly the "solid
+       white fill" bug reported live.
+     - Border (--glass-border-start/-end): the brightest sampled point (a
+       corner where the -59deg light hits most directly) read rgb(87), well
+       above the rgb(48) fill next to it — while the opposite corner showed
+       no brightening at all, fading straight to background. The gradient
+       stops mirror that: a real peak at the start, and an end value close
+       to the fill itself rather than a hard cutoff.
+     Both built from text-primary/its light-mode equivalent rather than a
+     hardcoded white — a real border and fill have to read as "glass
+     catching light" against either page background, not just the dark one
+     Figma's own export assumes. */
+  --glass-fill: rgba(13, 13, 13, 0.06);
   --glass-border-start: rgba(13, 13, 13, 0.55);
-  --glass-border-end: rgba(13, 13, 13, 0.12);
+  --glass-border-end: rgba(13, 13, 13, 0.1);
   --radius-xs: 6px;
   /* Note: Figma calls these tokens "radius/s", "radius/m" and "radius/l",
      but naming a custom Tailwind radius scale key "s" or "l" collides with
@@ -95,8 +108,9 @@
   --dot-color: rgba(244, 244, 244, 0.12);
   --icon-cream: #fff1b5;
   --tag-icon-bg: #a16ea9;
+  --glass-fill: rgba(244, 244, 244, 0.08);
   --glass-border-start: rgba(244, 244, 244, 0.65);
-  --glass-border-end: rgba(244, 244, 244, 0.18);
+  --glass-border-end: rgba(244, 244, 244, 0.15);
 }
 
 @theme inline {

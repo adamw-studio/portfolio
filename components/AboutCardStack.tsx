@@ -47,7 +47,31 @@ const CARD_W = 130;
 const CARD_H = 162;
 const CARD_RADIUS = 10; // --radius-m
 
+// Reordered on direct instruction (visual left-to-right only — no
+// color/text/video/description touched): "learning" now sits first,
+// "prototype" second, swapping both their array position AND their
+// x/y/rotate slot values with each other. Both matter, not just one:
+// array order alone drives i-based behavior elsewhere in this file
+// (neighborNudge's hover-adjacency check, the initial reveal stagger
+// delay, and otherIndex/OTHER_SLOTS for the settled row once a card is
+// selected — all keyed off each card's position among the others, not
+// its own fixed identity), while x/y/rotate is what actually moves a
+// card's *resting* position on screen; changing only one would either
+// move the card without its hover/stagger/settled-row behavior
+// following, or vice versa.
 const CARDS: CardData[] = [
+  {
+    id: "learning",
+    color: "#f8ecd7",
+    textColor: "#544831",
+    text: "What shaped me through the years",
+    description:
+      "I was raised by a painter and a sculptor. I learned that craft matters. My first design education didn’t come from software, it came from watching a painter and sculptor at work.",
+    x: 10,
+    y: 21,
+    rotate: -7.55,
+    video: "about-card-learning.mp4",
+  },
   {
     id: "prototype",
     color: "#f83e00",
@@ -57,22 +81,10 @@ const CARDS: CardData[] = [
     // "The foundation...", adding back who it came from.
     description:
       "That foundation I got from my parents continues to shape how I approach designing today: curiosity, craftsmanship and a deep respect for the people who touch, feel or use the things I design.",
-    x: 10,
-    y: 21,
-    rotate: -7.55,
-    video: "about-card-prototype.mp4",
-  },
-  {
-    id: "learning",
-    color: "#f8ecd7",
-    textColor: "#544831",
-    text: "What shaped me through the years",
-    description:
-      "I was raised by a painter and a sculptor. I learned that craft matters. My first design education didn’t come from software, it came from watching a painter and sculptor at work.",
     x: 123,
     y: 23,
     rotate: 5.09,
-    video: "about-card-learning.mp4",
+    video: "about-card-prototype.mp4",
   },
   {
     id: "details",

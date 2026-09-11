@@ -82,8 +82,16 @@ export function CaseStudyStage({
           decorative, conveys nothing a screen reader needs. */}
       {peek && (
         <div aria-hidden className="pointer-events-none absolute inset-0 hidden items-center justify-center lg:flex">
-          <div className="absolute h-[607px] w-[400px] translate-x-[-220px] rounded-[20px] border border-border-subtle bg-bg-default" />
-          <div className="absolute h-[607px] w-[400px] translate-x-[220px] rounded-[20px] border border-border-subtle bg-bg-default" />
+          {/* ±88px, not a guessed value — worked back from Figma's own
+              literal left positions (87:1440/87:1442/87:1510, all against
+              that frame's 1440px width): the active card's own center
+              sits at exactly the frame's center, and each peek card's own
+              center is 88px off of it either side. Reported live as
+              needing to sit "more closer" to the active card, which is
+              exactly what this correction is — an earlier pass had these
+              at ±220px, roughly 2.5x Figma's real spacing. */}
+          <div className="absolute h-[607px] w-[400px] translate-x-[-88px] rounded-[20px] border border-border-subtle bg-bg-default" />
+          <div className="absolute h-[607px] w-[400px] translate-x-[88px] rounded-[20px] border border-border-subtle bg-bg-default" />
         </div>
       )}
       <div

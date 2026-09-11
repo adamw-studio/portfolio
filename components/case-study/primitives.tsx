@@ -1,5 +1,7 @@
+"use client";
+
 import Image from "next/image";
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { themedIcon } from "@/components/themedIcon";
 
 /**
@@ -197,6 +199,90 @@ export function BrowserFrame({ src, alt = "" }: { src?: string; alt?: string }) 
       <div className="relative aspect-[16/10] w-full bg-bg-tertiary">
         {src && <Image src={src} alt={alt} fill className="object-cover" sizes="(min-width: 1024px) 900px, 100vw" />}
       </div>
+    </div>
+  );
+}
+
+// A card whose body scrolls internally once its content is taller than
+// the room it's given (see CaseStudyStage's own comment on why a card
+// gets a max-height + internal scroll safety net at all, and
+// OverviewPage's on why that's a real, not just theoretical, case for
+// this system). This is the "there's more below" cue for exactly that:
+// a soft gradient + blur fade at the bottom edge, shown only while
+// there's real unscrolled content beneath it and gone once the user
+// actually reaches the end — not a static decoration, and not shown at
+// all on a card that never needed to scroll in the first place.
+//
+// One masked blur layer, not several stacked ones: the earlier attempt
+// at a similar bottom-edge fade elsewhere on this site (a graduated
+// stack of separately-blurred, separately-masked bands) let adjacent
+// bands' blur radii compound where they overlapped, and that compounded
+// peak was exactly what made a line of real body text underneath it
+// unreadable — confirmed live, after which that whole component was
+// removed outright. A single blur value faded by one continuous mask
+// has no such peak to compound toward; see BottomEdgeFade.tsx for the
+// fuller version of this same lesson and the same technique.
+export function ScrollFadeCard({
+  children,
+  maxHeight,
+  className = "",
+}: {
+  children: ReactNode;
+  maxHeight: string;
+  className?: string;
+}) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [showFade, setShowFade] = useState(false);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const update = () => {
+      // 4px threshold, not 0 — sub-pixel layout rounding can leave a
+      // fraction of a px of "remaining" scroll room on a card that's
+      // genuinely already at its end, which would otherwise flicker the
+      // fade on for content that isn't really cut off.
+      setShowFade(el.scrollHeight - el.scrollTop - el.clientHeight > 4);
+    };
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    // Content height can change after mount (fonts finishing load,
+    // viewport resize changing how many lines wrap) — not just once on
+    // the initial render.
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      observer.disconnect();
+    };
+  }, []);
+
+  return (
+    // flex flex-col + flex-1 min-h-0 on the scrollable child, not h-full:
+    // this element only ever sets max-height, never a real height, so a
+    // percentage-height child (`h-full`) has no definite parent height to
+    // resolve against and just falls back to its own content size —
+    // which never overflows *itself*, so overflow-y-auto on it had
+    // nothing to actually scroll (reported live: the card stopped
+    // scrolling entirely, just clipped past max-height instead). Flexbox
+    // sizing doesn't have that pitfall; min-h-0 overrides its own default
+    // min-height:auto, which otherwise refuses to let a flex child shrink
+    // below its content size in the first place.
+    <div className={`relative flex flex-col overflow-hidden ${className}`} style={{ maxHeight }}>
+      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto rounded-[inherit]">
+        {children}
+      </div>
+      {showFade && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-16 backdrop-blur-[6px]"
+          style={{
+            maskImage: "linear-gradient(to top, black, transparent)",
+            WebkitMaskImage: "linear-gradient(to top, black, transparent)",
+            background: "linear-gradient(to top, var(--color-bg-default) 15%, transparent)",
+          }}
+        />
+      )}
     </div>
   );
 }

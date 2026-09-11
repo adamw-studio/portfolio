@@ -42,6 +42,24 @@
      rather than dark gray — confirmed against every other tag's node in
      Figma 270:5949 after this one was wrongly assumed to just be #191919. */
   --tag-icon-bg: #e8e8e8;
+  /* Nav's active segment/theme-toggle border (Figma 33:9346 etc.) — a
+     native Figma "Glass" effect (Light: -59deg angle, 80% intensity, plus
+     Refraction/Depth/Dispersion/Frost/Splay), Figma's own version of
+     Apple's Liquid Glass material. Real refraction can't be replicated in
+     CSS, but the directional light *does* produce a genuine gradient
+     along the stroke — brighter on the edge facing the light, dimmer on
+     the edge facing away — which these two stops approximate as a real
+     `linear-gradient` border (see .glass-border below) rather than the
+     single flat rgba(...,0.4) Figma's own codegen simplifies it to.
+     Built from text-primary, not a hardcoded white: unlike the two
+     blend-mode overlay layers next to this border in Nav.tsx (which stay
+     literal per-Figma values — a blend mode's own math only makes sense
+     against the exact colors it was tuned for), a *border* has to read as
+     "light catching an edge" against either background, which means it
+     needs the light/dark swap every other border token on this page
+     already gets. */
+  --glass-border-start: rgba(13, 13, 13, 0.55);
+  --glass-border-end: rgba(13, 13, 13, 0.12);
   --radius-xs: 6px;
   /* Note: Figma calls these tokens "radius/s", "radius/m" and "radius/l",
      but naming a custom Tailwind radius scale key "s" or "l" collides with
@@ -77,6 +95,8 @@
   --dot-color: rgba(244, 244, 244, 0.12);
   --icon-cream: #fff1b5;
   --tag-icon-bg: #a16ea9;
+  --glass-border-start: rgba(244, 244, 244, 0.65);
+  --glass-border-end: rgba(244, 244, 244, 0.18);
 }
 
 @theme inline {
@@ -212,6 +232,39 @@ body {
     transparent 8px,
     transparent 16px
   );
+}
+
+/* Nav's Glass-effect border (see --glass-border-start/-end above) — a
+   real gradient stroke, not just a translucent flat one. A `border` can
+   only ever hold a solid color, so this draws the gradient as a
+   background instead and uses a mask to keep only a ring of it at the
+   element's own edge: two mask layers (an opaque content-box rect and an
+   opaque full rect) that `mask-composite: exclude` subtracts from each
+   other, leaving exactly the padding-thickness ring between them
+   visible — the standard technique for a gradient border with rounded
+   corners, since neither `border-image` nor `background-clip` alone can
+   curve a gradient stroke around a `border-radius`.
+
+   Applied as its own absolutely-positioned element (`inset-0`,
+   `border-radius: inherit` from its `position: relative` parent) rather
+   than directly on the bordered element itself — that parent already
+   carries a background/backdrop-blur and (for the active nav segment)
+   two more blend-mode overlay layers of its own; layering the mask trick
+   directly onto it would fight the same element's other backgrounds
+   instead of sitting cleanly on top of them. `padding: 0.5px` is the
+   actual stroke width — every caller of this class (the active nav
+   segments and the theme-toggle group) shares the same literal 0.5px
+   Figma gives their border. */
+.glass-border {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 0.5px;
+  background: linear-gradient(121deg, var(--glass-border-start), var(--glass-border-end));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 /* BeaconComposer's typing caret — now a border-right on the text's own

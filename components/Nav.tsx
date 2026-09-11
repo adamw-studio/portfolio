@@ -27,30 +27,40 @@ const CONTACT_EMAIL = "adamweber54@gmail.com";
 // everything lives in one row.
 const pill = "border border-border-subtle bg-bg-default/80 backdrop-blur-[23px]";
 
-// Figma's own active-segment treatment: a 0.5px near-white border, a soft
-// drop shadow, and two full-bleed overlays in different blend modes
-// (lighten + color-dodge) layered on top of whatever's behind the segment
-// — together they read as a glassy, catching-the-light highlight rather
-// than a flat fill. Kept as the literal fixed rgba/blend values Figma
-// exports (not mapped to this site's light/dark border-subtle token the
-// way the outer pill is): unlike a plain border or background tint, this
-// specific "glass catching light" effect isn't the kind of thing that's
-// supposed to invert for a light background — it's material, not content
-// color. Text itself *is* a real token either way (text-text-primary),
-// same in both states — Figma only differentiates active/inactive here by
-// weight and this glass treatment, not by dimming the inactive label.
+// Figma's own active-segment treatment is a native "Glass" effect (Light:
+// -59deg angle, 80% intensity, plus Refraction/Depth/Dispersion/Frost/
+// Splay) — Figma's version of Apple's Liquid Glass material, confirmed
+// against its own Inspect panel. True refraction can't be replicated in
+// CSS, so this approximates the same *read* with what CSS actually has:
+// a soft drop shadow, two full-bleed blend-mode overlays (lighten +
+// color-dodge, Figma's own codegen fallback for the effect — literal
+// fixed values, not theme tokens, since a blend mode's math only makes
+// sense against the exact colors it was tuned for) for the glassy fill,
+// and a *real* gradient border (.glass-border, see globals.css) for the
+// directional light-catching edge the flat rgba(...,0.4) codegen
+// otherwise simplifies the stroke down to — unlike the overlays, the
+// border does use this site's own light/dark tokens
+// (--glass-border-start/-end), because a border has to read as "an edge
+// catching light" against either page background, not just the dark one
+// Figma's export assumes. Text does differentiate active/inactive after
+// all (re-confirmed against a later re-fetch of this same control,
+// 33:9540) — active is text-primary/medium, inactive is text-secondary/
+// regular, the ordinary active-vs-inactive text treatment this site
+// already uses everywhere else (Nav's own old top pill included), not an
+// exception unique to this bar the way the glass treatment is.
 function ActiveSegmentGlass() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 rounded-[20px]">
       <div className="absolute inset-0 rounded-[20px] bg-[rgba(255,255,255,0.06)] mix-blend-lighten" />
       <div className="absolute inset-0 rounded-[20px] bg-[rgba(94,94,94,0.18)] mix-blend-color-dodge" />
+      <div className="glass-border" />
     </div>
   );
 }
 
-const segmentBase = "relative flex w-[66.667px] items-center justify-center px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] text-text-primary transition-[background-color] duration-150";
-const segmentActive = "rounded-[20px] border-[0.5px] border-white/40 font-medium shadow-[0px_2px_4px_0px_rgba(0,0,0,0.1)]";
-const segmentInactive = "rounded-full font-normal";
+const segmentBase = "relative flex w-[66.667px] items-center justify-center px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,color] duration-150";
+const segmentActive = "rounded-[20px] font-medium text-text-primary shadow-[0px_2px_4px_0px_rgba(0,0,0,0.1)]";
+const segmentInactive = "rounded-full font-normal text-text-secondary";
 
 export default function Nav() {
   const [showContact, setShowContact] = useState(false);
@@ -162,8 +172,16 @@ export default function Nav() {
             bg-bg-tertiary marks whichever theme is *current*, not which
             one tapping would switch to (opposite of the old single-button
             version's own icon-picking rule, since both options are always
-            on screen here — there's no "next state" to hint at). */}
-        <div className="flex items-center gap-1 rounded-full border border-border-subtle p-0.5">
+            on screen here — there's no "next state" to hint at). Same
+            0.5px rgba(255,255,255,0.4) stroke as the active segments' own
+            Glass-effect border (re-confirmed against 33:9540 — an earlier
+            fetch had this group's own border at a plain Tailwind `border`
+            width, 1px, not the 0.5px it actually is), so this reuses the
+            exact same gradient-border technique rather than the flat
+            border-border-subtle every other bordered pill on the site
+            uses. */}
+        <div className="relative flex items-center gap-1 rounded-full p-0.5">
+          <div aria-hidden className="glass-border" />
           <button
             type="button"
             aria-label="Switch to dark mode"

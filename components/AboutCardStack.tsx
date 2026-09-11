@@ -111,6 +111,18 @@ export default function AboutCardStack() {
   const [visible, setVisible] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  // How much to shrink the whole 655px-wide composition to fit inside
+  // whatever width this component actually has — 1 (no change) on Home's
+  // own 688px column and anything wider, less than that on a narrow phone
+  // viewport. This used to just crop at the edges instead (matching the
+  // interfacecraft.dev reference this was modeled on), which read fine as
+  // a deliberate design choice until it was actually tested on a real
+  // phone: the first and last cards were partly or entirely off-screen,
+  // losing real content, not just trimming decorative overflow. Measured
+  // via ResizeObserver rather than a fixed breakpoint so it tracks the
+  // component's own actual rendered width at any viewport size, not a
+  // guessed cutoff.
+  const [scale, setScale] = useState(1);
   // Stays false only for the duration of the initial stagger, then true
   // forever after — see the effect below and its use as `delay` at the
   // call site. Not the same thing as `visible`: that one only tracks
@@ -125,6 +137,16 @@ export default function AboutCardStack() {
     updateMotion();
     motionQuery.addEventListener("change", updateMotion);
     return () => motionQuery.removeEventListener("change", updateMotion);
+  }, []);
+
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper || typeof ResizeObserver === "undefined") return;
+    const updateScale = () => setScale(Math.min(1, wrapper.clientWidth / CONTAINER_W));
+    updateScale();
+    const observer = new ResizeObserver(updateScale);
+    observer.observe(wrapper);
+    return () => observer.disconnect();
   }, []);
 
   // One-time reveal when the composition scrolls into view — not a
@@ -204,24 +226,27 @@ export default function AboutCardStack() {
   }, [selectedId]);
 
   return (
-    // overflow-hidden normally — the 655px composition fits Home's own
-    // 688px column with room to spare, so nothing clips at that width,
-    // but on narrower viewports (this never rescales down the way the old
-    // hover version did) the fan is wider than its column and the outer
-    // cards crop at the edges by design, matching the interfacecraft.dev
-    // reference this was modeled on. Height animates between the resting
-    // and expanded reservation (see CONTAINER_EXPANDED_H) so the page
-    // content below this component moves out of the way instead of being
-    // covered by it.
+    // overflow-hidden as a safety guard, not the thing doing the actual
+    // fitting anymore — the inner composition below now scales itself
+    // down (see `scale` above) to fit whatever width this component
+    // actually has, rather than cropping at its edges past 655px. Height
+    // animates between the resting and expanded reservation (see
+    // CONTAINER_EXPANDED_H) — scaled by the same factor, so the reserved
+    // space always matches the composition's own *visible* size — so the
+    // page content below this component moves out of the way instead of
+    // being covered by it.
     <div
       ref={wrapperRef}
       className="flex w-full items-start justify-center overflow-hidden pt-6"
       style={{
-        height: (selectedId ? CONTAINER_EXPANDED_H : CONTAINER_H) + 24, // +24 = pt-6
+        height: (selectedId ? CONTAINER_EXPANDED_H : CONTAINER_H) * scale + 24, // +24 = pt-6
         transition: reducedMotion ? undefined : `height ${SELECT_MS}ms ${EASE_OUT}`,
       }}
     >
-      <div className="relative shrink-0" style={{ width: CONTAINER_W, height: CONTAINER_H }}>
+      <div
+        className="relative shrink-0"
+        style={{ width: CONTAINER_W, height: CONTAINER_H, transform: `scale(${scale})`, transformOrigin: "top center" }}
+      >
         {(() => {
           // otherIndex: this card's position among the *other* (non-
           // selected) cards specifically, e.g. the 3rd card overall might

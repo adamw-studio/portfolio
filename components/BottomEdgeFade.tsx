@@ -1,7 +1,7 @@
 // Figma 61:106 — a flat, fixed strip along the bottom edge of the
 // viewport, under a top-to-bottom gradient from fully transparent down
-// to the page's own solid bg-default. Figma's own export gives this a
-// single flat backdrop-blur (2.3px, uniform across the whole strip) —
+// to a solid near-black. Figma's own export gives this a single flat
+// backdrop-blur (2.3px, uniform across the whole strip) —
 // implemented that way first, but reported live as reading like a plain
 // color gradient with no real sense of *blur* to it, since a uniform
 // blur that faint has almost no visible presence on its own.
@@ -25,14 +25,18 @@
 // this sits low-risk (footer/caption text, not a mid-scroll reading
 // zone) but doesn't need to be strong to read as real blur.
 //
-// bg-bg-default → bg-bg-tertiary, not Figma's own literal rgba(244,244,
-// 244,0.05) "to" stop: that literal value is exactly dark theme's own
-// --color-bg-tertiary (confirmed against globals.css), and this site's
-// own already-established convention for a "same alpha, opposite base
-// color" pair like this is to reach for the semantic token so both
-// themes resolve automatically — light theme's --color-bg-tertiary
-// (rgba(13,13,13,0.05)) is the correct light-mode counterpart, not a new
-// hardcoded value invented for just this effect.
+// Fixed literal colors (#0d0d0d → rgba(244,244,244,0.05)), not this
+// site's theme-aware bg-default/bg-tertiary tokens: an earlier pass used
+// those specifically so the gradient would flip per theme, but reported
+// live as wrong — the two themes should show the *same* gradient, not a
+// light-mode mirror of it (a near-white version of this same effect
+// reads as a completely different, much weaker treatment against a
+// light page, not a matching one). Figma's own export only gives a
+// dark-theme value in the first place, so that's the one fixed pair
+// used in both themes — the same reasoning already established for
+// BeaconComposer's own glass panel and the Soon badge, both of which
+// keep one deliberate look regardless of site theme rather than
+// flipping.
 //
 // pointer-events-none: purely decorative, sits on top of whatever
 // scrolls beneath it (HomeFooter, Selected Works' own last card) and
@@ -43,7 +47,7 @@ export default function BottomEdgeFade() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-10 h-[75px] bg-gradient-to-t from-bg-default to-bg-tertiary backdrop-blur-[6px]"
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-10 h-[75px] bg-gradient-to-t from-[#0d0d0d] to-[rgba(244,244,244,0.05)] backdrop-blur-[6px]"
       style={{ maskImage: MASK, WebkitMaskImage: MASK }}
     />
   );

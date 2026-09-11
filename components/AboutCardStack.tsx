@@ -5,8 +5,17 @@ import { useEffect, useRef, useState } from "react";
 type CardData = {
   id: string;
   color: string;
+  /** Resting-label color (16px title, no description visible). */
   textColor: string;
+  /** Expanded-state title color — defaults to textColor; only "details"
+   * genuinely differs in Figma (#93ffff at rest, #f8ecd7 expanded). */
+  expandedTextColor?: string;
   text: string;
+  /** Expanded-only body copy (Figma's "Card / Default" nodes, 33:9837 etc.)
+   * — the resting card never had this content at all before; discovered
+   * only once those specific opened-state frames were fetched, not
+   * visible from the rest-state frame this was originally built against. */
+  description: string;
   /** Pre-rotation top-left position (px), within this component's fixed
    * 655x199 reference frame — see the width/height note below. */
   x: number;
@@ -17,14 +26,13 @@ type CardData = {
   video?: string;
 };
 
-// Figma node 14:7194 (now re-fetched as part of 37:10046's own home-page
-// restructure — same six cards, same colors/positions/rotations/videos,
-// just each one's own label text rewritten) — six cards, scattered with
-// individual rotation, not the eight-card staggered-diagonal stack this
-// previously showed only on hover. Position math: Figma exports a rotated
-// element as a NON-rotated wrapper div sized to that element's rotated
-// bounding box (so the rotation itself doesn't shift the wrapper's own
-// layout position), with the actual rotated card centered inside via
+// Figma node 14:7194 (home-page restructure, 37:10046) for rest-state
+// geometry; 33:9848/33:9837/33:9876/33:9885/34:9894/33:9857 for each
+// card's own expanded title/description copy — six cards, scattered with
+// individual rotation. Position math: Figma exports a rotated element as
+// a NON-rotated wrapper div sized to that element's rotated bounding box
+// (so the rotation itself doesn't shift the wrapper's own layout
+// position), with the actual rotated card centered inside via
 // items-center justify-center. To get each card's own pre-rotation (x, y)
 // — what this component actually needs, since CSS `rotate()` pivots
 // around transform-origin without touching layout position — every
@@ -39,12 +47,78 @@ const CARD_H = 162;
 const CARD_RADIUS = 10; // --radius-m
 
 const CARDS: CardData[] = [
-  { id: "prototype", color: "#f83e00", textColor: "#ffffbc", text: "Foundation", x: 10, y: 21, rotate: -7.55, video: "about-card-prototype.mp4" },
-  { id: "learning", color: "#f8ecd7", textColor: "#544831", text: "What shaped me through the years", x: 123, y: 23, rotate: 5.09, video: "about-card-learning.mp4" },
-  { id: "details", color: "#0093d9", textColor: "#93ffff", text: "I care about", x: 225, y: 6, rotate: -5.68, video: "about-card-details.mp4" },
-  { id: "workflows", color: "#00f790", textColor: "#004f00", text: "Loves a good design critique", x: 315, y: 26, rotate: 0, video: "about-card-workflows.mp4" },
-  { id: "design", color: "#211f1e", textColor: "#f8ecd7", text: "Building design systems", x: 415, y: 26, rotate: 10.05, video: "about-card-design.mp4" },
-  { id: "shipcode", color: "#00a4c6", textColor: "#0d0d0d", text: "Prototype with AI", x: 525, y: 26, rotate: 0, video: "about-card-shipcode.mp4" },
+  {
+    id: "prototype",
+    color: "#f83e00",
+    textColor: "#ffffbc",
+    text: "Foundation",
+    description:
+      "The foundation continues to shape how I approach designing today: curiosity, craftsmanship and a deep respect for the people who touch, feel or use the things I design.",
+    x: 10,
+    y: 21,
+    rotate: -7.55,
+    video: "about-card-prototype.mp4",
+  },
+  {
+    id: "learning",
+    color: "#f8ecd7",
+    textColor: "#544831",
+    text: "What shaped me through the years",
+    description:
+      "I was raised by a painter and a sculptor. I learned that craft matters. My first design education didn’t come from software, it came from watching a painter and sculptor at work.",
+    x: 123,
+    y: 23,
+    rotate: 5.09,
+    video: "about-card-learning.mp4",
+  },
+  {
+    id: "details",
+    color: "#0093d9",
+    textColor: "#93ffff",
+    expandedTextColor: "#f8ecd7",
+    text: "I care about",
+    description: "The details people might never notice. A few pixels, the right word or a transition that feels just right.",
+    x: 225,
+    y: 6,
+    rotate: -5.68,
+    video: "about-card-details.mp4",
+  },
+  {
+    id: "workflows",
+    color: "#00f790",
+    textColor: "#004f00",
+    text: "Loves a good design critique",
+    description:
+      "Good design gets better when you put it in front of other designers. I enjoy sharing work, challenging ideas and learning how others think.",
+    x: 315,
+    y: 26,
+    rotate: 0,
+    video: "about-card-workflows.mp4",
+  },
+  {
+    id: "design",
+    color: "#211f1e",
+    textColor: "#f8ecd7",
+    text: "Building design systems",
+    description:
+      "I have a thing for well-organised systems. For the past few years, I’ve been building them to help teams design and ship together.",
+    x: 415,
+    y: 26,
+    rotate: 10.05,
+    video: "about-card-design.mp4",
+  },
+  {
+    id: "shipcode",
+    color: "#00a4c6",
+    textColor: "#0d0d0d",
+    text: "Prototype with AI",
+    description:
+      "Things move fast. I used to connect messy Figma frames to prototype an idea. Now I design it, open Cursor or Claude, and make it real. Maybe soon I’ll push some code too.",
+    x: 525,
+    y: 26,
+    rotate: 0,
+    video: "about-card-shipcode.mp4",
+  },
 ];
 
 // Bounding box of all six cards' *rotated* extents (not the sum of their
@@ -53,78 +127,134 @@ const CARDS: CardData[] = [
 const CONTAINER_W = 655;
 const CONTAINER_H = 199;
 
-// Selected-card size/radius/type, Figma 18:7508 (its own worked example,
-// "obsessed about the smallest details" picked) — literal fixed values,
-// not this card's own 130x162/10px-radius/16px-text scaled up by a CSS
-// transform. That distinction matters: Figma keeps padding at a flat 8px
-// in both states, only width/height/radius/font-size actually change, so
-// a uniform transform: scale() (which stretches padding and radius right
-// along with everything else) would visibly overpad and over-round this
-// compared to the real design.
-const SELECTED_W = 240;
-const SELECTED_H = 300;
+// Expanded-card size — deliberately NOT Figma's own literal 301x400
+// (33:9848 etc.). That value read live as a near-modal feature card
+// sitting flush against the deck underneath it with zero gap (see the
+// live-reported "feels like a large card placed on top of the stack"
+// bug this was rebuilt to fix) — a plain 2x scale of the resting card
+// (130x162), landing inside the requested 1.8–2.2x range, stays clearly
+// "a card lifted out and enlarged" rather than "a different, bigger
+// card." Radius/padding/video-area scale by roughly the same factor
+// rather than Figma's own literal 20/12/170 numbers, for the same
+// reason.
+const SELECTED_W = CARD_W * 2; // 260
+const SELECTED_H = CARD_H * 2; // 324
 const SELECTED_RADIUS = 16;
-const SELECTED_VIDEO_H = 154;
-const SELECTED_TEXT = "text-[20px] leading-[24px] tracking-[-0.16px]";
+const SELECTED_PADDING = 10;
+const SELECTED_VIDEO_H = 128;
+const SELECTED_TITLE_TEXT = "text-[20px] leading-[24px] tracking-[-0.16px]";
 const RESTING_TEXT = "text-[16px] leading-[18px] tracking-[-0.128px]";
+const RESTING_PADDING = 8;
 
 // Selected card centers horizontally in the container and sits with its
 // own top at the container's own top (y=0) — not vertically centered,
-// which was the actual bug being fixed here: centering it let the card
-// grow symmetrically both up *and* down from the container's normal
-// bounds, and growing up is what pushed it into the bio paragraph
-// sitting directly above this component on the page. Growing only
-// downward, into space this component already reserves for exactly this
-// (see EXPANDED_H below), keeps it clear of everything above.
+// which was the actual bug being fixed originally: centering it let the
+// card grow symmetrically both up *and* down from the container's normal
+// bounds, and growing up is what pushed it into the bio paragraph sitting
+// directly above this component on the page. Growing only downward, into
+// space this component already reserves for exactly this (see
+// CONTAINER_EXPANDED_H below), keeps it clear of everything above.
 const SELECTED_X = CONTAINER_W / 2 - SELECTED_W / 2;
 const SELECTED_Y = 0;
-const DIM_OPACITY = 0.85;
+// Kept close to the resting-state opacity (1) on purpose — "reduce
+// emphasis only subtly... do not heavily darken them" was a direct fix
+// request against an earlier, much lower value (0.5) that, stacked
+// across several overlapping translucent cards, read as disabled rather
+// than secondary.
+const DIM_OPACITY = 0.82;
 
-// The five non-selected cards fan into one row centered under the
-// selected card's own midpoint — adapts to whichever card is picked,
-// rather than Figma's one worked example's literal (and non-uniform,
-// tighter near the selected card, wider further away) per-card offsets,
-// which only actually line up for that one specific card/position
-// combination. Row sits at y=178, matching Figma's own example, chosen
-// there so it tucks just under the selected card's video area without
-// reaching its copy (video ends at 8+154=162; row starting at 178 clears
-// that with room to spare).
-const OTHER_ROW_Y = 178;
-const OTHER_STEP = 55;
+// The five non-selected cards drop down from their own resting spot,
+// keep their own individual rotation (Figma's own worked example,
+// 37:10045, doesn't flatten them either — a loosely overlapping huddle
+// reads as "the rest of the stack this was picked from," where a
+// flattened row reads as a second, disconnected composition), and
+// alternate a small amount of extra y so the row itself doesn't read as
+// a stiff, perfectly ruled line. OTHER_GAP is a real, explicit gap below
+// the selected card's own bottom edge — the previous value (345) put the
+// deck's own top 55px *above* where the selected card's bottom (400)
+// actually landed, so the two visually collided rather than sitting in
+// clear top/bottom bands; DIM_STEP is wide enough that adjacent cards no
+// longer overlap by more (130-48=82px, 63%) than each card's own title
+// text needs to stay legible — title/description are hidden entirely on
+// a dimmed card regardless (see Card below), so this only needs to keep
+// each card's own color+artwork identifiable, not its full text.
+const OTHER_GAP = 36;
+const OTHER_ROW_Y = SELECTED_H + OTHER_GAP;
+const OTHER_STEP = 68;
 const OTHER_ROW_W = CARD_W + OTHER_STEP * 4; // 5 cards
 const OTHER_ROW_X = CONTAINER_W / 2 - OTHER_ROW_W / 2;
+const OTHER_JITTER = 7; // alternating +/- y per card, see otherIndex use below
 
 // Reserves enough height for the fully expanded state (selected card 0
-// to 300, other-cards row 178 to 178+162=340, +5 breathing room) at all
-// times, animated rather than a fixed always-tall box — an explicit
-// exception to "only animate transform/opacity" (see the `animate`
-// skill's own accordion exception): the whole point is for the page
-// content *below* this component to actually move out of the way while
-// a card is expanded, which only a real layout property can do —
-// transform never affects surrounding layout, that's exactly why it's
-// normally the safe one to animate.
-const CONTAINER_EXPANDED_H = 345;
+// to SELECTED_H, other-cards row starting OTHER_GAP below that and
+// running CARD_H+OTHER_JITTER tall) at all times, animated rather than a
+// fixed always-tall box — an explicit exception to "only animate
+// transform/opacity" (see the `animate` skill's own accordion
+// exception): the whole point is for the page content *below* this
+// component to actually move out of the way while a card is expanded,
+// which only a real layout property can do — transform never affects
+// surrounding layout, that's exactly why it's normally the safe one to
+// animate.
+const CONTAINER_EXPANDED_H = SELECTED_H + OTHER_GAP + CARD_H + OTHER_JITTER + 24;
+
+// On a narrow viewport the whole composition already scales down (see
+// `scale` below) so all six cards stay fully on-screen at rest — but
+// applying that *same* shrink to the expanded card too would be exactly
+// the "just shrink the desktop interaction" mobile treatment the brief
+// asks to avoid: a 301x400 card at, say, 0.55x scale renders barely wider
+// than a phone's own status bar icons, nowhere near comfortably
+// readable. While a card is selected, the composition's own scale is
+// floored at this value instead — the expanded card (already centered)
+// stays comfortably legible; the now-secondary dimmed cards may clip at
+// the composition's own left/right edges under `overflow-hidden`, which
+// is an acceptable trade: attention is supposed to be on the open card.
+const MIN_SELECTED_SCALE = 0.78;
 
 const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)"; // this project's own strong-ease-out (see components/motion/tokens.ts)
 const STAGGER_MS = 60;
-const SELECT_MS = 350;
+// Open/close/hover durations per the interaction brief this was rebuilt
+// against: open is the deliberate, considered motion (picking a card up
+// to look at it) so it gets the most time; close is the same motion in
+// reverse but reads better a little quicker, the same "release should
+// always be snappy" reasoning Nav's own old dropdown used; hover is
+// restrained on purpose, a quick nudge rather than a considered move.
+const OPEN_MS = 450;
+const CLOSE_MS = 350;
+const HOVER_MS = 180;
+// Description fade/slide starts this far into the open motion rather than
+// alongside it from frame zero — "reveal the description as part of the
+// same motion... can fade/slide in slightly after the card begins
+// expanding... do not make the text simply pop into existence." Closing
+// has no such delay: the copy should be gone well before the card has
+// finished shrinking back down, not still lingering in a card too small
+// for it.
+const DESCRIPTION_OPEN_DELAY_MS = 160;
+const DESCRIPTION_MS = 280;
+// A hovered card lifts slightly and eases about halfway out of its own
+// resting tilt — enough to read as "this one's selectable" without
+// flattening it the way selecting it for real does, which would leave
+// hover and selected reading as the same amount of commitment.
+const HOVER_LIFT = 10;
+const HOVER_ROTATE_FACTOR = 0.45;
+// Immediate horizontal neighbors nudge a few px further away on hover —
+// "nearby cards can move apart... to create space" — anything past that
+// stays put; the point is a small give right around the card being
+// considered, not a wave through the whole stack.
+const HOVER_NEIGHBOR_GAP = 7;
 
 export default function AboutCardStack() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [canHover, setCanHover] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
   // How much to shrink the whole 655px-wide composition to fit inside
   // whatever width this component actually has — 1 (no change) on Home's
   // own 688px column and anything wider, less than that on a narrow phone
-  // viewport. This used to just crop at the edges instead (matching the
-  // interfacecraft.dev reference this was modeled on), which read fine as
-  // a deliberate design choice until it was actually tested on a real
-  // phone: the first and last cards were partly or entirely off-screen,
-  // losing real content, not just trimming decorative overflow. Measured
-  // via ResizeObserver rather than a fixed breakpoint so it tracks the
-  // component's own actual rendered width at any viewport size, not a
-  // guessed cutoff.
+  // viewport. Measured via ResizeObserver rather than a fixed breakpoint
+  // so it tracks the component's own actual rendered width at any
+  // viewport size, not a guessed cutoff.
   const [scale, setScale] = useState(1);
   // Stays false only for the duration of the initial stagger, then true
   // forever after — see the effect below and its use as `delay` at the
@@ -140,6 +270,18 @@ export default function AboutCardStack() {
     updateMotion();
     motionQuery.addEventListener("change", updateMotion);
     return () => motionQuery.removeEventListener("change", updateMotion);
+  }, []);
+
+  // Same hover-capability gate DotFieldCanvas.tsx already uses — a
+  // touchscreen has no persistent "cursor" for the subtle hover-lift to
+  // react to, and simulating it off a tap would just be a worse, laggier
+  // version of the tap-to-open interaction touch already gets directly.
+  useEffect(() => {
+    // Reading matchMedia on mount, not syncing from props/state — same
+    // pattern (and same justified exception) as Tag.tsx's own canHover
+    // read and this component's reduced-motion read just above.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCanHover(window.matchMedia("(hover: hover) and (pointer: fine)").matches);
   }, []);
 
   useEffect(() => {
@@ -204,14 +346,15 @@ export default function AboutCardStack() {
     return () => clearTimeout(timeout);
   }, [visible, hasRevealedOnce]);
 
-  // Click/tap a card to bring it forward and highlight it (interfacecraft.dev
-  // itself turned out not to actually have this on closer testing — real
-  // clicks on its cards did nothing there, the "one big card" look is just
-  // its resting composition — but it's the interaction that was asked for,
-  // built fresh rather than copied from a behavior that doesn't exist to
-  // copy). Clicking the selected card again, clicking outside the
-  // composition, or Escape all deselect — same outside-click + Escape
-  // pattern Nav.tsx already uses for its own dismiss.
+  // Click/tap a card to bring it forward and reveal its description —
+  // clicking the selected card again, clicking outside the composition,
+  // or Escape all close it (same outside-click + Escape pattern Nav.tsx
+  // already uses for its own dismiss). Clicking a *different* card while
+  // one is open hands focus directly to it in the same render — this
+  // component's whole layout is already a pure function of `selectedId`,
+  // so there's no separate "close, then open" step to avoid: the old
+  // card animates toward dimmed and the new one toward selected in the
+  // same transition, simultaneously.
   useEffect(() => {
     if (!selectedId) return;
     const onPointerDown = (e: PointerEvent) => {
@@ -228,6 +371,8 @@ export default function AboutCardStack() {
     };
   }, [selectedId]);
 
+  const effectiveScale = selectedId ? Math.max(scale, MIN_SELECTED_SCALE) : scale;
+
   return (
     // overflow-hidden as a safety guard, not the thing doing the actual
     // fitting anymore — the inner composition below now scales itself
@@ -242,13 +387,19 @@ export default function AboutCardStack() {
       ref={wrapperRef}
       className="flex w-full items-start justify-center overflow-hidden pt-6"
       style={{
-        height: (selectedId ? CONTAINER_EXPANDED_H : CONTAINER_H) * scale + 24, // +24 = pt-6
-        transition: reducedMotion ? undefined : `height ${SELECT_MS}ms ${EASE_OUT}`,
+        height: (selectedId ? CONTAINER_EXPANDED_H : CONTAINER_H) * effectiveScale + 24, // +24 = pt-6
+        transition: reducedMotion ? undefined : `height ${selectedId ? OPEN_MS : CLOSE_MS}ms ${EASE_OUT}`,
       }}
     >
       <div
         className="relative shrink-0"
-        style={{ width: CONTAINER_W, height: CONTAINER_H, transform: `scale(${scale})`, transformOrigin: "top center" }}
+        style={{
+          width: CONTAINER_W,
+          height: CONTAINER_H,
+          transform: `scale(${effectiveScale})`,
+          transformOrigin: "top center",
+          transition: reducedMotion ? undefined : `transform ${selectedId ? OPEN_MS : CLOSE_MS}ms ${EASE_OUT}`,
+        }}
       >
         {(() => {
           // otherIndex: this card's position among the *other* (non-
@@ -257,19 +408,32 @@ export default function AboutCardStack() {
           // excluded — that's what actually drives the stacked row's
           // layout below, not each card's own fixed array index.
           const otherIds = CARDS.filter((c) => c.id !== selectedId).map((c) => c.id);
-          return CARDS.map((card, i) => (
-            <Card
-              key={card.id}
-              card={card}
-              visible={visible}
-              reducedMotion={reducedMotion}
-              delay={hasRevealedOnce ? 0 : i * STAGGER_MS}
-              selected={selectedId === card.id}
-              dimmed={selectedId !== null && selectedId !== card.id}
-              otherIndex={otherIds.indexOf(card.id)}
-              onToggle={() => setSelectedId((current) => (current === card.id ? null : card.id))}
-            />
-          ));
+          const hoveredIndex = hoveredId ? CARDS.findIndex((c) => c.id === hoveredId) : -1;
+          return CARDS.map((card, i) => {
+            // Only the immediate left/right neighbor of the hovered card
+            // gets nudged — see HOVER_NEIGHBOR_GAP's own comment above.
+            let neighborNudge = 0;
+            if (!selectedId && hoveredIndex !== -1 && card.id !== hoveredId) {
+              if (i === hoveredIndex - 1) neighborNudge = -HOVER_NEIGHBOR_GAP;
+              else if (i === hoveredIndex + 1) neighborNudge = HOVER_NEIGHBOR_GAP;
+            }
+            return (
+              <Card
+                key={card.id}
+                card={card}
+                visible={visible}
+                reducedMotion={reducedMotion}
+                delay={hasRevealedOnce ? 0 : i * STAGGER_MS}
+                selected={selectedId === card.id}
+                dimmed={selectedId !== null && selectedId !== card.id}
+                hovered={canHover && !selectedId && hoveredId === card.id}
+                neighborNudge={neighborNudge}
+                otherIndex={otherIds.indexOf(card.id)}
+                onToggle={() => setSelectedId((current) => (current === card.id ? null : card.id))}
+                onHoverChange={(isHovered) => setHoveredId((current) => (isHovered ? card.id : current === card.id ? null : current))}
+              />
+            );
+          });
         })()}
       </div>
     </div>
@@ -283,8 +447,11 @@ function Card({
   delay,
   selected,
   dimmed,
+  hovered,
+  neighborNudge,
   otherIndex,
   onToggle,
+  onHoverChange,
 }: {
   card: CardData;
   visible: boolean;
@@ -292,28 +459,37 @@ function Card({
   delay: number;
   selected: boolean;
   dimmed: boolean;
+  hovered: boolean;
+  neighborNudge: number;
   otherIndex: number;
   onToggle: () => void;
+  onHoverChange: (hovered: boolean) => void;
 }) {
   // dimmed here doubles as "some other card is selected" — that's
   // exactly when this one belongs in the stacked row instead of its own
   // resting spot, not just visually faded there.
-  const x = selected ? SELECTED_X : dimmed ? OTHER_ROW_X + otherIndex * OTHER_STEP : card.x;
-  const y = selected ? SELECTED_Y : dimmed ? OTHER_ROW_Y : card.y;
-  // Straightens out of its resting tilt whenever it's not sitting at its
-  // own resting spot — selected for the same "this one's in focus" cue
-  // Tag.tsx's own hover state already uses, and dimmed/stacked because a
-  // rotated card's rendered footprint doesn't match its own box: the
-  // corners of a tilted card can lift clear of the *next* card's
-  // supposedly-covering rectangle, letting whatever text sits underneath
-  // show through at exactly those corners. Flat, perfectly rectangular
-  // cards in the stacked row is what makes each one's z-index actually
-  // fully hide the one behind it, not just mostly.
-  const rotate = selected || dimmed ? 0 : card.rotate;
+  const x = selected ? SELECTED_X : dimmed ? OTHER_ROW_X + otherIndex * OTHER_STEP : card.x + neighborNudge;
+  // Alternating +/- jitter per position in the row, not a perfectly
+  // ruled line — a real hand-dealt deck never lands flush, and the tiny
+  // stagger also helps separate each card's own visible edge from its
+  // immediate neighbors.
+  const y = selected ? SELECTED_Y : dimmed ? OTHER_ROW_Y + (otherIndex % 2 === 0 ? -OTHER_JITTER : OTHER_JITTER) : card.y - (hovered ? HOVER_LIFT : 0);
+  // Selected straightens all the way to 0 (the "this one's in focus" cue
+  // Tag.tsx's own hover state also uses); dimmed keeps its own natural
+  // tilt now instead of flattening to 0 — a loosely overlapping huddle of
+  // still-tilted cards reads as "the rest of the stack this was picked
+  // from," where a flattened, evenly-spaced row read as a second,
+  // disconnected composition (see OTHER_ROW_Y's own comment). Hover eases
+  // partway toward flat without fully committing to it, the same
+  // "selectable, not yet selected" distinction its lift/scale get.
+  const rotate = selected ? 0 : dimmed ? card.rotate : card.rotate * (hovered ? 1 - HOVER_ROTATE_FACTOR : 1);
   const entranceScale = reducedMotion || visible ? 1 : 0.92; // only the mount-in animation ever uses transform:scale — the selected-size change uses real width/height instead, see the module doc comment above
+  const hoverScale = hovered ? 1.03 : 1;
   const width = selected ? SELECTED_W : CARD_W;
   const height = selected ? SELECTED_H : CARD_H;
   const radius = selected ? SELECTED_RADIUS : CARD_RADIUS;
+  const padding = selected ? SELECTED_PADDING : RESTING_PADDING;
+  const transitionMs = selected ? OPEN_MS : dimmed ? CLOSE_MS : hovered ? HOVER_MS : CLOSE_MS;
 
   return (
     <div
@@ -328,22 +504,39 @@ function Card({
           onToggle();
         }
       }}
-      className="absolute left-0 top-0 flex cursor-pointer flex-col justify-between overflow-hidden p-2 outline-none will-change-transform focus-visible:ring-2 focus-visible:ring-text-primary"
+      onMouseEnter={() => onHoverChange(true)}
+      onMouseLeave={() => onHoverChange(false)}
+      onFocus={() => onHoverChange(true)}
+      onBlur={() => onHoverChange(false)}
+      className="absolute left-0 top-0 flex cursor-pointer flex-col justify-between overflow-hidden outline-none will-change-transform focus-visible:ring-2 focus-visible:ring-text-primary"
       style={{
         width,
         height,
+        padding,
         borderRadius: radius,
         backgroundColor: card.color,
         opacity: reducedMotion ? (dimmed ? DIM_OPACITY : 1) : visible ? (dimmed ? DIM_OPACITY : 1) : 0,
-        // Selected is always frontmost; among the stacked others, later
-        // otherIndex (further right in the row) sits on top of earlier
-        // ones, same left-under-right layering an ordinary hand of fanned
-        // cards would have.
-        zIndex: selected ? 10 : dimmed ? 2 + otherIndex : 1,
-        transform: `translate3d(${x}px, ${y}px, 0) rotate(${rotate}deg) scale(${entranceScale})`,
+        // Selected is always frontmost; hovered lifts above the resting
+        // stack (but never above a selected card, since hover is already
+        // disabled the instant anything is selected); among the stacked
+        // others, later otherIndex (further right) sits on top of
+        // earlier ones, the same left-under-right layering an ordinary
+        // fanned hand of cards would have. z-index isn't part of the
+        // `transition` list below — it switches the instant this card
+        // becomes selected, not partway through the move, so it always
+        // passes over its neighbors immediately rather than partway.
+        zIndex: selected ? 10 : hovered ? 6 : dimmed ? 2 + otherIndex : 1,
+        transform: `translate3d(${x}px, ${y}px, 0) rotate(${rotate}deg) scale(${entranceScale * hoverScale})`,
         transition: reducedMotion
           ? undefined
-          : `opacity ${SELECT_MS}ms ${EASE_OUT} ${delay}ms, transform ${selected || dimmed ? SELECT_MS : 500}ms ${EASE_OUT} ${selected || dimmed ? 0 : delay}ms, width ${SELECT_MS}ms ${EASE_OUT}, height ${SELECT_MS}ms ${EASE_OUT}, border-radius ${SELECT_MS}ms ${EASE_OUT}`,
+          : [
+              `opacity ${SELECT_OPACITY_MS(selected, dimmed)}ms ${EASE_OUT} ${delay}ms`,
+              `transform ${selected || dimmed ? transitionMs : hovered ? HOVER_MS : 500}ms ${EASE_OUT} ${selected || dimmed ? 0 : delay}ms`,
+              `width ${transitionMs}ms ${EASE_OUT}`,
+              `height ${transitionMs}ms ${EASE_OUT}`,
+              `padding ${transitionMs}ms ${EASE_OUT}`,
+              `border-radius ${transitionMs}ms ${EASE_OUT}`,
+            ].join(", "),
       }}
     >
       {/* Figma's own export for this area came back as an empty div —
@@ -354,15 +547,15 @@ function Card({
           crops to a center band — not a bug, just what covering does;
           the `video` field staying optional is what lets a card render
           as just its flat color if one's ever missing rather than
-          breaking. Height animates 60↔154 alongside the card itself
-          (Figma 18:7508's own selected-state value), width stays w-full
-          in both states since the padding either side of it doesn't
-          change. */}
+          breaking. Height animates 60↔128 alongside the card itself,
+          width stays w-full in both states since the padding either side
+          of it doesn't change. */}
       <div
         className="relative w-full shrink-0 overflow-hidden"
         style={{
           height: selected ? SELECTED_VIDEO_H : 60,
-          transition: reducedMotion ? undefined : `height ${SELECT_MS}ms ${EASE_OUT}`,
+          borderRadius: selected ? 8 : 0,
+          transition: reducedMotion ? undefined : `height ${transitionMs}ms ${EASE_OUT}, border-radius ${transitionMs}ms ${EASE_OUT}`,
         }}
       >
         {card.video && (
@@ -376,12 +569,60 @@ function Card({
           />
         )}
       </div>
-      <p
-        className={`w-full font-serif not-italic ${selected ? SELECTED_TEXT : RESTING_TEXT}`}
-        style={{ color: card.textColor, transition: reducedMotion ? undefined : `font-size ${SELECT_MS}ms ${EASE_OUT}` }}
-      >
-        {card.text}
-      </p>
+      <div className="flex w-full flex-col gap-2">
+        {/* Hidden (not just dimmed) once this card drops into the
+            secondary row — five overlapping titles all pinned to the
+            same bottom band was the actual source of the reported "messy
+            pile" / "overlapping typography" underneath the active card.
+            Each dimmed card still reads fine by color + artwork alone
+            (per "show mainly their upper portions/artwork rather than
+            overlapping titles"), and stays clickable regardless. */}
+        <p
+          aria-hidden={dimmed}
+          className={`w-full font-serif not-italic ${selected ? SELECTED_TITLE_TEXT : RESTING_TEXT}`}
+          style={{
+            color: selected ? (card.expandedTextColor ?? card.textColor) : card.textColor,
+            opacity: dimmed ? 0 : 1,
+            transition: reducedMotion
+              ? undefined
+              : `font-size ${transitionMs}ms ${EASE_OUT}, color ${transitionMs}ms ${EASE_OUT}, opacity ${transitionMs}ms ${EASE_OUT}`,
+          }}
+        >
+          {card.text}
+        </p>
+        {/* Delayed relative to the card's own move (DESCRIPTION_OPEN_DELAY_MS)
+            on the way in, no delay on the way out — "reveal the
+            description as part of the same motion... can fade/slide in
+            slightly after the card begins expanding... do not make the
+            text simply pop into existence." Kept mounted at all times
+            (not conditionally rendered) so it has something to animate
+            *out* of when closing, rather than just vanishing. */}
+        <p
+          aria-hidden={!selected}
+          className="w-full font-sans text-[16px] leading-[normal] tracking-[-0.128px]"
+          style={{
+            color: card.expandedTextColor ?? card.textColor,
+            opacity: selected ? 0.5 : 0,
+            transform: `translateY(${selected ? 0 : 6}px)`,
+            transition: reducedMotion
+              ? undefined
+              : `opacity ${DESCRIPTION_MS}ms ${EASE_OUT} ${selected ? DESCRIPTION_OPEN_DELAY_MS : 0}ms, transform ${DESCRIPTION_MS}ms ${EASE_OUT} ${selected ? DESCRIPTION_OPEN_DELAY_MS : 0}ms`,
+            pointerEvents: selected ? "auto" : "none",
+          }}
+        >
+          {card.description}
+        </p>
+      </div>
     </div>
   );
+}
+
+// Opacity keeps the mount-in stagger's own longer fade for a truly fresh
+// reveal, but should react instantly (no extra delay stacking on top of
+// an already-tuned open/close move) once the composition has been
+// through its first reveal — same reasoning `hasRevealedOnce` already
+// applies to `delay` itself, just mirrored here for the property that
+// still needs *some* duration even at 0 delay so it doesn't hard-cut.
+function SELECT_OPACITY_MS(selected: boolean, dimmed: boolean) {
+  return selected ? OPEN_MS : dimmed ? CLOSE_MS : 400;
 }

@@ -35,13 +35,15 @@ export default function Home() {
       {/* Nav is `fixed` (see Nav.tsx) — out of normal document flow, so it
           never pushes this content down on its own. Nav is back at the
           *top* of the viewport again (Figma 41:10445's own redesign,
-          after a stint bottom-anchored) — 100px, matching this page's own
-          section-gap rhythm, comfortably clears its ~36px bar height plus
-          its own 24px top offset either way, so this reservation didn't
-          need to change even though what it's clearing did. */}
+          after a stint bottom-anchored). 180px (100px section-gap rhythm
+          + a requested 80px on top) is real breathing room *below* the
+          bar itself, not just clearance — the previous 100px cleared its
+          ~36px height + 24px offset with only ~40px left over, which
+          read as cramped directly under a fixed bar rather than as an
+          intentional gap. */}
       <Nav />
 
-      <div className="mx-auto w-full max-w-[688px] pt-[100px]">
+      <div className="mx-auto w-full max-w-[688px] pt-[180px]">
         <div className="flex flex-col gap-[100px]">
           {/* Figma 37:10046 — the intro is centered now (was left-aligned),
               a small hand-drawn flourish sits above the heading, and the

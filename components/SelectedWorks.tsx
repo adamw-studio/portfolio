@@ -62,7 +62,12 @@ export default function SelectedWorks() {
   const project = PROJECTS[index];
 
   return (
-    <div className="flex flex-col gap-4">
+    // id + scroll-mt-[120px]: the nav's own "Works" link now jumps here
+    // (Nav.tsx, /#selected-works) instead of navigating to the separate
+    // /work index — scroll-margin-top keeps the fixed top nav (its own
+    // ~40px bar + 24px top offset, plus real breathing room) from
+    // covering the heading once the browser scrolls this into view.
+    <div id="selected-works" className="flex scroll-mt-[120px] flex-col gap-4">
       <div className="flex w-full items-center justify-between">
         <h2 className={heading}>Selected works</h2>
         {/* Figma 15:7365 — the two arrow buttons now share one outer pill

@@ -10,17 +10,29 @@ import { EASE_OUT, MOTION_REDUCE } from "@/components/motion/tokens";
 
 // Figma 41:10445 — back to a top-pinned nav (the bottom-center pill this
 // briefly shipped as is retired), and redesigned: three route segments
-// now (Home/Works/Play, not just Home/Play) — "Works" points at the
-// existing /work case-studies index, which had no nav entry at all
-// before. "Contact" is no longer a segment inside this pill; "Get in
-// touch" is its own separate pill entirely (Figma's own 96px gap between
-// the two), explicitly reserved to become a real dropdown with options
-// later — for now it keeps the old contact-reveal-panel behavior (the
-// closest existing functionality) rather than shipping inert.
-const links = [
-  { href: "/", label: "Home" },
-  { href: "/work", label: "Works" },
-  { href: "/playground", label: "Play" },
+// now (Home/Works/Play, not just Home/Play). "Contact" is no longer a
+// segment inside this pill; "Get in touch" is its own separate pill
+// entirely (Figma's own 96px gap between the two), explicitly reserved
+// to become a real dropdown with options later — for now it keeps the
+// old contact-reveal-panel behavior (the closest existing functionality)
+// rather than shipping inert.
+//
+// "Works" jumps to the Home page's own "Selected works" section
+// (#selected-works, SelectedWorks.tsx) rather than navigating to the
+// separate /work case-studies index — a real product decision, not a
+// Figma-driven one (Figma's own node has no href spec at all). A plain
+// hash href handles both cases Next.js's own Link already knows how to:
+// clicking it while already on "/" just scrolls; clicking it from any
+// other page (Playground, a case study) navigates to "/" and then
+// scrolls once it lands. `activeMatch` is separate from `href` for this
+// one link specifically — it should still read as active on an actual
+// /work/* case-study page (those routes still exist, still linked from
+// inside that same section), which a hash href alone can't express since
+// `usePathname()` never includes the fragment.
+const links: { href: string; label: string; activeMatch: string }[] = [
+  { href: "/", label: "Home", activeMatch: "/" },
+  { href: "/#selected-works", label: "Works", activeMatch: "/work" },
+  { href: "/playground", label: "Play", activeMatch: "/playground" },
 ];
 
 const CONTACT_EMAIL = "adamweber54@gmail.com";
@@ -29,9 +41,9 @@ const CONTACT_EMAIL = "adamweber54@gmail.com";
 // (/work/beacon etc.), not just the exact /work index — the only entry
 // here with real sub-routes. Home stays an exact match so it doesn't
 // light up for every other route once it's the array's own "/" prefix.
-function isActiveHref(pathname: string, href: string) {
-  if (href === "/") return pathname === "/";
-  return pathname === href || pathname.startsWith(`${href}/`);
+function isActiveHref(pathname: string, activeMatch: string) {
+  if (activeMatch === "/") return pathname === "/";
+  return pathname === activeMatch || pathname.startsWith(`${activeMatch}/`);
 }
 
 // Figma 37:10089 (Nav Item states) — Default carries no fill or border at
@@ -132,19 +144,34 @@ export default function Nav() {
 
           Below `sm` (640px), the row's own natural width (~640px+) does
           not fit a typical phone at all — Figma gives no mobile variant
-          of this node to follow instead — so this switches to a plain
-          wrapping flex row instead: all three pieces stay visible,
-          centered, and wrap onto their own line rather than clipping or
-          forcing a squeeze severe enough to break the segmented
-          control's own fixed-width nav items. */}
-      <div className="mx-auto flex w-full max-w-[688px] flex-wrap items-center justify-center gap-x-6 gap-y-2 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:flex-nowrap sm:gap-0">
-        <Link href="/" aria-label="Adam Weber — home" className="shrink-0 sm:justify-self-start">
-          <Image src="/images/home/logo-mark-small.svg" alt="" width={36} height={12} className={themedIcon} />
+          of this node to follow instead. Rather than shrink or wrap all
+          three pieces (a wrapped "Get in touch" row read as its own
+          floating island, disconnected from the actual nav bar above
+          it), the logo and "Get in touch" are both hidden below `sm`,
+          leaving just the segmented control — the one piece that's
+          actually navigation — centered on its own. Both come back at
+          `sm` and up, where the row comfortably fits on one line and the
+          logo/Get-in-touch hiding would serve no purpose. */}
+      <div className="mx-auto flex w-full max-w-[688px] items-center justify-center sm:grid sm:grid-cols-[1fr_auto_1fr]">
+        {/* Figma 44:10580's own frame is a bare 36x36 box with no fill —
+            confirmed via both get_design_context and get_metadata, no
+            background/border on the node at all — but reported live as
+            blending straight into whatever page content scrolls beneath
+            it (the same reason every *other* piece of this nav already
+            carries its own solid bg-bg-default). Wrapped in the same
+            circular solidPill treatment the segmented control and mode-
+            toggle group already use, sized to that same 36px frame. */}
+        <Link
+          href="/"
+          aria-label="Adam Weber — home"
+          className={`hidden size-9 shrink-0 items-center justify-center rounded-full sm:flex sm:justify-self-start ${solidPill}`}
+        >
+          <Image src="/images/home/logo-mark-small.svg" alt="" width={24} height={8} className={themedIcon} />
         </Link>
 
         <div className={`relative flex items-center gap-1 overflow-hidden rounded-full p-1 sm:justify-self-center ${solidPill}`}>
           {links.map((link) => {
-            const active = isActiveHref(pathname, link.href);
+            const active = isActiveHref(pathname, link.activeMatch);
             return (
               <Link key={link.href} href={link.href} className={`${navItemBase} ${active ? navItemActive : navItemInactive}`}>
                 {link.label}
@@ -186,7 +213,7 @@ export default function Nav() {
             a follow-up), so this keeps the previous Contact segment's own
             click-to-reveal email/copy panel rather than shipping with no
             interaction at all in the meantime. */}
-        <div className="relative sm:justify-self-end">
+        <div className="relative hidden sm:block sm:justify-self-end">
           <button
             type="button"
             aria-expanded={showContact}
@@ -196,13 +223,24 @@ export default function Nav() {
             Get in touch
           </button>
 
-          {/* Anchored to this pill's own bottom-right, dropping straight
-              down — the mirror image of the old bottom-nav version's own
-              panel, which opened upward from the bar's top edge. Always
-              rendered so it can animate back out on close, not just
-              vanish; pointer-events-none while closed keeps its reserved
-              (invisible) space from intercepting a click meant for the
-              page behind it. */}
+          {/* right-0, not centered under the trigger — tried centering
+              first (this pill can sit anywhere along the row depending
+              on viewport width, and a centered popover is the more
+              origin-correct default per this project's own animate
+              skill), but that regressed a *different* width instead:
+              this button is always in the row's own rightmost grid
+              column whenever it's visible at all (hidden below `sm`, see
+              above), so it already sits close to the row's own right
+              edge with real margin held past it — centering the panel
+              under the button's own midpoint pushed half its width back
+              out *past* that margin (confirmed live at 768px: panel
+              right edge measured 28.7px past the viewport). right-0
+              keeps the panel's own right edge flush with the button's,
+              using the SAME margin already reserved for the button
+              rather than fighting it. Always rendered so it can animate
+              back out on close, not just vanish; pointer-events-none
+              while closed keeps its reserved (invisible) space from
+              intercepting a click meant for the page behind it. */}
           <div
             className={`absolute right-0 top-full mt-2 rounded-m border border-border-subtle p-1.5 transition-[opacity,transform] ${EASE_OUT} ${MOTION_REDUCE} ${solidPill} ${
               showContact ? "translate-y-0 scale-100 opacity-100 duration-200" : "pointer-events-none -translate-y-1 scale-95 opacity-0 duration-150"

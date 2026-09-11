@@ -3,6 +3,7 @@ import Nav from "@/components/Nav";
 import { Chip } from "@/components/Chip";
 import { Tag } from "@/components/Tag";
 import AboutCardStack from "@/components/AboutCardStack";
+import FlourishDivider from "@/components/FlourishDivider";
 import SelectedWorks from "@/components/SelectedWorks";
 import HomeFooter from "@/components/HomeFooter";
 import { ThemeProvider } from "@/components/ThemeContext";
@@ -44,79 +45,89 @@ export default function Home() {
       <Nav />
 
       <div className="mx-auto w-full max-w-[688px] pt-[180px]">
-        <div className="flex flex-col gap-[100px]">
+        {/* Figma 46:10661 — two rhythms, not one flat gap throughout: the
+            intro text and the card cluster share their own tighter 100px
+            gap (nested below), while every *other* top-level section —
+            that whole intro+cards group, each flourish divider, "What I
+            do", "Selected works" — sits 120px apart at this outer level.
+            An earlier pass had all of these on one flat 100px gap;
+            re-checked directly against this node's own metadata rather
+            than assumed unchanged. */}
+        <div className="flex flex-col gap-[120px]">
           {/* Figma 37:10046 — the intro is centered now (was left-aligned),
               a small hand-drawn flourish sits above the heading, and the
               bio copy is shorter/rewritten entirely, dropping the
               "5 years & 4 months" chip and both projects' own long
               descriptions in favor of one compact paragraph. "What shapes
-              me" is gone from this design outright, not just relocated —
-              the card cluster and "What I do" now share this same flat
-              100px rhythm as everything else on the page, rather than
-              being nested together in their own tighter-gapped group the
-              way "What shapes me"/"What I do" used to be. */}
-          <div className="flex flex-col items-center gap-6">
-            <div className="flex flex-col items-center gap-3">
-              <Image
-                src="/images/home/hey-adam-flourish.svg"
-                alt=""
-                width={75}
-                height={5}
-                className={`flourish-draw ${themedIcon}`}
-              />
-              {/* 24px specifically for this heading, not the shared
-                  `heading` token's own 20px — "What I do" and "Selected
-                  works" (the token's other two call sites) stay at 20px,
-                  so this can't just bump the shared value. */}
+              me" is gone from this design outright, not just relocated. */}
+          <div className="flex flex-col gap-[100px]">
+            <div className="flex flex-col items-center gap-6">
+              {/* No flourish above the heading anymore — removed per live
+                  feedback. 24px specifically for this heading, not the
+                  shared `heading` token's own 20px — "What I do" and
+                  "Selected works" (the token's other two call sites) stay
+                  at 20px, so this can't just bump the shared value. */}
               <h1 className="font-serif text-[24px] leading-6 tracking-[-0.8px] text-text-primary">Hey, I’m Adam</h1>
+              {/* Figma 46:10668 — three explicit lines, not one flowing
+                  paragraph left to wrap on its own: line 2 in particular
+                  (the Beacon/Orchestro chips) is its own row with its own
+                  flex layout. flex-wrap on that row (rather than the
+                  whitespace-nowrap Figma's own export defaults every
+                  single-line text node to) is the actual safety net for
+                  narrow viewports — Figma gives no mobile variant of this
+                  node, and at typical/wide widths the row already fits on
+                  one line without needing to forbid wrapping outright.
+                  Copy on line 3 changed too: "I've worked across brand
+                  design, new products, enterprise software" is now "I've
+                  gone from brand design to building products from scratch
+                  and working on enterprise software." */}
+              <div className={`flex flex-col items-center gap-2 text-center ${bodyText}`}>
+                <p>I’m a Senior Product Designer at McKinsey &amp; Company.</p>
+                <p className="flex flex-wrap items-center justify-center gap-2">
+                  <span>Currently leading design for</span>
+                  <Chip
+                    icon={<Image src="/images/home/beacon-icon.svg" alt="" width={22} height={12} className={themedIcon} />}
+                    radius="sm"
+                  >
+                    Beacon
+                  </Chip>
+                  <span>and co-designing</span>
+                  {/* Orchestro + its trailing "." share their own tight,
+                      gap-less inline group (Figma's own 46:10679, gap-2px)
+                      so the period hugs the chip rather than picking up
+                      this row's own 8px inter-item gap like every other
+                      sibling here does. */}
+                  <span className="inline-flex items-center">
+                    <Chip radius="sm">Orchestro</Chip>
+                    <span>.</span>
+                  </span>
+                  <span>Over the last 5+ years,</span>
+                </p>
+                <p>I’ve gone from brand design to building products from scratch and working on enterprise software.</p>
+              </div>
             </div>
-            {/* Figma 46:10668 — three explicit lines, not one flowing
-                paragraph left to wrap on its own: line 2 in particular
-                (the Beacon/Orchestro chips) is its own row with its own
-                flex layout. flex-wrap on that row (rather than the
-                whitespace-nowrap Figma's own export defaults every
-                single-line text node to) is the actual safety net for
-                narrow viewports — Figma gives no mobile variant of this
-                node, and at typical/wide widths the row already fits on
-                one line without needing to forbid wrapping outright.
-                Copy on line 3 changed too: "I've worked across brand
-                design, new products, enterprise software" is now "I've
-                gone from brand design to building products from scratch
-                and working on enterprise software." */}
-            <div className={`flex flex-col items-center gap-2 text-center ${bodyText}`}>
-              <p>I’m a Senior Product Designer at McKinsey &amp; Company.</p>
-              <p className="flex flex-wrap items-center justify-center gap-2">
-                <span>Currently leading design for</span>
-                <Chip
-                  icon={<Image src="/images/home/beacon-icon.svg" alt="" width={22} height={12} className={themedIcon} />}
-                  radius="sm"
-                >
-                  Beacon
-                </Chip>
-                <span>and co-designing</span>
-                {/* Orchestro + its trailing "." share their own tight,
-                    gap-less inline group (Figma's own 46:10679, gap-2px)
-                    so the period hugs the chip rather than picking up
-                    this row's own 8px inter-item gap like every other
-                    sibling here does. */}
-                <span className="inline-flex items-center">
-                  <Chip radius="sm">Orchestro</Chip>
-                  <span>.</span>
-                </span>
-                <span>Over the last 5+ years,</span>
-              </p>
-              <p>I’ve gone from brand design to building products from scratch and working on enterprise software.</p>
-            </div>
+
+            {/* Figma 14:7194 — narrower (655px) than the 688px column it
+                lives in, so it doesn't need to break out of the column as
+                its own full-width section the way it once did. */}
+            <AboutCardStack />
           </div>
 
-          {/* Figma 14:7194 — narrower (655px) than the 688px column it
-              lives in, so it doesn't need to break out of the column as
-              its own full-width section the way it once did. */}
-          <AboutCardStack />
+          {/* Figma 46:10661 — the same hand-drawn flourish used above
+              "Hey, I'm Adam" reused as a section divider, replacing the
+              plain 40px solid rule this page used here before (that
+              rule's own 15:7412 reference has apparently been superseded
+              — this newer node reuses the flourish asset at both divider
+              positions instead). Draws in on scroll rather than
+              immediately like the heading's own instance, since this one
+              starts below the fold — see FlourishDivider's own comment
+              for why that needs a different (but equally fail-safe)
+              technique than the heading flourish's pure-CSS one. */}
+          <FlourishDivider />
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-6">
             <h2 className={heading}>What I do</h2>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-7">
               <p className={bodyText}>
                 I own my work end to end, from early concepts to shipped outcomes. I’ve worked on large enterprise
                 products as well as smaller, ambitious ones, but I’m most energized when I’m close to the problem,
@@ -135,15 +146,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Figma 15:7412 — a short 40px centered rule, not the full-width
-              dashed Divider this page previously used twice (before and
-              after Selected works). The current file only shows this one,
-              once, here — Divider itself stays for the case-study pages,
-              which still use it (see Divider.tsx), just not this page
-              anymore. */}
-          <div className="flex w-full justify-center">
-            <div aria-hidden className="h-px w-10 bg-border-subtle" />
-          </div>
+          <FlourishDivider />
 
           <SelectedWorks />
         </div>

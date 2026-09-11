@@ -214,44 +214,6 @@ body {
   );
 }
 
-/* The flourish above "Hey, I'm Adam" (hey-adam-flourish.svg) wipes in
-   left-to-right on mount, reading as "the line appearing as if drawn."
-   The asset itself is a single, dense *filled* path (fill-opacity 0.1,
-   no stroke at all — confirmed by inspecting the raw file directly, and
-   almost certainly thousands of tiny disconnected fragment shapes, a
-   traced brush-stroke texture rather than one continuous line: the file
-   is 205KB for a 75x5px decoration), which rules out the classic
-   stroke-dasharray/dashoffset "path draw" technique outright — there's
-   no stroke to animate and no single continuous path to measure a
-   meaningful length from. A clip-path wipe achieves the same read
-   without depending on the asset's own internal path structure.
-
-   @starting-style, not a React mount-then-setState effect (an earlier
-   version used an IntersectionObserver-gated reveal, matching
-   AboutCardStack's own pattern) — that version could get stuck
-   permanently invisible if the observer's callback never fired for any
-   reason (confirmed live: reported as genuinely never appearing, not
-   just delayed). Pure CSS has no such failure mode: `clip-path: inset(0
-   0 0 0)` is the element's own base/default style regardless of
-   animation support, so a browser that doesn't yet support
-   @starting-style just renders it fully visible immediately with no
-   animation, rather than stuck hidden — a strictly safer degrade path
-   for a nice-to-have entrance than "invisible forever" ever was. */
-.flourish-draw {
-  clip-path: inset(0 0 0 0);
-  transition: clip-path 800ms cubic-bezier(0.23, 1, 0.32, 1);
-
-  @starting-style {
-    clip-path: inset(0 100% 0 0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .flourish-draw {
-    transition: none;
-  }
-}
-
 /* BeaconComposer's typing caret — now a border-right on the text's own
    span (see BeaconComposer.tsx), not a separate element, so this
    animates border-color rather than opacity: opacity would fade the

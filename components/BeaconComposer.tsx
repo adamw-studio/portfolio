@@ -15,17 +15,22 @@ import Image from "next/image";
 //
 // left-1/2 -translate-x-1/2 + w-[453px] max-w-[calc(100%-32px)], not
 // Figma's literal left-115px: the cover frame Figma measures this
-// against is a fixed 688x400, exactly this card's own max size, but the
-// card's actual width shrinks well below that on narrow viewports (this
-// page wraps it in `max-w-[688px]`, not a fixed width) — a literal
-// left/width pair would badly overflow a phone-width card. Figma's own
-// left(115)+width(453)+right-margin(120) is already close enough to
-// centered that true centering reproduces the composition faithfully
-// while scaling cleanly, and the max-w clamp mirrors Nav's own
-// w-[400px] max-w-[calc(100vw-32px)] pattern for the same reason. Top
-// stays a literal 151px, unscaled — the card's height is 400px at every
-// breakpoint (only its width responds), so nothing there ever needs to
-// scale.
+// against is a fixed 688-wide box, but the card's actual width shrinks
+// well below that on narrow viewports (SelectedWorks.tsx's own cards are
+// `w-[85vw] sm:w-[688px]`) — a literal left/width pair would badly
+// overflow a phone-width card. Figma's own left(115)+width(453)+right-
+// margin(120) is already close enough to centered that true centering
+// reproduces the composition faithfully while scaling cleanly, and the
+// max-w clamp mirrors Nav's own w-[400px] max-w-[calc(100vw-32px)]
+// pattern for the same reason.
+//
+// top-1/2 -translate-y-1/2, not a literal top-[151px]: that literal
+// value assumed the card was a fixed 400px tall at every breakpoint,
+// which stopped being true once SelectedWorks.tsx's own cover switched
+// to `aspect-[688/496] w-full` (the card's height now scales *with* its
+// responsive width) — reported live as no longer centered. Percentage-
+// based vertical centering tracks the card's own height at any size
+// instead of a height this component can no longer assume.
 //
 // This renders at Figma's literal size, full stop — every "make it
 // bigger/wider" request tried directly on this component got walked
@@ -45,7 +50,7 @@ import Image from "next/image";
 // panel floating over busy content" treatment (Nav's pill, the contact
 // panel), not a coincidence worth re-deriving.
 const COMPOSER_WRAPPER =
-  "absolute left-1/2 top-[151px] w-[453px] max-w-[calc(100%-32px)] -translate-x-1/2 overflow-hidden rounded-[20px] border border-[rgba(221,221,221,0.4)] bg-transparent backdrop-blur-[23px]";
+  "absolute left-1/2 top-1/2 w-[453px] max-w-[calc(100%-32px)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[20px] border border-[rgba(221,221,221,0.4)] bg-transparent backdrop-blur-[23px]";
 
 // Figma's Icon Button (the + and microphone controls): 16px icon in 4px
 // padding with its own border — 24px square either way, so rounded-full

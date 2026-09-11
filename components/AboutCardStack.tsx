@@ -17,31 +17,34 @@ type CardData = {
   video?: string;
 };
 
-// Figma node 14:7194 — six cards, scattered with individual rotation, not
-// the eight-card staggered-diagonal stack this previously showed only on
-// hover. Position math: Figma exports a rotated element as a NON-rotated
-// wrapper div sized to that element's rotated bounding box (so the
-// rotation itself doesn't shift the wrapper's own layout position), with
-// the actual rotated card centered inside via items-center justify-center.
-// To get each card's own pre-rotation (x, y) — what this component
-// actually needs, since CSS `rotate()` pivots around transform-origin
-// without touching layout position — every wrapper's center point was
-// computed (left + width/2, top + height/2) and then this card's own
-// fixed 130x162 box was centered on that same point (x = centerX - 65,
-// y = centerY - 81). Cards 4 and 5 ("rethinks team's workflows", "...want
-// to ship code") have no rotation in Figma, so they needed no wrapper/
-// centering step — their left/top are used directly.
+// Figma node 14:7194 (now re-fetched as part of 37:10046's own home-page
+// restructure — same six cards, same colors/positions/rotations/videos,
+// just each one's own label text rewritten) — six cards, scattered with
+// individual rotation, not the eight-card staggered-diagonal stack this
+// previously showed only on hover. Position math: Figma exports a rotated
+// element as a NON-rotated wrapper div sized to that element's rotated
+// bounding box (so the rotation itself doesn't shift the wrapper's own
+// layout position), with the actual rotated card centered inside via
+// items-center justify-center. To get each card's own pre-rotation (x, y)
+// — what this component actually needs, since CSS `rotate()` pivots
+// around transform-origin without touching layout position — every
+// wrapper's center point was computed (left + width/2, top + height/2)
+// and then this card's own fixed 130x162 box was centered on that same
+// point (x = centerX - 65, y = centerY - 81). Cards 4 and 6 ("Loves a
+// good design critique", "Prototype with AI") have no rotation in Figma,
+// so they needed no wrapper/centering step — their left/top are used
+// directly.
 const CARD_W = 130;
 const CARD_H = 162;
 const CARD_RADIUS = 10; // --radius-m
 
 const CARDS: CardData[] = [
-  { id: "prototype", color: "#f83e00", textColor: "#ffffbc", text: "prototyping with AI", x: 10, y: 21, rotate: -7.55, video: "about-card-prototype.mp4" },
-  { id: "learning", color: "#f8ecd7", textColor: "#544831", text: "is invested in learning new things", x: 123, y: 23, rotate: 5.09, video: "about-card-learning.mp4" },
-  { id: "details", color: "#0093d9", textColor: "#93ffff", text: "obsessed about the smallest details", x: 225, y: 6, rotate: -5.68, video: "about-card-details.mp4" },
-  { id: "workflows", color: "#00f790", textColor: "#004f00", text: "rethinks team’s workflows", x: 315, y: 26, rotate: 0, video: "about-card-workflows.mp4" },
-  { id: "design", color: "#211f1e", textColor: "#f8ecd7", text: "builds design system", x: 415, y: 26, rotate: 10.05, video: "about-card-design.mp4" },
-  { id: "shipcode", color: "#00a4c6", textColor: "#0d0d0d", text: "...want to ship code", x: 525, y: 26, rotate: 0, video: "about-card-shipcode.mp4" },
+  { id: "prototype", color: "#f83e00", textColor: "#ffffbc", text: "Foundation", x: 10, y: 21, rotate: -7.55, video: "about-card-prototype.mp4" },
+  { id: "learning", color: "#f8ecd7", textColor: "#544831", text: "What shaped me through the years", x: 123, y: 23, rotate: 5.09, video: "about-card-learning.mp4" },
+  { id: "details", color: "#0093d9", textColor: "#93ffff", text: "I care about", x: 225, y: 6, rotate: -5.68, video: "about-card-details.mp4" },
+  { id: "workflows", color: "#00f790", textColor: "#004f00", text: "Loves a good design critique", x: 315, y: 26, rotate: 0, video: "about-card-workflows.mp4" },
+  { id: "design", color: "#211f1e", textColor: "#f8ecd7", text: "Building design systems", x: 415, y: 26, rotate: 10.05, video: "about-card-design.mp4" },
+  { id: "shipcode", color: "#00a4c6", textColor: "#0d0d0d", text: "Prototype with AI", x: 525, y: 26, rotate: 0, video: "about-card-shipcode.mp4" },
 ];
 
 // Bounding box of all six cards' *rotated* extents (not the sum of their

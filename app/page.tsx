@@ -44,79 +44,62 @@ export default function Home() {
 
       <div className="mx-auto w-full max-w-[688px] pt-[100px]">
         <div className="flex flex-col gap-[100px]">
-          {/* Figma 15:7360 — 100px between the intro bio and the card
-              cluster, the same gap this outer column uses between every
-              other top-level section, not the tighter 40px "What shapes
-              me"/"What I do" share below. */}
-          <div className="flex flex-col gap-[100px]">
-            <div className="flex flex-col gap-3">
+          {/* Figma 37:10046 — the intro is centered now (was left-aligned),
+              a small hand-drawn flourish sits above the heading, and the
+              bio copy is shorter/rewritten entirely, dropping the
+              "5 years & 4 months" chip and both projects' own long
+              descriptions in favor of one compact paragraph. "What shapes
+              me" is gone from this design outright, not just relocated —
+              the card cluster and "What I do" now share this same flat
+              100px rhythm as everything else on the page, rather than
+              being nested together in their own tighter-gapped group the
+              way "What shapes me"/"What I do" used to be. */}
+          <div className="flex flex-col items-center gap-6">
+            <div className="flex flex-col items-center gap-3">
+              <Image
+                src="/images/home/hey-adam-flourish.svg"
+                alt=""
+                width={75}
+                height={5}
+                className={themedIcon}
+              />
               <h1 className={heading}>Hey, I’m Adam</h1>
-              <div className="flex flex-col gap-4">
-                <p className={bodyText}>
-                  A Senior Product Designer with <Chip radius="sm">5 years &amp; 4 months</Chip> of experience across
-                  banking, media, education and enterprise tech at McKinsey &amp; Company, and now building 0 → 1 B2B
-                  products.
-                </p>
-                <p className={bodyText}>
-                  I currently lead design for{" "}
-                  <Chip
-                    icon={<Image src="/images/home/beacon-icon.svg" alt="" width={22} height={12} className={themedIcon} />}
-                    radius="sm"
-                  >
-                    Beacon
-                  </Chip>
-                  , a B2B SaaS that helps businesses ideate and validate new business ventures with the power of
-                  agentic AI. I also co-design{" "}
-                  <Chip radius="sm">Orchestro</Chip>, an AI organisational tracking tool for agile teams that turns
-                  messy objectives, key results into alignment.
-                </p>
-              </div>
             </div>
-
-            {/* Figma 14:7194 — the card cluster now sits directly under the
-                intro bio, before "What shapes me", with no heading of its
-                own (the old "I'm a designer who," label is gone). It's also
-                narrower now (655px) than the 688px column it lives in, so
-                unlike before, it no longer needs to break out of the column
-                as its own full-width section below the fold. */}
-            <AboutCardStack />
+            <p className={`${bodyText} text-center`}>
+              I’m a Senior Product Designer at McKinsey &amp; Company. Currently leading design for{" "}
+              <Chip
+                icon={<Image src="/images/home/beacon-icon.svg" alt="" width={22} height={12} className={themedIcon} />}
+                radius="sm"
+              >
+                Beacon
+              </Chip>{" "}
+              and co-designing <Chip radius="sm">Orchestro</Chip>. Over the last 5+ years, I’ve worked across brand
+              design, new products, enterprise software.
+            </p>
           </div>
 
-          <div className="flex flex-col gap-10">
-            <div className="flex flex-col gap-3">
-              <h2 className={heading}>What shapes me</h2>
-              <div className="flex flex-col gap-4">
-                <p className={bodyText}>
-                  I was raised by a <Chip>painter</Chip> and a <Chip>sculptor</Chip>. I learned that craft matters. My
-                  first design education didn’t come from software, it came from watching a painter and a sculptor
-                  at work.
-                </p>
-                <p className={bodyText}>
-                  That foundation continues to shape how I approach designing today: <Chip>curiosity</Chip>,{" "}
-                  <Chip>craftsmanship</Chip> and a <Chip>deep respect</Chip> for the people who touch, feel or use
-                  the things I design.
-                </p>
-              </div>
-            </div>
+          {/* Figma 14:7194 — narrower (655px) than the 688px column it
+              lives in, so it doesn't need to break out of the column as
+              its own full-width section the way it once did. */}
+          <AboutCardStack />
 
-            <div className="flex flex-col gap-3">
-              <h2 className={heading}>What I do</h2>
-              <div className="flex flex-col gap-4">
-                <p className={bodyText}>
-                  I own my work end to end, from early concepts to shipped outcomes. I’ve worked on large enterprise
-                  products as well as smaller, ambitious ones, but I’m most energized when I’m close to the problem,
-                  shaping ideas from the ground up and seeing my work make a real difference.
-                </p>
-                <p className={bodyText}>
-                  That’s when design feels most meaningful to me: when a small team comes together around an
-                  existing problem, cares deeply about solving it, and maybe, along the way, changes a little piece
-                  of the world.
-                </p>
-                <div className="flex flex-wrap items-center gap-2">
-                  {whatIDo.map(({ label, color }) => (
-                    <Tag key={label} label={label} color={color} />
-                  ))}
-                </div>
+          <div className="flex flex-col gap-3">
+            <h2 className={heading}>What I do</h2>
+            <div className="flex flex-col gap-4">
+              <p className={bodyText}>
+                I own my work end to end, from early concepts to shipped outcomes. I’ve worked on large enterprise
+                products as well as smaller, ambitious ones, but I’m most energized when I’m close to the problem,
+                shaping ideas from the ground up and seeing my work make a real difference.
+              </p>
+              <p className={bodyText}>
+                That’s when design feels most meaningful to me: when a small team comes together around an
+                existing problem, cares deeply about solving it, and maybe, along the way, changes a little piece
+                of the world.
+              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                {whatIDo.map(({ label, color }) => (
+                  <Tag key={label} label={label} color={color} />
+                ))}
               </div>
             </div>
           </div>

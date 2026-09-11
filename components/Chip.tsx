@@ -2,10 +2,13 @@ import type { ReactNode } from "react";
 
 /**
  * Inline pill/badge used throughout the body copy (e.g. "Beacon",
- * "painter", "5 years & 4 months"). Border-only (no fill) per this design
- * revision — previously had a bg-tertiary fill. Figma varies the radius by
- * section: the "Hey, I'm Adam" paragraph's three chips (Time/Beacon/
- * Orchestro) use radius-sm (8px), everywhere else uses radius-xs (6px).
+ * "painter"). Figma varies both radius and fill by section: the
+ * "Hey, I'm Adam" paragraph's chips (Beacon/Orchestro, radius-sm/8px) get
+ * a real bg-tertiary fill (confirmed on a later re-fetch of that
+ * paragraph, 46:10668 — an earlier pass had removed the fill from every
+ * chip, before that specific node had been re-checked); everywhere else
+ * (radius-xs/6px, e.g. PlaygroundCard's own tag chip) stays border-only,
+ * no fill, matching that pass's own original finding for those.
  *
  * `group` + tabIndex: any animated icon passed as `icon` (see
  * components/icons/) uses Tailwind's group-hover:/group-focus: variants
@@ -14,11 +17,13 @@ import type { ReactNode } from "react";
  * makes the chip keyboard-focusable so the same animation triggers on
  * focus, not just hover.
  *
- * backdrop-blur-sm: works even with no fill of its own — a backdrop
- * filter blurs whatever's behind the element, not the element's own
- * background. Softens the page's dot-grid pattern (globals.css) where it
- * sits under a chip, the same frosted-glass treatment the nav already
- * uses at a much larger radius.
+ * backdrop-blur-sm: on the border-only (radius-xs) chips, this still
+ * does real work with no fill of its own — a backdrop filter blurs
+ * whatever's behind the element, not the element's own background,
+ * softening the page's dot-grid pattern (globals.css) where it sits
+ * under a chip. Harmless (if redundant) to keep on the now-filled
+ * radius-sm chips too, rather than branching the class list further for
+ * a visually unnoticeable difference.
  */
 export function Chip({
   icon,
@@ -34,8 +39,8 @@ export function Chip({
   return (
     <span
       tabIndex={0}
-      className={`group inline-flex items-center gap-1 border border-border-subtle bg-transparent px-1.5 py-0.5 align-middle font-sans text-[14px] leading-[normal] tracking-[-0.128px] text-text-primary backdrop-blur-sm ${
-        radius === "sm" ? "rounded-sm" : "rounded-xs"
+      className={`group inline-flex items-center gap-1 border border-border-subtle px-1.5 py-0.5 align-middle font-sans text-[14px] leading-[normal] tracking-[-0.128px] text-text-primary backdrop-blur-sm ${
+        radius === "sm" ? "rounded-sm bg-bg-tertiary" : "rounded-xs bg-transparent"
       } ${medium ? "font-medium" : "font-normal"}`}
     >
       {icon}

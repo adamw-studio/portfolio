@@ -2,6 +2,7 @@ import Image from "next/image";
 import Nav from "@/components/Nav";
 import { Chip } from "@/components/Chip";
 import { Tag } from "@/components/Tag";
+import DrawnFlourish from "@/components/DrawnFlourish";
 import AboutCardStack from "@/components/AboutCardStack";
 import SelectedWorks from "@/components/SelectedWorks";
 import HomeFooter from "@/components/HomeFooter";
@@ -57,26 +58,46 @@ export default function Home() {
               way "What shapes me"/"What I do" used to be. */}
           <div className="flex flex-col items-center gap-6">
             <div className="flex flex-col items-center gap-3">
-              <Image
-                src="/images/home/hey-adam-flourish.svg"
-                alt=""
-                width={75}
-                height={5}
-                className={themedIcon}
-              />
+              <DrawnFlourish />
               <h1 className={heading}>Hey, I’m Adam</h1>
             </div>
-            <p className={`${bodyText} text-center`}>
-              I’m a Senior Product Designer at McKinsey &amp; Company. Currently leading design for{" "}
-              <Chip
-                icon={<Image src="/images/home/beacon-icon.svg" alt="" width={22} height={12} className={themedIcon} />}
-                radius="sm"
-              >
-                Beacon
-              </Chip>{" "}
-              and co-designing <Chip radius="sm">Orchestro</Chip>. Over the last 5+ years, I’ve worked across brand
-              design, new products, enterprise software.
-            </p>
+            {/* Figma 46:10668 — three explicit lines, not one flowing
+                paragraph left to wrap on its own: line 2 in particular
+                (the Beacon/Orchestro chips) is its own row with its own
+                flex layout. flex-wrap on that row (rather than the
+                whitespace-nowrap Figma's own export defaults every
+                single-line text node to) is the actual safety net for
+                narrow viewports — Figma gives no mobile variant of this
+                node, and at typical/wide widths the row already fits on
+                one line without needing to forbid wrapping outright.
+                Copy on line 3 changed too: "I've worked across brand
+                design, new products, enterprise software" is now "I've
+                gone from brand design to building products from scratch
+                and working on enterprise software." */}
+            <div className={`flex flex-col items-center gap-2 text-center ${bodyText}`}>
+              <p>I’m a Senior Product Designer at McKinsey &amp; Company.</p>
+              <p className="flex flex-wrap items-center justify-center gap-2">
+                <span>Currently leading design for</span>
+                <Chip
+                  icon={<Image src="/images/home/beacon-icon.svg" alt="" width={22} height={12} className={themedIcon} />}
+                  radius="sm"
+                >
+                  Beacon
+                </Chip>
+                <span>and co-designing</span>
+                {/* Orchestro + its trailing "." share their own tight,
+                    gap-less inline group (Figma's own 46:10679, gap-2px)
+                    so the period hugs the chip rather than picking up
+                    this row's own 8px inter-item gap like every other
+                    sibling here does. */}
+                <span className="inline-flex items-center">
+                  <Chip radius="sm">Orchestro</Chip>
+                  <span>.</span>
+                </span>
+                <span>Over the last 5+ years,</span>
+              </p>
+              <p>I’ve gone from brand design to building products from scratch and working on enterprise software.</p>
+            </div>
           </div>
 
           {/* Figma 14:7194 — narrower (655px) than the 688px column it

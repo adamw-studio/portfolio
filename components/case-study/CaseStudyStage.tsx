@@ -183,7 +183,16 @@ export function CaseStudyStage({
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}
       onPointerCancel={endDrag}
-      className="scrollbar-none flex h-[100dvh] w-full cursor-grab touch-pan-x snap-x snap-mandatory items-center overflow-x-auto px-[max(16px,calc((100vw-440px)/2))] py-20 active:cursor-grabbing"
+      // 100svh, not 100dvh: dvh tracks mobile Safari's own toolbar as it
+      // shows/hides, but CaseStudyNav's Prev/Next pill is a *separate*,
+      // always-fixed element positioned against the real viewport, not
+      // this scroller — on first load, before any page-level scroll has
+      // happened to collapse that toolbar, a dvh-sized (taller) stage
+      // could push this pill's own bottom-6 anchor down far enough that
+      // the still-expanded toolbar covers it. svh is the browser's own
+      // smallest-toolbar-state height, so the stage never assumes more
+      // room than the pill can actually always count on.
+      className="scrollbar-none flex h-[100svh] w-full cursor-grab touch-pan-x snap-x snap-mandatory items-center overflow-x-auto px-[max(16px,calc((100vw-440px)/2))] py-20 active:cursor-grabbing"
       style={{ gap: GAP_PX }}
     >
       {pages.map((page, i) => {

@@ -31,7 +31,17 @@ export default function OverviewPage() {
           <p>/</p>
           <p>2026</p>
         </div>
-        <p className="font-sans text-[24px] font-semibold leading-[28px] tracking-[-0.192px] text-[#f4f4f4]">
+        {/* text-[18px] below sm: — literal Figma 24px, but reported live
+            as reading oversized once a real narrow phone (not just a
+            shrunk desktop window) wraps this headline to 4 lines: the
+            card's own width already scales down below 472px viewports
+            (CaseStudyStage's own LANE_WIDTH), so the type has to shrink
+            with it instead of staying pinned at the widest-card size.
+            18/22 matches this system's own Heading "sm" scale — sm:
+            (Tailwind's 640px) is comfortably past that 472px crossover,
+            so the switch only ever happens once the card is genuinely
+            back to its full 440px width. */}
+        <p className="font-sans text-[18px] font-semibold leading-[22px] tracking-[-0.144px] text-[#f4f4f4] sm:text-[24px] sm:leading-[28px] sm:tracking-[-0.192px]">
           Designing how agentic AI helps founders research, validate and turn ideas into ventures.
         </p>
       </div>

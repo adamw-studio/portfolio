@@ -88,9 +88,12 @@ const CARDS: CardData[] = [
   },
   {
     id: "details",
-    color: "#0093d9",
-    textColor: "#f8ecd7",
-    text: "I care about",
+    // Figma 76:273 — purple now, not the old blue, and the title grew
+    // to "What do I care about" (was "I care about"); textColor lightened
+    // to match (#eceaf8, not the old #f8ecd7 cream).
+    color: "#6458c3",
+    textColor: "#eceaf8",
+    text: "What do I care about",
     description: "The details people might never notice. A few pixels, the right word or a transition that feels just right.",
     x: 225,
     y: 6,

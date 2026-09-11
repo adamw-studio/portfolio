@@ -237,33 +237,44 @@ body {
 /* Nav's Glass-effect border (see --glass-border-start/-end above) — a
    real gradient stroke, not just a translucent flat one. A `border` can
    only ever hold a solid color, so this draws the gradient as a
-   background instead and uses a mask to keep only a ring of it at the
-   element's own edge: two mask layers (an opaque content-box rect and an
-   opaque full rect) that `mask-composite: exclude` subtracts from each
-   other, leaving exactly the padding-thickness ring between them
-   visible — the standard technique for a gradient border with rounded
-   corners, since neither `border-image` nor `background-clip` alone can
-   curve a gradient stroke around a `border-radius`.
+   background instead, layered two ways so only a stroke-width ring of it
+   stays visible: a `padding-box`-clipped transparent layer painted *over*
+   a `border-box`-clipped gradient layer. The top (transparent) layer
+   covers everything inside the border, leaving nothing painted there but
+   whatever already sits behind this element (the pill's own background,
+   the blend-mode overlays); the gradient underneath only ever shows
+   through in the ring between the padding edge and the border edge —
+   exactly the border's own thickness, curving correctly around
+   `border-radius` the same way an ordinary border would, since it's a
+   real border box doing the clipping.
+
+   An earlier version of this used `mask-composite: exclude` for the same
+   ring-cutout instead of this two-layer `background-clip` split — same
+   idea, but it silently failed in real-world testing (Safari), painting
+   the *entire* gradient across the whole element instead of just the
+   ring. `background-clip` needs no mask support at all, just the much
+   older and more reliably-implemented multiple-backgrounds spec, so it
+   doesn't have that failure mode.
 
    Applied as its own absolutely-positioned element (`inset-0`,
    `border-radius: inherit` from its `position: relative` parent) rather
    than directly on the bordered element itself — that parent already
    carries a background/backdrop-blur and (for the active nav segment)
-   two more blend-mode overlay layers of its own; layering the mask trick
-   directly onto it would fight the same element's other backgrounds
-   instead of sitting cleanly on top of them. `padding: 0.5px` is the
-   actual stroke width — every caller of this class (the active nav
-   segments and the theme-toggle group) shares the same literal 0.5px
-   Figma gives their border. */
+   two more blend-mode overlay layers of its own; layering this directly
+   onto it would fight the same element's other backgrounds instead of
+   sitting cleanly on top of them. border: 0.5px solid transparent (not a
+   real color) is what actually carves out the padding-box/border-box
+   split at the right thickness — 0.5px is the literal stroke width Figma
+   gives every caller of this class (the active nav segments and the
+   theme-toggle group). */
 .glass-border {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  padding: 0.5px;
-  background: linear-gradient(121deg, var(--glass-border-start), var(--glass-border-end));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+  border: 0.5px solid transparent;
+  background:
+    linear-gradient(transparent, transparent) padding-box,
+    linear-gradient(121deg, var(--glass-border-start), var(--glass-border-end)) border-box;
   pointer-events: none;
 }
 

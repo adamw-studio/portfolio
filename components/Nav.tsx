@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -29,17 +29,21 @@ const pill = "bg-bg-default/80 backdrop-blur-[23px]";
 // The segmented-control bar itself is genuinely solid, not translucent —
 // confirmed on a later re-fetch of this control (33:9540) giving an
 // explicit bg-bg-default (this site's own ordinary opaque page-background
-// token, not a percentage of it) plus a much smaller 5px blur, not the
-// 23px this shared with the Contact-reveal panel above. Every earlier
-// attempt to fix reported live text bleeding through the bar (80%
-// opacity, then 95%) was really just approaching this same answer from
-// the wrong direction — a persistent bottom nav sitting permanently over
-// scrolling content should read as solid in the first place, the same
-// way a native app's own tab bar does, not as a frosted floating panel
-// like a dropdown or tooltip. bg-bg-default alone is fully opaque, so
-// text behind it is never visible regardless of how well backdrop-blur
-// itself happens to render on any given device.
-const barPill = "bg-bg-default backdrop-blur-[5px]";
+// token, not a percentage of it). No backdrop-blur here despite Figma's
+// own export listing a small 5px value: blur only has anything to reveal
+// through an element that's *not* fully opaque, and this one is — a
+// redundant backdrop-filter sitting on an already-solid background turned
+// out to be the actual remaining cause of live-reported text bleeding
+// through the bar (confirmed only after ruling out every other
+// explanation: opacity percentage, then overflow-clip, neither of which
+// fully closed the gap on their own), most likely fighting the .glass-
+// border child's own layered background in some real browsers. Every
+// earlier attempt to fix that bleed-through (80% opacity, then 95%) was
+// really just approaching this same answer from the wrong direction — a
+// persistent bottom nav sitting permanently over scrolling content should
+// read as solid in the first place, the same way a native app's own tab
+// bar does, not as a frosted floating panel like a dropdown or tooltip.
+const barPill = "bg-bg-default";
 
 // Figma's own Glass effect (Light: -59deg angle, 80% intensity, plus
 // Refraction/Depth/Dispersion/Frost/Splay — Figma's version of Apple's
@@ -65,9 +69,19 @@ const barPill = "bg-bg-default backdrop-blur-[5px]";
 // active nav item, the theme-toggle group) layer their own bg-bg-tertiary
 // fill and .glass-border on top of this same shared base.
 
+// .glass-border's own punch-out layer (see globals.css) needs to know
+// what to repaint with — whatever this specific instance's real fill
+// actually is, since that varies per call site (the bar itself vs. the
+// active segments/theme-toggle group). Passed as a CSS custom property
+// rather than a prop threaded through the class name, since the punch-out
+// lives on a `::after` pseudo-element .glass-border's own className can't
+// reach directly.
+const glassFillDefault = { "--glass-fill": "var(--color-bg-default)" } as CSSProperties;
+const glassFillTertiary = { "--glass-fill": "var(--color-bg-tertiary)" } as CSSProperties;
+
 const segmentBase = "relative flex w-[66.667px] items-center justify-center overflow-hidden px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,color] duration-150";
 const segmentActive = "rounded-[20px] bg-bg-tertiary font-medium text-text-primary shadow-[0px_2px_4px_0px_rgba(0,0,0,0.1)]";
-const segmentInactive = "rounded-full font-normal text-text-secondary";
+const segmentInactive = "rounded-full font-normal text-text-secondary hover:bg-bg-tertiary hover:text-text-primary";
 
 export default function Nav() {
   const [showContact, setShowContact] = useState(false);
@@ -157,7 +171,7 @@ export default function Nav() {
           where every bleed-through report concentrated rather than
           spreading evenly across the middle. */}
       <div className={`relative flex items-center gap-1 overflow-hidden rounded-full p-1 ${barPill}`}>
-        <div aria-hidden className="glass-border" />
+        <div aria-hidden className="glass-border" style={glassFillDefault} />
         {links.map((link) => {
           const active = pathname === link.href;
           return (
@@ -167,7 +181,7 @@ export default function Nav() {
               onClick={() => setShowContact(false)}
               className={`${segmentBase} ${active ? segmentActive : segmentInactive}`}
             >
-              {active && <div aria-hidden className="glass-border" />}
+              {active && <div aria-hidden className="glass-border" style={glassFillTertiary} />}
               {link.label}
             </Link>
           );
@@ -178,7 +192,7 @@ export default function Nav() {
           onClick={() => setShowContact((s) => !s)}
           className={`${segmentBase} ${showContact ? segmentActive : segmentInactive}`}
         >
-          {showContact && <div aria-hidden className="glass-border" />}
+          {showContact && <div aria-hidden className="glass-border" style={glassFillTertiary} />}
           Contact
         </button>
 
@@ -196,7 +210,7 @@ export default function Nav() {
             this control (33:9540) — an earlier pass had this group with
             no fill of its own, just the border. */}
         <div className="relative flex items-center gap-1 overflow-hidden rounded-full bg-bg-tertiary p-0.5">
-          <div aria-hidden className="glass-border" />
+          <div aria-hidden className="glass-border" style={glassFillTertiary} />
           <button
             type="button"
             aria-label="Switch to dark mode"

@@ -3,6 +3,7 @@ import Nav from "@/components/Nav";
 import AboutCardStack from "@/components/AboutCardStack";
 import SelectedWorks from "@/components/SelectedWorks";
 import HomeFooter from "@/components/HomeFooter";
+import BottomEdgeFade from "@/components/BottomEdgeFade";
 import { ThemeProvider } from "@/components/ThemeContext";
 import { themedIcon } from "@/components/themedIcon";
 import { bodyText } from "@/components/typography";
@@ -227,6 +228,8 @@ export default function Home() {
       <div className="mt-[100px]">
         <HomeFooter />
       </div>
+
+      <BottomEdgeFade />
     </ThemeProvider>
   );
 }

@@ -33,16 +33,6 @@ type Project = {
 // was actually intentional.
 const PROJECTS: Project[] = [
   {
-    id: "robotics",
-    description:
-      "Building robots is complex. Learning to build them shouldn’t be. Redesigning the robotics experience to help kids confidently build, code and learn on their own.",
-    role: "Lead designer",
-    year: "2021-22",
-    backdropSrc: "/images/home/selected-work-2-cover.jpg",
-    backdropAlt: "Robotics companion app displayed on a phone, resting on a table",
-    linked: true,
-  },
-  {
     id: "beacon",
     description:
       "Ideas don’t become viable ventures by default. Designing how agentic AI helps founders research, validate and turn ideas into ventures.",
@@ -50,6 +40,16 @@ const PROJECTS: Project[] = [
     year: "2026",
     backdropSrc: "/images/home/selected-work-1-backdrop.jpg",
     backdropAlt: "",
+    linked: true,
+  },
+  {
+    id: "robotics",
+    description:
+      "Building robots is complex. Learning to build them shouldn’t be. Redesigning the robotics experience to help kids confidently build, code and learn on their own.",
+    role: "Lead designer",
+    year: "2021-22",
+    backdropSrc: "/images/home/selected-work-2-cover.jpg",
+    backdropAlt: "Robotics companion app displayed on a phone, resting on a table",
     linked: true,
   },
   {

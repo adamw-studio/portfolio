@@ -465,6 +465,40 @@ export default function AboutCardStack() {
   }, [selectedId]);
 
   const effectiveScale = selectedId ? Math.max(scale, MIN_SELECTED_SCALE) : scale;
+  // Flooring the *composition's* scale at MIN_SELECTED_SCALE keeps the
+  // open card legible on a narrow phone, but the settled row's own
+  // OTHER_SLOTS are wide enough (spanning most of the 655px reference
+  // frame) that even at that floor, their rendered footprint can still
+  // exceed the actual wrapper width — reported live as the outermost
+  // settled cards clipping at both edges under this component's own
+  // overflow-hidden. xCompress pulls every settled card's own x position
+  // an *additional* amount toward the composition's horizontal center
+  // (on top of the uniform scale above), solved exactly (not a rough
+  // ratio) so the two outermost settled slots' own rendered edges land
+  // right at this wrapper's actual left/right bounds — never past them,
+  // and no tighter than that once they already fit. 1 (no extra pull) on
+  // any viewport where the floor isn't actively overriding a smaller
+  // natural scale — every width this design was originally built
+  // against. Only the settled row's own x is affected; the open card's
+  // own centered position doesn't need it.
+  let xCompress = 1;
+  if (selectedId && scale < MIN_SELECTED_SCALE) {
+    // scale is exactly wrapper.clientWidth / CONTAINER_W here (the
+    // un-clamped branch of Math.min(1, ...) above), so this recovers the
+    // real wrapper width without a second measured value to keep in sync.
+    const wrapperWidth = scale * CONTAINER_W;
+    const settledCenterX = SELECTED_X + SELECTED_W / 2;
+    const offsetX = (wrapperWidth - CONTAINER_W * effectiveScale) / 2;
+    const leftSlotX = OTHER_SLOTS[0].x;
+    const rightSlotX = OTHER_SLOTS[OTHER_SLOTS.length - 1].x;
+    // Largest k (0-1) that keeps compressedX*effectiveScale + offsetX >= 0
+    // for the leftmost slot...
+    const kLeft = (-offsetX / effectiveScale - settledCenterX) / (leftSlotX - settledCenterX);
+    // ...and compressedX*effectiveScale + offsetX + CARD_W*effectiveScale
+    // <= wrapperWidth for the rightmost one.
+    const kRight = ((wrapperWidth - offsetX) / effectiveScale - CARD_W - settledCenterX) / (rightSlotX - settledCenterX);
+    xCompress = Math.max(0, Math.min(1, kLeft, kRight));
+  }
 
   return (
     // overflow-hidden as a safety guard, not the thing doing the actual
@@ -522,6 +556,7 @@ export default function AboutCardStack() {
                 hovered={canHover && !selectedId && hoveredId === card.id}
                 neighborNudge={neighborNudge}
                 otherIndex={otherIds.indexOf(card.id)}
+                xCompress={xCompress}
                 onToggle={() => setSelectedId((current) => (current === card.id ? null : card.id))}
                 onHoverChange={(isHovered) => setHoveredId((current) => (isHovered ? card.id : current === card.id ? null : current))}
               />
@@ -543,6 +578,7 @@ function Card({
   hovered,
   neighborNudge,
   otherIndex,
+  xCompress,
   onToggle,
   onHoverChange,
 }: {
@@ -555,6 +591,7 @@ function Card({
   hovered: boolean;
   neighborNudge: number;
   otherIndex: number;
+  xCompress: number;
   onToggle: () => void;
   onHoverChange: (hovered: boolean) => void;
 }) {
@@ -562,7 +599,13 @@ function Card({
   // exactly when this one belongs in its own fixed settled slot (see
   // OTHER_SLOTS) instead of its own resting spot.
   const slot = OTHER_SLOTS[otherIndex];
-  const x = selected ? SELECTED_X : dimmed ? slot.x : card.x + neighborNudge;
+  // xCompress (see its own comment at the call site) pulls a settled
+  // card's slot toward the open card's own horizontal center on a narrow
+  // phone, on top of the uniform scale every card already gets — at 1
+  // (every viewport this design was built against) this is exactly
+  // `slot.x`, unchanged.
+  const settledCenterX = SELECTED_X + SELECTED_W / 2;
+  const x = selected ? SELECTED_X : dimmed ? settledCenterX + (slot.x - settledCenterX) * xCompress : card.x + neighborNudge;
   const y = selected ? SELECTED_Y : dimmed ? slot.y : card.y - (hovered ? HOVER_LIFT : 0);
   // Selected straightens all the way to 0 (the "this one's in focus" cue
   // Tag.tsx's own hover state also uses); dimmed keeps its own natural

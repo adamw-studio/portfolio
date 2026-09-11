@@ -33,13 +33,16 @@ export default function Home() {
   return (
     <ThemeProvider>
       {/* Nav is `fixed` (see Nav.tsx) — out of normal document flow, so it
-          no longer pushes this content down on its own. This column's own
-          top padding carries the *entire* offset now: 140px (Figma) =
-          24px nav top offset + 37px nav height + 79px gap after it,
-          previously split between a dedicated nav wrapper and this div. */}
+          never pushes this content down on its own, whether it's the old
+          top-center pill or the current bottom-anchored one. Now that Nav
+          sits at the *bottom* of the viewport, this column no longer needs
+          the 140px top reservation that used to clear the old pill's own
+          height — 100px, matching this page's own section-gap rhythm, is
+          just ordinary top breathing room now, comfortably clearing the
+          much smaller top-left theme toggle (24px offset + 36px tall). */}
       <Nav />
 
-      <div className="mx-auto w-full max-w-[688px] pt-[140px]">
+      <div className="mx-auto w-full max-w-[688px] pt-[100px]">
         <div className="flex flex-col gap-[100px]">
           {/* Figma 15:7360 — 100px between the intro bio and the card
               cluster, the same gap this outer column uses between every

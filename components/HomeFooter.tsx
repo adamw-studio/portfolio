@@ -30,7 +30,14 @@ export default function HomeFooter() {
   };
 
   return (
-    <footer className="w-full px-4 pb-6">
+    // pb-[100px], not Figma's own pb-6: Nav is now a fixed bottom-center
+    // pill (see Nav.tsx) that sits on top of whatever's underneath it —
+    // this footer is the thing most often underneath it, since it's the
+    // last content on every page that has one. 100px clears the pill's
+    // closed-state footprint (24px bottom offset + 36px tall) with real
+    // margin to spare, matching this site's own 100px section-gap rhythm
+    // rather than a value picked just to avoid the pill.
+    <footer className="w-full px-4 pb-[100px]">
       <div className="mx-auto flex w-full max-w-[688px] flex-col items-center gap-4">
         <div className="flex w-full max-w-[400px] items-center justify-between rounded-m border border-border-subtle bg-bg-default py-1.5 pl-2 pr-1.5">
           <p className={`${textStyle} leading-6 text-text-secondary`}>{EMAIL}</p>

@@ -168,12 +168,13 @@ function ProseSection({ heading, paragraphs }: Section) {
 export default function BeaconCaseStudyBody() {
   return (
     <>
-      {/* pt-[140px]: same nav-clearance offset as the home page (Nav is
-          `fixed`, so this column carries the whole gap itself). The back
-          button sits inside that same gap, absolutely positioned so it
-          doesn't add any extra height of its own — see BackButton for how
-          it lines up with the fixed nav pill's own vertical center. */}
-      <div className="relative mx-auto w-full max-w-[688px] pb-[60px] pt-[140px]">
+      {/* pt-[100px]: Nav is fixed and bottom-anchored now (see Nav.tsx),
+          so this column no longer needs the 140px top reservation the old
+          top-center pill required — 100px matches this site's own
+          section-gap rhythm as plain top breathing room. BackButton stays
+          `fixed top-6` itself (see BackButton.tsx), independent of this
+          padding either way. */}
+      <div className="relative mx-auto w-full max-w-[688px] pb-[60px] pt-[100px]">
         <BackButton />
 
         <div className="flex flex-col gap-12">

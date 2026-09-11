@@ -61,7 +61,13 @@ export function PasswordGate({
   if (unlocked) return <>{children}</>;
 
   return (
-    <div className="relative mx-auto flex w-full max-w-[688px] flex-1 flex-col pb-[60px] pt-[140px]">
+    // pt-[100px]: Nav is fixed and bottom-anchored now (see Nav.tsx), so
+    // this column no longer needs the 140px top reservation the old
+    // top-center pill required — 100px matches this site's own
+    // section-gap rhythm as plain top breathing room. BackButton stays
+    // `fixed top-6` itself (see BackButton.tsx), independent of this
+    // padding either way.
+    <div className="relative mx-auto flex w-full max-w-[688px] flex-1 flex-col pb-[60px] pt-[100px]">
       {/* Same back button as every case study page (see BackButton) — the
           gate replaces the case study's content, not its chrome. */}
       <BackButton />

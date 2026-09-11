@@ -65,7 +65,7 @@ const barPill = "bg-bg-default backdrop-blur-[5px]";
 // active nav item, the theme-toggle group) layer their own bg-bg-tertiary
 // fill and .glass-border on top of this same shared base.
 
-const segmentBase = "relative flex w-[66.667px] items-center justify-center px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,color] duration-150";
+const segmentBase = "relative flex w-[66.667px] items-center justify-center overflow-hidden px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,color] duration-150";
 const segmentActive = "rounded-[20px] bg-bg-tertiary font-medium text-text-primary shadow-[0px_2px_4px_0px_rgba(0,0,0,0.1)]";
 const segmentInactive = "rounded-full font-normal text-text-secondary";
 
@@ -147,7 +147,16 @@ export default function Nav() {
         </div>
       </div>
 
-      <div className={`relative flex items-center gap-1 rounded-full p-1 ${barPill}`}>
+      {/* overflow-hidden — Figma's own export has overflow-clip on every
+          element in this control, dropped somewhere across the many
+          revisions this bar has been through. Without it, backdrop-blur
+          combined with border-radius is a known gap on some real browsers
+          (confirmed live, not reproducible in this environment's own test
+          browser): the blur/background can leak past the rounded corners
+          instead of clipping cleanly to the pill shape, which is exactly
+          where every bleed-through report concentrated rather than
+          spreading evenly across the middle. */}
+      <div className={`relative flex items-center gap-1 overflow-hidden rounded-full p-1 ${barPill}`}>
         <div aria-hidden className="glass-border" />
         {links.map((link) => {
           const active = pathname === link.href;
@@ -186,7 +195,7 @@ export default function Nav() {
             as the active nav segment, confirmed on a later re-fetch of
             this control (33:9540) — an earlier pass had this group with
             no fill of its own, just the border. */}
-        <div className="relative flex items-center gap-1 rounded-full bg-bg-tertiary p-0.5">
+        <div className="relative flex items-center gap-1 overflow-hidden rounded-full bg-bg-tertiary p-0.5">
           <div aria-hidden className="glass-border" />
           <button
             type="button"

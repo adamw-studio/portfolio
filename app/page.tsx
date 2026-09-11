@@ -2,7 +2,6 @@ import Image from "next/image";
 import Nav from "@/components/Nav";
 import { Chip } from "@/components/Chip";
 import { Tag } from "@/components/Tag";
-import DrawnFlourish from "@/components/DrawnFlourish";
 import AboutCardStack from "@/components/AboutCardStack";
 import SelectedWorks from "@/components/SelectedWorks";
 import HomeFooter from "@/components/HomeFooter";
@@ -58,7 +57,13 @@ export default function Home() {
               way "What shapes me"/"What I do" used to be. */}
           <div className="flex flex-col items-center gap-6">
             <div className="flex flex-col items-center gap-3">
-              <DrawnFlourish />
+              <Image
+                src="/images/home/hey-adam-flourish.svg"
+                alt=""
+                width={75}
+                height={5}
+                className={`flourish-draw ${themedIcon}`}
+              />
               <h1 className={heading}>Hey, I’m Adam</h1>
             </div>
             {/* Figma 46:10668 — three explicit lines, not one flowing

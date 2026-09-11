@@ -158,19 +158,21 @@ function ProjectCaption({ project }: { project: Project }) {
   return (
     // No gap between the role row and the description — Figma 57:24461's
     // own metadata has the description start at y=24, exactly the role
-    // row's own height, with no added space between them. An earlier
-    // pass had gap-1 (4px) here, plus a bumped 16px/font-medium size on
-    // the description that Figma never actually specifies: the literal
-    // node uses the exact same 14px/leading-6/tracking-[-0.112px]/
-    // font-normal as the role row, just in text-primary instead of
-    // text-subtle — not a distinct "title" style.
-    <div className="flex flex-col text-[14px] leading-6 tracking-[-0.112px]">
-      <div className="flex items-center gap-2.5 font-sans text-text-subtle">
+    // row's own height, with no added space between them.
+    //
+    // Figma 74:191 redesigns both rows onto the new purchased font
+    // (Neue Montreal) with genuinely different treatments, not one
+    // shared size anymore: the role row is italic (font-style, not a
+    // different family) at 14px, the description is font-semibold at
+    // 16px — no longer the plain 14px/font-normal the two used to share
+    // before this font swap.
+    <div className="flex flex-col leading-6">
+      <div className="flex items-center gap-2.5 font-sans text-[14px] italic tracking-[-0.112px] text-text-subtle">
         <p>{project.role}</p>
         <p>/</p>
         <p>{project.year}</p>
       </div>
-      <p className="font-sans font-normal text-text-primary">{project.description}</p>
+      <p className="font-sans text-[16px] font-semibold tracking-[-0.128px] text-text-primary">{project.description}</p>
     </div>
   );
 }

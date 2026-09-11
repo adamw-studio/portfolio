@@ -18,21 +18,24 @@ const gentiumBasic = localFont({
 // PP Neue Montreal (Pangram Pangram) — replaces GeistSans as the site's
 // sans/body font (--font-sans, globals.css), purchased and supplied
 // directly as webfont files, so self-hosted via next/font/local the same
-// way Gentium Basic already is. Three weights only — Regular/Medium/
-// Semibold — matching every weight this site's own CSS actually asks
-// for (font-normal, font-medium, and the single font-bold in
-// ProjectRow.tsx's case-study overlay label, mapped to Semibold as the
-// closest weight this family ships since it has no true 700/Bold cut of
-// its own between Semibold/600 and Extrabold/800). The purchased pack
-// also includes Light/Book/Extrabold/Black/Hairline and a whole second
-// "Text" optical-size subfamily, none of which any current class on
-// this site reaches for — not loaded, to avoid shipping webfont weight
-// nobody uses.
+// way Gentium Basic already is. Regular/Medium/Semibold, matching every
+// weight this site's own CSS asks for (font-normal, font-medium, and the
+// single font-bold in ProjectRow.tsx's case-study overlay label, mapped
+// to Semibold as the closest weight this family ships since it has no
+// true 700/Bold cut of its own between Semibold/600 and Extrabold/800),
+// plus the plain Italic style — Figma 74:191's own project-card captions
+// (SelectedWorks.tsx) use it for the "Lead designer / 2026" row, the
+// first italic text anywhere on this site. The purchased pack also
+// includes Light/Book/Extrabold/Black/Hairline and a whole second "Text"
+// optical-size subfamily (plus Medium/Semibold/Extrabold *italics*),
+// none of which any current class on this site reaches for — not
+// loaded, to avoid shipping webfont weight nobody uses.
 const neueMontreal = localFont({
   src: [
     { path: "../public/fonts/PPNeueMontreal-Regular.woff2", weight: "400", style: "normal" },
     { path: "../public/fonts/PPNeueMontreal-Medium.woff2", weight: "500", style: "normal" },
     { path: "../public/fonts/PPNeueMontreal-Semibold.woff2", weight: "600 700", style: "normal" },
+    { path: "../public/fonts/PPNeueMontreal-Italic.woff2", weight: "400", style: "italic" },
   ],
   variable: "--font-neue-montreal",
   display: "swap",

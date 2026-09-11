@@ -5,11 +5,12 @@ import { useEffect, useRef, useState } from "react";
 type CardData = {
   id: string;
   color: string;
-  /** Resting-label color (16px title, no description visible). */
+  /** Title color, both at rest and expanded — confirmed identical in both
+   * states once each card's own resting "Card / Default" node (33:9790
+   * etc.) was fetched directly; an earlier pass had "details" guessing
+   * #93ffff at rest from its old video-hover-era value, which never
+   * actually matched Figma's own resting node. */
   textColor: string;
-  /** Expanded-state title color — defaults to textColor; only "details"
-   * genuinely differs in Figma (#93ffff at rest, #f8ecd7 expanded). */
-  expandedTextColor?: string;
   text: string;
   /** Expanded-only body copy (Figma's "Card / Default" nodes, 33:9837 etc.)
    * — the resting card never had this content at all before; discovered
@@ -74,8 +75,7 @@ const CARDS: CardData[] = [
   {
     id: "details",
     color: "#0093d9",
-    textColor: "#93ffff",
-    expandedTextColor: "#f8ecd7",
+    textColor: "#f8ecd7",
     text: "I care about",
     description: "The details people might never notice. A few pixels, the right word or a transition that feels just right.",
     x: 225,
@@ -549,13 +549,15 @@ function Card({
           as just its flat color if one's ever missing rather than
           breaking. Height animates 60↔128 alongside the card itself,
           width stays w-full in both states since the padding either side
-          of it doesn't change. */}
+          of it doesn't change. rounded-[8px] at rest too (each card's own
+          resting "Card / Default" node, e.g. 33:9845, gives this area the
+          same 8px radius as the selected state — an earlier pass had this
+          at 0 at rest, unrounded, which was never actually right). */}
       <div
-        className="relative w-full shrink-0 overflow-hidden"
+        className="relative w-full shrink-0 overflow-hidden rounded-[8px]"
         style={{
           height: selected ? SELECTED_VIDEO_H : 60,
-          borderRadius: selected ? 8 : 0,
-          transition: reducedMotion ? undefined : `height ${transitionMs}ms ${EASE_OUT}, border-radius ${transitionMs}ms ${EASE_OUT}`,
+          transition: reducedMotion ? undefined : `height ${transitionMs}ms ${EASE_OUT}`,
         }}
       >
         {card.video && (
@@ -579,9 +581,9 @@ function Card({
             overlapping titles"), and stays clickable regardless. */}
         <p
           aria-hidden={dimmed}
-          className={`w-full font-serif not-italic ${selected ? SELECTED_TITLE_TEXT : RESTING_TEXT}`}
+          className={`w-full break-words font-serif not-italic ${selected ? SELECTED_TITLE_TEXT : RESTING_TEXT}`}
           style={{
-            color: selected ? (card.expandedTextColor ?? card.textColor) : card.textColor,
+            color: card.textColor,
             opacity: dimmed ? 0 : 1,
             transition: reducedMotion
               ? undefined
@@ -599,9 +601,9 @@ function Card({
             *out* of when closing, rather than just vanishing. */}
         <p
           aria-hidden={!selected}
-          className="w-full font-sans text-[16px] leading-[normal] tracking-[-0.128px]"
+          className="w-full break-words font-sans text-[16px] leading-[normal] tracking-[-0.128px]"
           style={{
-            color: card.expandedTextColor ?? card.textColor,
+            color: card.textColor,
             opacity: selected ? 0.5 : 0,
             transform: `translateY(${selected ? 0 : 6}px)`,
             transition: reducedMotion

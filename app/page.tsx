@@ -5,7 +5,19 @@ import SelectedWorks from "@/components/SelectedWorks";
 import HomeFooter from "@/components/HomeFooter";
 import { ThemeProvider } from "@/components/ThemeContext";
 import { themedIcon } from "@/components/themedIcon";
-import { bodyText, heading } from "@/components/typography";
+import { bodyText } from "@/components/typography";
+
+// Both this page's own headings ("Hey, I'm Adam" and "What I do") share
+// one literal size now — 24px, not the shared `heading` typography
+// token's own 20px, which no longer has any call site on this page (it's
+// still exported for whatever else might want the 20px scale later).
+// Figma 51:10930's own text nodes for both (52:11110 and 52:11135) also
+// share an identical -0.96px tracking value — this page's own h1 had
+// drifted to -0.8px from an earlier, separate fetch of just that
+// heading, before this current redesign; corrected here alongside "What
+// I do" so the two stay visually consistent, not just coincidentally
+// the same size.
+const pageHeading = "font-serif text-[24px] leading-6 tracking-[-0.96px] text-text-primary";
 
 // The small hand-drawn squiggle (Figma "Vector 9") that sits directly
 // before both "Hey, I'm Adam" and "What I do" in 51:10930 — a *different*
@@ -99,7 +111,7 @@ export default function Home() {
             <div className="flex w-full items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <HeadingFlourish />
-                <h1 className="font-serif text-[24px] leading-6 tracking-[-0.8px] text-text-primary">Hey, I’m Adam</h1>
+                <h1 className={pageHeading}>Hey, I’m Adam</h1>
               </div>
               <svg aria-hidden viewBox="0 0 26 26" width={24} height={24} fill="none" className="shrink-0">
                 <circle cx="13" cy="13" r="12" fill="var(--color-bg-default)" stroke="var(--color-border-subtle)" />
@@ -165,7 +177,7 @@ export default function Home() {
           <div className="mx-auto flex w-full max-w-[512px] flex-col items-start gap-6">
             <div className="flex items-center gap-2.5">
               <HeadingFlourish />
-              <h2 className={heading}>What I do</h2>
+              <h2 className={pageHeading}>What I do</h2>
             </div>
             <div className="flex w-full flex-col items-start gap-3">
               <div className="flex w-full flex-col items-start gap-3">

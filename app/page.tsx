@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Nav from "@/components/Nav";
-import { Tag } from "@/components/Tag";
 import AboutCardStack from "@/components/AboutCardStack";
 import SelectedWorks from "@/components/SelectedWorks";
 import HomeFooter from "@/components/HomeFooter";
@@ -30,21 +29,26 @@ function HeadingFlourish() {
   );
 }
 
-// Every "What I do" tag shares one identical icon shape (Figma 203:2034)
-// but its own fixed brand color, the same in both themes. Figma 51:10930
-// (current) drops "Craft in canvas & code" outright — six tags now, not
-// seven, confirmed live rather than assumed from this fetch alone — and
-// renames two labels ("System thinking" → "System Thinking", "Product &
-// design strategy" → "Design Strategy"). The remaining four keep their
-// prior colors/casing unchanged.
-const whatIDo: { label: string; color?: string }[] = [
-  { label: "Research", color: "#d9a900" },
-  { label: "System Thinking", color: "#00a2c2" },
-  { label: "Design Strategy", color: "#e5522e" },
-  { label: "Design system", color: "#0d99ff" },
-  { label: "Brand Identity", color: "#d92100" },
-  { label: "Stakeholder management", color: "#46723c" },
-];
+// Figma 57:24399 redesigns these tags outright: a plain border-only pill
+// with just the label, no icon box, no per-tag brand color, no hover-
+// raise/tap animation — none of Tag.tsx's own machinery applies here
+// anymore. Not a change to Tag.tsx itself: that component is still the
+// right one for BeaconCaseStudyBody.tsx's own "workshop questions" row,
+// an unrelated section this redesign doesn't touch, so a plain local
+// span replaces it here instead of reworking (or forking) the shared
+// component under it. Six labels now, not seven — "Craft in canvas &
+// code" is dropped outright (confirmed live, not a truncation artifact),
+// and two are renamed ("System thinking" → "System Thinking", "Product &
+// design strategy" → "Design Strategy").
+const whatIDo = ["Research", "System Thinking", "Design Strategy", "Design system", "Brand Identity", "Stakeholder management"];
+
+function WhatIDoTag({ label }: { label: string }) {
+  return (
+    <div className="shrink-0 overflow-hidden rounded-sm border border-border-subtle px-1.5 py-0.5">
+      <p className="whitespace-nowrap text-[14px] leading-[normal] tracking-[-0.112px] text-text-subtle">{label}</p>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
@@ -150,28 +154,37 @@ export default function Home() {
               its own full-width section the way it once did. */}
           <AboutCardStack />
 
-          {/* Figma 52:11131 — one flat 24px gap among the heading row,
-              both paragraphs, and the tag row, not the nested 24/28
-              (gap-6 wrapping an inner gap-7) structure this had before. */}
+          {/* Figma 57:24399 — this section's own real nesting: 24px
+              between the heading and everything below it, but *within*
+              that "everything below" group, only 12px separates the
+              paragraph pair from the tag row (and 12px again between the
+              two paragraphs themselves) — not one flat 24px gap among
+              all four children, which an earlier, coarser full-page
+              fetch (51:10930) had suggested instead. This more specific,
+              later fetch of just this section supersedes that. */}
           <div className="mx-auto flex w-full max-w-[512px] flex-col items-start gap-6">
             <div className="flex items-center gap-2.5">
               <HeadingFlourish />
               <h2 className={heading}>What I do</h2>
             </div>
-            <p className={bodyText}>
-              I own my work end to end, from early concepts to shipped outcomes. I’ve worked on large enterprise
-              products as well as smaller, ambitious ones, but I’m most energized when I’m close to the problem,
-              shaping ideas from the ground up and seeing my work make a real difference.
-            </p>
-            <p className={bodyText}>
-              That’s when design feels most meaningful to me: when a small team comes together around an
-              existing problem, cares deeply about solving it, and maybe, along the way, changes a little piece
-              of the world.
-            </p>
-            <div className="flex flex-wrap items-center gap-2">
-              {whatIDo.map(({ label, color }) => (
-                <Tag key={label} label={label} color={color} />
-              ))}
+            <div className="flex w-full flex-col items-start gap-3">
+              <div className="flex w-full flex-col items-start gap-3">
+                <p className={bodyText}>
+                  I own my work end to end, from early concepts to shipped outcomes. I’ve worked on large
+                  enterprise products as well as smaller, ambitious ones, but I’m most energized when I’m close to
+                  the problem, shaping ideas from the ground up and seeing my work make a real difference.
+                </p>
+                <p className={bodyText}>
+                  That’s when design feels most meaningful to me: when a small team comes together around an
+                  existing problem, cares deeply about solving it, and maybe, along the way, changes a little
+                  piece of the world.
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                {whatIDo.map((label) => (
+                  <WhatIDoTag key={label} label={label} />
+                ))}
+              </div>
             </div>
           </div>
         </div>

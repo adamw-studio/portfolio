@@ -34,8 +34,10 @@ type Project = {
 const PROJECTS: Project[] = [
   {
     id: "beacon",
-    description:
-      "Ideas don’t become viable ventures by default. Designing how agentic AI helps founders research, validate and turn ideas into ventures.",
+    // Figma 57:24454 — shorter than this project's own /work/beacon copy,
+    // dropping the leading "Ideas don't become viable ventures by
+    // default." sentence outright, not just trimmed for space.
+    description: "Designing how agentic AI helps founders research, validate and turn ideas into ventures.",
     role: "Lead designer",
     year: "2026",
     backdropSrc: "/images/home/selected-work-1-backdrop.jpg",
@@ -44,8 +46,11 @@ const PROJECTS: Project[] = [
   },
   {
     id: "robotics",
-    description:
-      "Building robots is complex. Learning to build them shouldn’t be. Redesigning the robotics experience to help kids confidently build, code and learn on their own.",
+    // Figma 57:24427 — shorter than this project's own /work/robotics
+    // copy, dropping the leading "Building robots is complex. Learning
+    // to build them shouldn't be." sentence outright, not just trimmed
+    // for space.
+    description: "Redesigning the robotics experience to help kids confidently build, code and learn on their own.",
     role: "Lead designer",
     year: "2021-22",
     backdropSrc: "/images/home/selected-work-2-cover.jpg",

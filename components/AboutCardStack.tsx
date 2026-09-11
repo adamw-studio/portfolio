@@ -53,8 +53,10 @@ const CARDS: CardData[] = [
     color: "#f83e00",
     textColor: "#ffffbc",
     text: "Foundation",
+    // Figma 57:24536 — "That foundation I got from my parents..." not
+    // "The foundation...", adding back who it came from.
     description:
-      "The foundation continues to shape how I approach designing today: curiosity, craftsmanship and a deep respect for the people who touch, feel or use the things I design.",
+      "That foundation I got from my parents continues to shape how I approach designing today: curiosity, craftsmanship and a deep respect for the people who touch, feel or use the things I design.",
     x: 10,
     y: 21,
     rotate: -7.55,

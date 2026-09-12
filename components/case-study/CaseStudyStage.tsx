@@ -299,7 +299,23 @@ export function CaseStudyStage({
             ref={(el) => {
               slideRefs.current[i] = el;
             }}
-            className="flex shrink-0 snap-center items-center justify-center overflow-y-auto"
+            // will-change-transform + backface-hidden: this slide is the
+            // element CaseStudyStage actually scales (its child card
+            // never gets its own transform — confirmed live,
+            // getComputedStyle(card).transform is "none" — so there's
+            // only ever one bordered box here, not a duplicate). Without
+            // a hint to promote it to its own compositing layer up
+            // front, the browser can end up redrawing this card's own
+            // border+radius at each new fractional `scale()` value
+            // instead of rasterizing it once and letting the GPU scale
+            // that texture as a unit — landing the rounded corner on a
+            // fractional device pixel (confirmed live:
+            // getBoundingClientRect().x had a many-decimal value) and
+            // showing a faint second, slightly-offset curve outside the
+            // real edge. Promoting the layer up front is the standard
+            // fix for exactly this class of artifact, not a second
+            // border to remove.
+            className="flex shrink-0 snap-center items-center justify-center overflow-y-auto will-change-transform [backface-visibility:hidden]"
             // maxHeight: 100% / ACTIVE_SCALE, not a flat 100% (max-h-full) —
             // reported live as a "mistake" in a card's own border: the
             // active card's rounded bottom corner was getting sliced

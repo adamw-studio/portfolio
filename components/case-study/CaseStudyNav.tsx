@@ -1,14 +1,26 @@
 import Image from "next/image";
 import { themedIcon } from "@/components/themedIcon";
 
-// Figma 90:1761 — a segmented pill, bottom-center, sharing the same
-// solid bg-bg-default + border-border-disabled + backdrop-blur "glass
-// chrome" convention Nav.tsx's own segmented control and BackButton.tsx
-// already use elsewhere on the site (see either's own doc comment for
-// why it's solid, not translucent-over-content). Deliberately just
-// Prev/Next — no counter, no dots, no autoplay, per the brief. `count`
-// still comes through as a prop (used for the atEnd bound below) even
-// with no "NN / NN" text rendering it anymore.
+// Figma 90:1761 — a segmented pill sharing the same solid bg-bg-default
+// + border-border-disabled + backdrop-blur "glass chrome" convention
+// Nav.tsx's own segmented control and BackButton.tsx already use
+// elsewhere on the site (see either's own doc comment for why it's
+// solid, not translucent-over-content). Deliberately just Prev/Next —
+// no counter, no dots, no autoplay, per the brief. `count` still comes
+// through as a prop (used for the atEnd bound below) even with no
+// "NN / NN" text rendering it anymore.
+//
+// Anchored a fixed 24px below the *card's own* bottom edge, not a flat
+// bottom-6 — reported live as the pill feeling disconnected, floating
+// in empty page space below whatever the card happened to leave behind
+// it. CaseStudyStage's own cards are vertically centered in a 100svh
+// stage and size themselves by aspect-ratio(440/600) against their own
+// width (min(440px, 100vw-32px), CaseStudyStage's LANE_WIDTH) — this
+// works the same formula backwards to land 24px under that edge at any
+// viewport, without this component needing to measure anything.
+const CARD_BOTTOM_GAP_PX = 24;
+const PILL_TOP = `calc(50svh + (min(440px, calc(100vw - 32px)) * 600 / 440) / 2 + ${CARD_BOTTOM_GAP_PX}px)`;
+
 export function CaseStudyNav({
   index,
   count,
@@ -24,7 +36,7 @@ export function CaseStudyNav({
   const atEnd = index === count - 1;
 
   return (
-    <div className="fixed inset-x-0 bottom-6 z-20 flex justify-center px-4">
+    <div className="fixed inset-x-0 z-20 flex justify-center px-4" style={{ top: PILL_TOP }}>
       <div className="flex items-center gap-1 rounded-full border border-border-disabled bg-bg-default p-1 backdrop-blur-[5px]">
         <button
           type="button"

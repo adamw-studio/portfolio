@@ -19,13 +19,21 @@ import { themedIcon } from "@/components/themedIcon";
  * headings.
  */
 
-// "Lead designer / 2026", "Short summary" — small italic label text,
-// always text-subtle. Figma's own "not-italic" CSS-style convention
-// (see AboutCardStack.tsx's RESTING_TEXT comment) doesn't apply here:
-// this really is meant to read as italic, a genuine style distinction
-// from the primary copy around it, not a foundry display-cut trick.
-export function Eyebrow({ children }: { children: ReactNode }) {
-  return <p className="font-sans text-[14px] italic leading-6 tracking-[-0.112px] text-text-subtle">{children}</p>;
+// "Lead designer / 2026", "Short summary", "[01]" — small italic label
+// text, always text-subtle. Figma's own "not-italic" CSS-style
+// convention (see AboutCardStack.tsx's RESTING_TEXT comment) doesn't
+// apply here: this really is meant to read as italic, a genuine style
+// distinction from the primary copy around it, not a foundry display-
+// cut trick. `style` is only there for the "[01]"-style step numbers
+// (HowItStartedPage) to opt into tabular/lining/slashed-zero numerals
+// (Figma's own font-feature-settings) without every plain-text Eyebrow
+// use paying for a feature that only matters for digits.
+export function Eyebrow({ children, style }: { children: ReactNode; style?: CSSProperties }) {
+  return (
+    <p className="font-sans text-[14px] italic leading-6 tracking-[-0.112px] text-text-subtle" style={style}>
+      {children}
+    </p>
+  );
 }
 
 // size controls which editorial scale this heading reads at — pages are
@@ -55,9 +63,26 @@ export function Heading({ children, size = "md", className = "" }: { children: R
   return <p className={`font-sans font-semibold text-text-primary ${HEADING_SIZES[size]} ${className}`}>{children}</p>;
 }
 
-export function BodyCopy({ children, muted = false, className = "" }: { children: ReactNode; muted?: boolean; className?: string }) {
+// weight: "normal" (default, unchanged for every existing use) or
+// "medium" — Figma 105:3015 (HowItStartedPage's redesigned body copy)
+// specifically calls for PP Neue Montreal Medium, not Regular, a
+// deliberate step up from every other page's body text rather than a
+// one-off worth its own component.
+export function BodyCopy({
+  children,
+  muted = false,
+  weight = "normal",
+  className = "",
+}: {
+  children: ReactNode;
+  muted?: boolean;
+  weight?: "normal" | "medium";
+  className?: string;
+}) {
   return (
-    <p className={`font-sans text-[14px] leading-6 tracking-[-0.112px] ${muted ? "text-text-subtle" : "text-text-primary"} ${className}`}>
+    <p
+      className={`font-sans text-[14px] leading-6 tracking-[-0.112px] ${weight === "medium" ? "font-medium" : "font-normal"} ${muted ? "text-text-subtle" : "text-text-primary"} ${className}`}
+    >
       {children}
     </p>
   );

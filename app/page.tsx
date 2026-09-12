@@ -191,7 +191,7 @@ export default function Home() {
           <div className="mx-auto flex w-full max-w-[512px] flex-col items-start gap-4">
             <div className="flex items-center gap-2.5">
               <HeadingFlourish />
-              <h2 className={pageHeading}>What I do</h2>
+              <h2 className={pageHeading}>Approach</h2>
             </div>
             <div className="flex w-full flex-col items-start gap-4">
               <div className="flex w-full flex-col items-start gap-3">

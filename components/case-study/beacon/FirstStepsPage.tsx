@@ -16,9 +16,43 @@ import { Eyebrow, Heading, BodyCopy, ScrollFadeCard } from "@/components/case-st
 // simpler to pre-rotate the path's own coordinates once by hand
 // (swap-and-mirror the original "M0 58.5H30…" logic for this diagram's
 // own stem-to-span ratio) and place a single flat, unrotated SVG.
+//
+// [container-type:inline-size] + clamp(...cqw...) font-sizes below:
+// reported live (a real-device screenshot) as badly broken on a narrow
+// phone — this row packs three pills *and* three captions into one
+// line, denser than "Where it started"'s own diagram, and every label
+// here was still a fixed 14px while its pill's own width kept shrinking
+// as a plain percentage of the card's own (now narrower, since the
+// mobile carousel-peek fix) width. Fixed text in a shrinking box only
+// ever ends one way. Container query units tie each label's font-size
+// to this diagram's *own* rendered width instead of the viewport, so it
+// shrinks in lockstep with the pills/positions around it — pinned at
+// 14px once the diagram is back near its own 382px reference size (any
+// desktop card), floored at 10px so it never goes illegibly small.
+// Padding is em-based (0.7em/0.3em, matching the original 10px/4px at
+// the 14px reference) so it shrinks together with the font instead of
+// staying a fixed px amount once the text around it has already shrunk.
+// Pills also switch from a hard `width` to `minWidth`: at the very
+// narrowest real phones the floored 10px text can still slightly exceed
+// its originally-designed slot, and a pill that's free to grow past
+// that minimum (rather than clipping/overflowing it) is the graceful
+// failure mode.
+//
+// The three "-specific" captions additionally pick up whiteSpace:
+// nowrap, which "Foundational components" already had but these never
+// did — an absolutely-positioned, width:auto element still wraps once
+// the shrink-to-fit space between its own `left` and the container's
+// far edge narrows below its text's natural width; that wrap (not
+// overflow) is what actually produced the garbled, multi-line collision
+// in the reported screenshot.
+const LABEL_FONT_SIZE = "clamp(10px,3.66cqw,14px)";
+
 function DesignSystemDiagram() {
   return (
-    <div className="relative w-full overflow-hidden rounded-2xl bg-bg-tertiary" style={{ aspectRatio: "382 / 252" }}>
+    <div
+      className="relative w-full overflow-hidden rounded-2xl bg-bg-tertiary [container-type:inline-size]"
+      style={{ aspectRatio: "382 / 252" }}
+    >
       <svg
         aria-hidden
         className="absolute"
@@ -34,36 +68,61 @@ function DesignSystemDiagram() {
         />
       </svg>
       <span
-        className="absolute flex items-center justify-center whitespace-nowrap rounded-full bg-bg-secondary px-2.5 py-1 font-sans text-[14px] leading-6 text-text-primary"
-        style={{ left: "38.22%", top: "8.33%", width: "24.08%" }}
+        className="absolute flex items-center justify-center whitespace-nowrap rounded-full bg-bg-secondary px-[0.7em] py-[0.3em] font-sans leading-6 text-text-primary"
+        style={{ left: "38.22%", top: "8.33%", minWidth: "24.08%", fontSize: LABEL_FONT_SIZE }}
       >
         Cosmos DS
       </span>
-      <Eyebrow style={{ position: "absolute", left: "29.58%", top: "22.22%", whiteSpace: "nowrap" }}>
+      <Eyebrow style={{ position: "absolute", left: "29.58%", top: "22.22%", whiteSpace: "nowrap", fontSize: LABEL_FONT_SIZE }}>
         Foundational components
       </Eyebrow>
       <span
-        className="absolute flex items-center justify-center whitespace-nowrap rounded-full bg-bg-secondary px-2.5 py-1 font-sans text-[14px] leading-6 text-text-primary"
-        style={{ left: "4.71%", top: "67.86%", width: "22.25%" }}
+        className="absolute flex items-center justify-center whitespace-nowrap rounded-full bg-bg-secondary px-[0.7em] py-[0.3em] font-sans leading-6 text-text-primary"
+        style={{ left: "4.71%", top: "67.86%", minWidth: "22.25%", fontSize: LABEL_FONT_SIZE }}
       >
         Athena DS
       </span>
       <span
-        className="absolute flex items-center justify-center whitespace-nowrap rounded-full bg-bg-secondary px-2.5 py-1 font-sans text-[14px] leading-6 text-text-primary"
-        style={{ left: "40.31%", top: "67.86%", width: "19.63%" }}
+        className="absolute flex items-center justify-center whitespace-nowrap rounded-full bg-bg-secondary px-[0.7em] py-[0.3em] font-sans leading-6 text-text-primary"
+        style={{ left: "40.31%", top: "67.86%", minWidth: "19.63%", fontSize: LABEL_FONT_SIZE }}
       >
         Metis DS
       </span>
+      {/* right, not left+minWidth like the other two pills: this is the
+          rightmost column, so letting its floored-font content grow past
+          its designed minWidth (same reasoning as the other pills, see
+          this file's top comment) has to grow *leftward* into this row's
+          own existing whitespace, not rightward straight into — and,
+          since the diagram itself clips overflow, off — the card's own
+          edge. Confirmed live at 375px: left-anchored, this pill and its
+          caption clipped at the container's right edge; right-anchored,
+          they don't. */}
       <span
-        className="absolute flex items-center justify-center whitespace-nowrap rounded-full bg-bg-secondary px-2.5 py-1 font-sans text-[14px] leading-6 text-text-primary"
-        style={{ left: "69.11%", top: "67.86%", width: "25.92%" }}
+        className="absolute flex items-center justify-center whitespace-nowrap rounded-full bg-bg-secondary px-[0.7em] py-[0.3em] font-sans leading-6 text-text-primary"
+        style={{ right: "4.97%", top: "67.86%", minWidth: "25.92%", fontSize: LABEL_FONT_SIZE }}
       >
         Pantheon DS
       </span>
-      <Eyebrow style={{ position: "absolute", left: "2.88%", top: "82.14%", width: "auto" }}>Beacon-specific</Eyebrow>
-      <Eyebrow style={{ position: "absolute", left: "41.62%", top: "82.14%", width: "auto" }}>I2I-specific</Eyebrow>
       <Eyebrow
-        style={{ position: "absolute", left: "82.2%", top: "86.9%", width: "auto", transform: "translate(-50%, -50%)" }}
+        style={{ position: "absolute", left: "2.88%", top: "82.14%", width: "auto", whiteSpace: "nowrap", fontSize: LABEL_FONT_SIZE }}
+      >
+        Beacon-specific
+      </Eyebrow>
+      <Eyebrow
+        style={{ position: "absolute", left: "41.62%", top: "82.14%", width: "auto", whiteSpace: "nowrap", fontSize: LABEL_FONT_SIZE }}
+      >
+        I2I-specific
+      </Eyebrow>
+      <Eyebrow
+        style={{
+          position: "absolute",
+          right: "3%",
+          top: "86.9%",
+          width: "auto",
+          whiteSpace: "nowrap",
+          fontSize: LABEL_FONT_SIZE,
+          transform: "translateY(-50%)",
+        }}
       >
         Orchestro-specific
       </Eyebrow>

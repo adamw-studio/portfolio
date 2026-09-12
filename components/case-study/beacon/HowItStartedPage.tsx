@@ -16,6 +16,16 @@ import { Eyebrow, Heading, BodyCopy, ScrollFadeCard } from "@/components/case-st
 // background left for a translucent tint to leak through here — the
 // dot-bleed problem that forced -solid onto the *card* itself doesn't
 // apply to something nested safely inside it.
+//
+// [container-type:inline-size] + clamp(...cqw...) font-size: this
+// diagram's own pills held up fine at every width tested before the
+// mobile carousel-peek fix narrowed cards further, but "First steps"'s
+// own denser diagram broke badly at that new width with the exact same
+// fixed-14px-text-in-a-shrinking-pill construction — see that file's
+// own doc comment for the full reasoning. Applying the same fix here
+// too rather than waiting for this one to visibly break the same way.
+const LABEL_FONT_SIZE = "clamp(10px,3.66cqw,14px)";
+
 const PORTFOLIO_PRODUCTS = [
   { label: "Beacon", top: "19.17%", color: "#00a2c2" }, // this site's own established teal accent (globals.css's own comment on why it's a literal, not a token)
   { label: "I2I", top: "43.33%", color: "#6458c3" },
@@ -24,7 +34,7 @@ const PORTFOLIO_PRODUCTS = [
 
 function PortfolioDiagram() {
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-2xl bg-bg-tertiary">
+    <div className="relative h-full w-full overflow-hidden rounded-2xl bg-bg-tertiary [container-type:inline-size]">
       {/* Figma's own connector (Vector 11) — a plain dashed branch from
           one point to three, exported as a single path. border-subtle,
           not the literal rgba(244,244,244,0.1) Figma's export hardcodes:
@@ -46,8 +56,8 @@ function PortfolioDiagram() {
         />
       </svg>
       <span
-        className="absolute flex items-center justify-center whitespace-nowrap rounded-full bg-bg-secondary px-2.5 py-1 font-sans text-[14px] leading-6 text-text-primary"
-        style={{ left: "17.8%", top: "43.33%", width: "18.32%" }}
+        className="absolute flex items-center justify-center whitespace-nowrap rounded-full bg-bg-secondary px-[0.7em] py-[0.3em] font-sans leading-6 text-text-primary"
+        style={{ left: "17.8%", top: "43.33%", minWidth: "18.32%", fontSize: LABEL_FONT_SIZE }}
       >
         Portfolio
       </span>
@@ -60,8 +70,8 @@ function PortfolioDiagram() {
       {PORTFOLIO_PRODUCTS.map(({ label, top, color }) => (
         <span
           key={label}
-          className="absolute flex items-center justify-center whitespace-nowrap rounded-full px-2.5 py-1 font-sans text-[14px] leading-6 text-[#f4f4f4]"
-          style={{ left: "56.02%", top, width: "26.18%", backgroundColor: color }}
+          className="absolute flex items-center justify-center whitespace-nowrap rounded-full px-[0.7em] py-[0.3em] font-sans leading-6 text-[#f4f4f4]"
+          style={{ left: "56.02%", top, minWidth: "26.18%", fontSize: LABEL_FONT_SIZE, backgroundColor: color }}
         >
           {label}
         </span>

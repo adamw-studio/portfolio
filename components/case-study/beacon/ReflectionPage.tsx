@@ -1,44 +1,54 @@
 import type { ReactNode } from "react";
-import { Heading, BodyCopy, ScrollFadeCard } from "@/components/case-study/primitives";
+import { Eyebrow, Heading, BodyCopy, ScrollFadeCard } from "@/components/case-study/primitives";
 
-// Figma 100:2564 etc. — a small "sticky note" flourish peeking from
-// behind each workshop question: a colored, rotated rounded-rect with
-// two tiny icon-subtle marks on it, clipped to the pill's own small
-// height so only a sliver of it actually shows. Kept local to this page
-// rather than promoted to primitives.tsx — nothing else in this system
-// needs a colored-icon tag yet, and Chip.tsx (the sitewide inline-chip
-// primitive) is a plain border/fill pill with no equivalent to this
-// visual, not a close enough match to extend instead of building this.
-// Colors are fixed literals, not theme tokens — five arbitrary per-
-// question accents, not a role that flips with light/dark (compare
-// OverviewPage's own reasoning for the same choice).
-function WorkshopTag({ color, children }: { color: string; children: ReactNode }) {
+// Figma 115:3802 — the workshop-questions row becomes a small scattered
+// collage of colored "sticky notes", one per question, each individually
+// rotated and holding its own text color. Figma's own export overlaps
+// these five notes via CSS-Grid stacking + per-note margins (all five
+// sharing one grid cell) — a technique that doesn't survive a responsive
+// card: it assumes one fixed-width absolute canvas, but this card's own
+// width varies from 440px down to a narrow phone's viewport. Reinterpreted
+// here as a responsive flex-wrap row instead, keeping every note's exact
+// size/color/text/rotation/text-color from Figma — the wrap naturally
+// reflows at any card width, unlike a fixed absolute collage that would
+// clip or overlap unpredictably once the card itself resizes.
+//
+// Text uses font-extrabold with no `italic` class — layout.tsx registers
+// the ExtraboldItalic file itself under style:"normal" specifically so
+// plain font-extrabold resolves to it (see its own comment for why);
+// adding `italic` here would ask for a second, non-existent cut.
+function StickyNote({
+  color,
+  textColor,
+  rotate,
+  children,
+}: {
+  color: string;
+  textColor: string;
+  rotate: number;
+  children: ReactNode;
+}) {
   return (
-    <span className="relative inline-flex shrink-0 items-center overflow-hidden rounded-xs border border-border-subtle py-0.5 pl-11 pr-1.5">
-      <span aria-hidden className="absolute -left-1 top-1.5 h-[42px] w-9 -rotate-[9deg]">
-        <span className="relative block h-[38px] w-[30px] rounded-[4px]" style={{ backgroundColor: color }}>
-          <span className="absolute left-[7px] top-1 h-0.5 w-4 rounded-full bg-icon-subtle" />
-          <span className="absolute left-[3px] top-1 size-0.5 rounded-full bg-icon-subtle" />
-        </span>
-      </span>
-      <span className="relative font-sans text-[14px] whitespace-nowrap tracking-[-0.112px] text-text-primary">{children}</span>
-    </span>
+    <div
+      className="flex shrink-0 items-start rounded-[10px] p-2 font-sans font-extrabold text-[16px] leading-[18px] tracking-[-0.128px]"
+      style={{ width: 130, height: 162, backgroundColor: color, color: textColor, transform: `rotate(${rotate}deg)` }}
+    >
+      {children}
+    </div>
   );
 }
 
-const WORKSHOP_QUESTIONS: { color: string; text: string }[] = [
-  { color: "#d9a900", text: "What is quality?" },
-  { color: "#00a2c2", text: "Why are we drawn to things that are quality?" },
-  { color: "#e5522e", text: "10 star experience" },
-  { color: "#0d99ff", text: "What makes a great product?" },
-  { color: "#d92100", text: "Treasure island" },
+const WORKSHOP_QUESTIONS: { color: string; textColor: string; rotate: number; text: string }[] = [
+  { color: "#d9a900", textColor: "#4b3c06", rotate: 0, text: "What is quality?" },
+  { color: "#00a2c2", textColor: "#0d0d0d", rotate: 6.41, text: "Why are we drawn to things that are quality?" },
+  { color: "#e5522e", textColor: "#290e07", rotate: -6.82, text: "What would be your 11-star experience" },
+  { color: "#0d99ff", textColor: "#0a2a40", rotate: 0, text: "What makes a great product?" },
+  { color: "#d92100", textColor: "#fff8f7", rotate: 15, text: "Treasure Island" },
 ];
 
-// Figma 100:2524 — the heading + 3 paragraphs + question-tag row add up
-// to just over the card's own 600px budget (604px by Figma's own text-
-// block heights), so this is back to ScrollFadeCard like "How it
-// started" — "First steps"/"Collecting insights" fit without it, this
-// one doesn't quite.
+// Figma 115:3802 — a "[04]" step number, continuing "Where it started"/
+// "First steps"/"Collecting insights"'s own [01]/[02]/[03] (this page
+// previously had none).
 //
 // bg-tertiary-solid (opaque), not bg-tertiary (5% alpha) + backdrop-
 // blur: reported live as the page's own dot-grid background still
@@ -53,7 +63,10 @@ export default function ReflectionPage() {
       className="w-full max-w-[440px] rounded-[20px] border border-border-disabled bg-bg-tertiary-solid shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)]"
     >
       <div className="flex flex-col gap-6 p-7">
-        <Heading size="md">Reflection on user’s feedback</Heading>
+        <div className="flex flex-col gap-1">
+          <Eyebrow style={{ fontFeatureSettings: '"zero" 1, "lnum" 1, "tnum" 1' }}>[04]</Eyebrow>
+          <Heading size="md">Reflection on user’s feedback</Heading>
+        </div>
         <div className="flex flex-col gap-6">
           <BodyCopy>
             After the interviews, we shared our findings with leadership and aligned on the need for a clear plan to
@@ -69,13 +82,13 @@ export default function ReflectionPage() {
             while also responding to shifts in the market and the rapidly evolving possibilities of AI.
           </BodyCopy>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <BodyCopy muted>Some questions that drove the workshop:</BodyCopy>
-          <div className="flex flex-wrap items-center gap-2">
-            {WORKSHOP_QUESTIONS.map(({ color, text }) => (
-              <WorkshopTag key={text} color={color}>
+          <div className="flex flex-wrap gap-3 py-2">
+            {WORKSHOP_QUESTIONS.map(({ color, textColor, rotate, text }) => (
+              <StickyNote key={text} color={color} textColor={textColor} rotate={rotate}>
                 {text}
-              </WorkshopTag>
+              </StickyNote>
             ))}
           </div>
         </div>

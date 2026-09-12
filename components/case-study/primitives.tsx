@@ -269,6 +269,50 @@ export function BrowserFrame({ src, alt = "" }: { src?: string; alt?: string }) 
 // live as a border/corner artifact). Splitting them means the border
 // is always drawn on a plain, unclipped box — nothing about scaling it
 // depends on a clip mask lining up with it pixel-for-pixel.
+// Figma 105:3001 (desktop, this system's 440px-wide card reference) vs
+// 122:4252 (mobile, 354px-wide) — the SAME "Where it started" card
+// drawn twice, once per breakpoint. Diffing the two (exact metadata,
+// not eyeballed off a screenshot) shows outer padding drops from 28px
+// to 20px and the gap between a card's own sections (heading → image →
+// copy) drops from 24px to 20px — real, independently-chosen design
+// values, not the same spacing simply scaled down by width. Both
+// interpolate linearly off the card's *own* rendered width (a
+// container query, via [container-type:inline-size] on ScrollFadeCard's
+// outer frame — not the viewport: a carousel lane is narrower than the
+// viewport at every breakpoint, so 100vw was never the right divisor
+// here) between those exact two reference widths, clamped flat outside
+// that 354–440px range rather than extrapolating past values Figma
+// never actually specified.
+//
+// clamp(20px, calc(A + Bcqw), 28px) solved from two points — 352px and
+// 438px, NOT Figma's literal 354/440: cqw resolves against this
+// container's own CONTENT-box width, and this particular container
+// (ScrollFadeCard's outer frame) carries a 1px border, so its content
+// box is 2px narrower than its border-box (confirmed live: measured
+// padding landed at 27.8px, not 28px, until this correction — 9.302cqw
+// of a 438px content-box, not a 440px border-box). B = 8/86 =
+// 9.302326cqw (the *range* is identical either way, so the slope
+// isn't affected — only the intercept is), A = 20 - 9.302326% * 352/100
+// = -12.744186px.
+const CARD_PADDING = "clamp(20px, calc(9.302326cqw - 12.744186px), 28px)";
+// Same reasoning, the inter-section gap (352px → 20px, 438px → 24px):
+// B = 4/86 = 4.651163cqw, A = 20 - 4.651163% * 352/100 = 3.627907px.
+const CARD_GAP = "clamp(20px, calc(4.651163cqw + 3.627907px), 24px)";
+
+// The padded flex-column every case-study card's own content sits in —
+// pulled out of six pages that had each hand-rolled an identical
+// `<div className="flex flex-col gap-6 p-7">` (a fixed 24px/28px that
+// never moved off its desktop value). Centralizing it here means the
+// fluid padding/gap above is defined once, not re-derived — or
+// forgotten — per page.
+export function CardBody({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return (
+    <div className={`flex flex-col ${className}`} style={{ padding: CARD_PADDING, gap: CARD_GAP }}>
+      {children}
+    </div>
+  );
+}
+
 export function ScrollFadeCard({
   children,
   style,
@@ -315,7 +359,14 @@ export function ScrollFadeCard({
     // sizing doesn't have that pitfall; min-h-0 overrides its own default
     // min-height:auto, which otherwise refuses to let a flex child shrink
     // below its content size in the first place.
-    <div className={`flex flex-col ${className}`} style={style}>
+    // [container-type:inline-size]: this frame's own rendered width IS
+    // the card's width at every breakpoint (the carousel lane's LANE_WIDTH,
+    // or a plain max-w-[440px] outside one) — establishing it as a query
+    // container here is what lets CardBody's own cqw-based padding/gap
+    // (and any diagram inside) respond to *this card*, not the viewport,
+    // matching this system's own carousel where the card is always
+    // narrower than the viewport around it.
+    <div className={`flex flex-col [container-type:inline-size] ${className}`} style={style}>
       <div className="relative flex h-full w-full min-h-0 flex-1 flex-col overflow-hidden rounded-[inherit]">
         <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto rounded-[inherit]">
           {children}
@@ -379,7 +430,7 @@ export function TextCard({ children, className = "" }: { children: ReactNode; cl
       style={{ aspectRatio: "440 / 600" }}
       className={`w-full max-w-[440px] rounded-[20px] border border-border-disabled bg-bg-tertiary-solid shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)] ${className}`}
     >
-      <div className="flex flex-col gap-6 p-7">{children}</div>
+      <CardBody>{children}</CardBody>
     </ScrollFadeCard>
   );
 }

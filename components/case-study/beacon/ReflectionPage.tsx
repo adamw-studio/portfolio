@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Eyebrow, Heading, BodyCopy, ScrollFadeCard } from "@/components/case-study/primitives";
+import { CardBody, Eyebrow, Heading, BodyCopy, ScrollFadeCard } from "@/components/case-study/primitives";
 
 // Figma 115:3802 — the workshop-questions row becomes a small scattered
 // collage of colored "sticky notes", one per question, each individually
@@ -62,7 +62,7 @@ export default function ReflectionPage() {
       style={{ aspectRatio: "440 / 600" }}
       className="w-full max-w-[440px] rounded-[20px] border border-border-disabled bg-bg-tertiary-solid shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)]"
     >
-      <div className="flex flex-col gap-6 p-7">
+      <CardBody>
         <div className="flex flex-col gap-1">
           <Eyebrow style={{ fontFeatureSettings: '"zero" 1, "lnum" 1, "tnum" 1' }}>[04]</Eyebrow>
           <Heading size="md">Reflection on user’s feedback</Heading>
@@ -92,7 +92,7 @@ export default function ReflectionPage() {
             ))}
           </div>
         </div>
-      </div>
+      </CardBody>
     </ScrollFadeCard>
   );
 }

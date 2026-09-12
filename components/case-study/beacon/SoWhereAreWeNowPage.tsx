@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import { Divider } from "@/components/Divider";
-import { Eyebrow, Heading, BodyCopy, ScrollFadeCard } from "@/components/case-study/primitives";
+import { CardBody, Eyebrow, Heading, BodyCopy, ScrollFadeCard } from "@/components/case-study/primitives";
 
 // Figma 120:4168 ("agile") — a small looping-arrow glyph that flags each
 // insights/findings tag below. fill="currentColor" (not the exported
@@ -131,7 +131,7 @@ export default function SoWhereAreWeNowPage() {
       style={{ aspectRatio: "440 / 600" }}
       className="w-full max-w-[440px] rounded-[20px] border border-border-disabled bg-bg-tertiary-solid shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)]"
     >
-      <div className="flex flex-col gap-6 p-7">
+      <CardBody>
         <div className="flex flex-col gap-1">
           <Eyebrow style={{ fontFeatureSettings: '"zero" 1, "lnum" 1, "tnum" 1' }}>[06]</Eyebrow>
           <Heading size="md">So, where are we now?</Heading>
@@ -224,7 +224,7 @@ export default function SoWhereAreWeNowPage() {
           alt="Looping screen recording of the Beacon workspace: navigating between a company's profile sections while a generated value-pool card and its supporting research stay open alongside"
           caption="Helping users to understand more clearly what is happening, what’s the next step and what is the flow they will need to go through"
         />
-      </div>
+      </CardBody>
     </ScrollFadeCard>
   );
 }

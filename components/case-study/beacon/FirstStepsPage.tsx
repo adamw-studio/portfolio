@@ -1,4 +1,4 @@
-import { Eyebrow, Heading, BodyCopy, ScrollFadeCard } from "@/components/case-study/primitives";
+import { CardBody, Eyebrow, Heading, BodyCopy, ScrollFadeCard } from "@/components/case-study/primitives";
 
 // Figma 114:3707 — a second org-chart diagram, same idea as "Where it
 // started"'s own Portfolio/Beacon/I2I/Orchestro one but one level
@@ -147,7 +147,7 @@ export default function FirstStepsPage() {
       style={{ aspectRatio: "440 / 600" }}
       className="w-full max-w-[440px] rounded-[20px] border border-border-disabled bg-bg-tertiary-solid shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)]"
     >
-      <div className="flex flex-col gap-6 p-7">
+      <CardBody>
         <div className="flex flex-col gap-1">
           <Eyebrow style={{ fontFeatureSettings: '"zero" 1, "lnum" 1, "tnum" 1' }}>[02]</Eyebrow>
           <Heading size="md">First steps</Heading>
@@ -165,7 +165,7 @@ export default function FirstStepsPage() {
           </BodyCopy>
         </div>
         <DesignSystemDiagram />
-      </div>
+      </CardBody>
     </ScrollFadeCard>
   );
 }

@@ -48,6 +48,12 @@ const HEADING_SIZES = {
   // also had to hold its full 8-item summary on real screen sizes; this
   // is what OverviewPage actually uses instead.
   sm: "text-[18px] leading-[22px] tracking-[-0.144px]",
+  // A sub-section heading inside a page's own body copy, not the page's
+  // own title — "Key findings" (Figma 115:3786, CollectingInsightsPage),
+  // sitting below a card's real `md` headline rather than replacing it.
+  // No tracking override: unlike every other size here, this one's own
+  // Figma node has no letter-spacing class at all, just the default.
+  section: "text-[20px] leading-6",
   // Overview/summary-card scale (Figma 87:1449) — a heading that sits
   // alongside body copy, not a full-page statement.
   md: "text-[24px] leading-[28px] tracking-[-0.192px]",

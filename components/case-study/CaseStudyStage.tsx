@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import { useTheme } from "@/components/ThemeContext";
 import type { CaseStudyPageConfig } from "@/components/case-study/types";
 
 // Figma 97:2143's own 30px gap between cards, and the same lane width
@@ -22,16 +23,25 @@ const ACTIVE_SCALE = 1.06;
 // step down, not a heavy fade: neighbors should still read as legible,
 // inviting content (the brief's own "obvious the section can be
 // navigated horizontally"), not a disabled/ghost state. A brightness
-// filter, not opacity — every card here is a translucent bg-tertiary
-// panel with its own backdrop-blur, and *opacity* on an ancestor of a
-// backdrop-filter element forces the browser to recomposite that whole
-// layer against whatever's actually behind it (the page's raw, still-
-// sharp dot grid), re-introducing those dots at (1 - opacity) strength
-// right through the card's own blur — reported live as "dots
-// overflowing" the inactive cards. brightness() darkens the card's own
-// already-composited pixels in place instead, with no new translucency
-// for anything behind it to leak through.
-const INACTIVE_BRIGHTNESS = 0.6;
+// filter, not opacity — every card here has its own opaque bg-tertiary-
+// solid fill, and *opacity* on an ancestor still forces the browser to
+// recomposite that whole layer against whatever's actually behind it
+// (the page's own dot grid), letting it show back through at
+// (1 - opacity) strength — reported live as "dots overflowing" the
+// inactive cards. brightness() darkens the card's own already-
+// composited pixels in place instead, with no new translucency for
+// anything behind it to leak through.
+//
+// Different per theme, not one shared constant: dark theme's own
+// bg-tertiary-solid (#191919) is already close to black, so darkening
+// it further by 0.6 reads as a subtle further recede. Light theme's own
+// card surface is now literally bg-default (globals.css's own comment
+// on bg-tertiary-solid has the why) — a much lighter starting point, so
+// that same 0.6 factor would swing it all the way to a medium/heavy
+// gray, reported live as inactive cards feeling "too dark/heavy"
+// against a light page. Light theme's own factor is gentler on purpose,
+// landing its inactive cards in a soft light gray instead.
+const INACTIVE_BRIGHTNESS = { dark: 0.6, light: 0.94 } as const;
 
 // Same strong ease-out cubic-bezier this whole system already uses for
 // every other page transition — evaluated by hand (Newton-Raphson on
@@ -96,6 +106,7 @@ export function CaseStudyStage({
   reducedMotion: boolean;
   onSettle: (index: number) => void;
 }) {
+  const { theme } = useTheme();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
   // Drag-to-scroll state lives in a ref, not useState — read/written on
@@ -114,26 +125,27 @@ export function CaseStudyStage({
   // below), so a *second*, independently-timed transition layered on
   // top would only trail behind the real position and read as rubbery
   // rather than smoother.
-  const updateCardStyles = () => {
+  const updateCardStyles = useCallback(() => {
     const scroller = scrollerRef.current;
     if (!scroller) return;
     const center = scroller.scrollLeft + scroller.clientWidth / 2;
     const slide = slideRefs.current.find((el): el is HTMLDivElement => el !== null);
     const unit = (slide?.offsetWidth ?? 0) + GAP_PX || 1; // one full card+gap step in the strip
+    const inactiveBrightness = INACTIVE_BRIGHTNESS[theme];
     slideRefs.current.forEach((el) => {
       if (!el) return;
       const distance = Math.abs(el.offsetLeft + el.offsetWidth / 2 - center);
       const progress = Math.min(distance / unit, 1); // 0 = centered/active, 1 = a full step away or further
       const settledness = 1 - progress;
       el.style.transform = `scale(${1 + (ACTIVE_SCALE - 1) * settledness})`;
-      el.style.filter = `brightness(${INACTIVE_BRIGHTNESS + (1 - INACTIVE_BRIGHTNESS) * settledness})`;
+      el.style.filter = `brightness(${inactiveBrightness + (1 - inactiveBrightness) * settledness})`;
       // The scaled-up active card visually grows past its own lane into
       // the gap either side — bumped above its (unscaled) neighbors so
       // that growth reads as "on top of", not "cut off by", whichever
       // sibling happens to sit later in the DOM.
       el.style.zIndex = progress < 0.5 ? "10" : "0";
     });
-  };
+  }, [theme]);
 
   // `index` changing scrolls the strip to that card — covers Prev/Next,
   // a keyboard arrow, and the URL syncing from Back/Forward or a pasted
@@ -164,7 +176,7 @@ export function CaseStudyStage({
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [index, reducedMotion]);
+  }, [index, reducedMotion, updateCardStyles]);
 
   // The other direction: free scrolling (drag, swipe, trackpad) keeps
   // the active-card styling in sync every frame (rAF-throttled), and —
@@ -219,7 +231,12 @@ export function CaseStudyStage({
       clearTimeout(settleTimeout);
       if (frame !== null) cancelAnimationFrame(frame);
     };
-  }, [index, onSettle]);
+    // updateCardStyles is a dependency on purpose (it's useCallback'd on
+    // theme): toggling theme mid-session needs the already-applied
+    // inactive brightness to recompute immediately, not sit stale until
+    // the next scroll or page change happens to re-trigger this effect
+    // anyway.
+  }, [index, onSettle, updateCardStyles]);
 
   // Mouse-only drag-to-scroll, identical to SelectedWorks.tsx's own row —
   // see that file's own comments for why (no setPointerCapture until a

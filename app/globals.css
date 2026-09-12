@@ -8,12 +8,20 @@
   --color-bg-default: #f4f4f4;
   --color-bg-secondary: rgba(13, 13, 13, 0.05);
   --color-bg-tertiary: rgba(13, 13, 13, 0.05);
-  /* bg-tertiary pre-blended over bg-default into one flat, fully opaque
-     color — for a surface that needs to actually block whatever's behind
-     it (the case-study cards' own page-dots background bleeding through
-     their 5%-alpha bg-tertiary fill, reported live), not just tint it.
-     13*0.05 + 244*0.95 ≈ 232 per channel. */
-  --color-bg-tertiary-solid: #e8e8e8;
+  /* The case-study cards' own opaque surface — literally bg-default in
+     light theme, on direct instruction: every attempt at a distinct
+     tinted-gray card tone here (this token started as bg-tertiary
+     pre-blended over bg-default at 5% alpha, then a more confident
+     hand-picked gray) still read as an awkward, slightly-off-white smear
+     next to the page's own near-identical #f4f4f4 — reported live as the
+     active card feeling "too close to pure white" regardless of exactly
+     which light gray this was. Matching bg-default outright means the
+     card and page are the *same* color on purpose, distinguished by
+     border/shadow alone (a legitimate, common light-mode pattern), not
+     an almost-but-not-quite match. Dark theme keeps its own real elevated
+     tone (#191919, lighter than its own #0d0d0d page) unchanged — that
+     one was never the problem. */
+  --color-bg-tertiary-solid: var(--color-bg-default);
   --color-text-primary: #0d0d0d;
   --color-text-secondary: rgba(13, 13, 13, 0.7);
   --color-text-subtle: rgba(13, 13, 13, 0.4);

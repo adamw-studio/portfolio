@@ -2,7 +2,6 @@
 
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { BackButton } from "@/components/BackButton";
 
 // Figma 304:9017 ("locked"), 304:12070 ("Password Input - Active", typed
@@ -129,12 +128,18 @@ export function PasswordGate({
             )}
           </div>
 
-          <Link
-            href="/contact"
+          {/* mailto, not a /contact route — this site has no contact page
+              (nor a form to back one), just the same real mailto every
+              other "get in touch" surface already uses (app/page.tsx's
+              own hero). This one pointed at /contact, a route that was
+              never built — a dead link on the one screen every locked
+              case study's visitor sees first. */}
+          <a
+            href="mailto:weberadam54@gmail.com"
             className="text-center font-sans text-[14px] leading-6 tracking-[-0.112px] text-text-secondary transition-colors hover:text-text-primary"
           >
             Get in touch
-          </Link>
+          </a>
         </div>
       </div>
     </div>

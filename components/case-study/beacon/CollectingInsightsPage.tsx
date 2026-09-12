@@ -1,18 +1,13 @@
-import { Heading, BodyCopy } from "@/components/case-study/primitives";
+import { Heading, BodyCopy, TextCard } from "@/components/case-study/primitives";
 
 // Figma 98:2427 — same text-only card treatment as "First steps"
-// (98:2390): a plain aspect-ratio div, not ScrollFadeCard. Three
-// paragraphs still land well inside the card's 600px budget (Figma's
-// own text block is 360px tall against a 600px card), so there's
-// nothing here that would ever actually need to scroll either. Same
-// backdrop-blur-[16px] frosted-glass treatment too — see HowItStarted-
-// Page's own comment for why.
+// (98:2390). Three paragraphs still land well inside the card's 600px
+// budget (Figma's own text block is 360px tall against a 600px card),
+// so there's nothing here that would ever actually need to scroll
+// either — TextCard's own frame is enough, no ScrollFadeCard needed.
 export default function CollectingInsightsPage() {
   return (
-    <div
-      className="flex w-full max-w-[440px] flex-col gap-6 overflow-hidden rounded-[20px] border border-border-disabled bg-bg-tertiary p-7 shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)] backdrop-blur-[16px]"
-      style={{ aspectRatio: "440 / 600" }}
-    >
+    <TextCard>
       <Heading size="md">Collecting insights</Heading>
       <div className="flex flex-col gap-6">
         <BodyCopy>
@@ -30,6 +25,6 @@ export default function CollectingInsightsPage() {
           and most importantly didn’t fully trust the AI-generated outputs they received.
         </BodyCopy>
       </div>
-    </div>
+    </TextCard>
   );
 }

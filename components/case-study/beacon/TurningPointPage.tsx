@@ -1,17 +1,13 @@
-import { Heading, BodyCopy } from "@/components/case-study/primitives";
+import { Heading, BodyCopy, TextCard } from "@/components/case-study/primitives";
 
 // Figma 101:2685 — same text-only card treatment as "First steps"/
-// "Collecting insights": a plain aspect-ratio div, not ScrollFadeCard.
-// Four paragraphs still land inside the card's 600px budget (Figma's
-// own text block is 456px tall against a 600px card), so nothing here
-// needs to scroll. Same backdrop-blur-[16px] frosted-glass treatment
-// too — see HowItStartedPage's own comment for why.
+// "Collecting insights". Four paragraphs still land inside the card's
+// 600px budget (Figma's own text block is 456px tall against a 600px
+// card), so nothing here needs to scroll — TextCard's own frame is
+// enough, no ScrollFadeCard needed.
 export default function TurningPointPage() {
   return (
-    <div
-      className="flex w-full max-w-[440px] flex-col gap-6 overflow-hidden rounded-[20px] border border-border-disabled bg-bg-tertiary p-7 shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)] backdrop-blur-[16px]"
-      style={{ aspectRatio: "440 / 600" }}
-    >
+    <TextCard>
       <Heading size="md">Turning point</Heading>
       <div className="flex flex-col gap-6">
         <BodyCopy>
@@ -34,6 +30,6 @@ export default function TurningPointPage() {
           than making them a passenger.
         </BodyCopy>
       </div>
-    </div>
+    </TextCard>
   );
 }

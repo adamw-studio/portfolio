@@ -253,6 +253,16 @@ export function BrowserFrame({ src, alt = "" }: { src?: string; alt?: string }) 
 // drift out of sync and end up visibly different heights at anything
 // but their widest width — reported live as exactly that. A bare
 // max-height cap doesn't track width at all, which is what caused it.
+//
+// The outer box (`className`, carrying this card's border/background/
+// shadow/backdrop-blur) never clips its own content — a separate inner
+// layer does that. One element painting a border *and* clipping via
+// overflow-hidden at the same radius is exactly the combination that
+// showed a rendering seam at the rounded corner once CaseStudyStage
+// started applying `transform: scale()` to the active card (reported
+// live as a border/corner artifact). Splitting them means the border
+// is always drawn on a plain, unclipped box — nothing about scaling it
+// depends on a clip mask lining up with it pixel-for-pixel.
 export function ScrollFadeCard({
   children,
   style,
@@ -299,21 +309,45 @@ export function ScrollFadeCard({
     // sizing doesn't have that pitfall; min-h-0 overrides its own default
     // min-height:auto, which otherwise refuses to let a flex child shrink
     // below its content size in the first place.
-    <div className={`relative flex flex-col overflow-hidden ${className}`} style={style}>
-      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto rounded-[inherit]">
-        {children}
+    <div className={`flex flex-col ${className}`} style={style}>
+      <div className="relative flex h-full w-full min-h-0 flex-1 flex-col overflow-hidden rounded-[inherit]">
+        <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto rounded-[inherit]">
+          {children}
+        </div>
+        {showFade && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-16 backdrop-blur-[6px]"
+            style={{
+              maskImage: "linear-gradient(to top, black, transparent)",
+              WebkitMaskImage: "linear-gradient(to top, black, transparent)",
+              background: "linear-gradient(to top, var(--color-bg-default) 15%, transparent)",
+            }}
+          />
+        )}
       </div>
-      {showFade && (
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-16 backdrop-blur-[6px]"
-          style={{
-            maskImage: "linear-gradient(to top, black, transparent)",
-            WebkitMaskImage: "linear-gradient(to top, black, transparent)",
-            background: "linear-gradient(to top, var(--color-bg-default) 15%, transparent)",
-          }}
-        />
-      )}
+    </div>
+  );
+}
+
+// The plain rounded frame shared by every text-only case-study card
+// ("First steps", "Collecting insights", "Turning point") — same
+// bg-tertiary/border-disabled/backdrop-blur "quiet raised panel"
+// treatment as HowItStartedPage's own card (see that file's comment for
+// why), and the same 440x600 aspect-ratio every card in this system
+// sizes itself by. Pulled out once three pages had hand-rolled an
+// identical div; also fixes the same border/overflow split ScrollFade-
+// Card's own doc comment explains — the border/background/shadow live
+// on this outer frame, which never clips its own content, while a
+// separate inner layer (same radius, its own overflow-hidden) is what
+// actually clips anything that might otherwise bleed past the curve.
+export function TextCard({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return (
+    <div
+      className={`w-full max-w-[440px] rounded-[20px] border border-border-disabled bg-bg-tertiary shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)] backdrop-blur-[16px] ${className}`}
+      style={{ aspectRatio: "440 / 600" }}
+    >
+      <div className="flex h-full w-full flex-col gap-6 overflow-hidden rounded-[inherit] p-7">{children}</div>
     </div>
   );
 }

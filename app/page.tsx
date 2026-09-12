@@ -150,8 +150,8 @@ export default function Home() {
 
             {/* Figma 52:11143 — a new Email/LinkedIn/Instagram row
                 under the bio, absent from every earlier fetch of this
-                paragraph. Email is a real mailto, reusing the same
-                address HomeFooter's own copy-chip already shows. */}
+                paragraph. Email is a real mailto, the same address
+                PasswordGate's own contact link already uses. */}
             <div className={`flex items-center gap-6 text-text-subtle ${bodyText}`}>
               <a href="mailto:weberadam54@gmail.com" className="transition-colors duration-150 hover:text-text-primary">
                 Email

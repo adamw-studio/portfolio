@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import { themedIcon } from "@/components/themedIcon";
 import { LANE_WIDTH } from "@/components/case-study/CaseStudyStage";
@@ -11,18 +12,20 @@ import { LANE_WIDTH } from "@/components/case-study/CaseStudyStage";
 // through as a prop (used for the atEnd bound below) even with no
 // "NN / NN" text rendering it anymore.
 //
-// Anchored a fixed 24px below the *card's own* bottom edge, not a flat
-// bottom-6 — reported live as the pill feeling disconnected, floating
-// in empty page space below whatever the card happened to leave behind
-// it. CaseStudyStage's own cards are vertically centered in a 100svh
-// stage and size themselves by aspect-ratio(440/600) against their own
-// width — this works that same formula backwards to land 24px under
-// that edge at any viewport, without this component needing to measure
-// anything. Imports CaseStudyStage's own LANE_WIDTH rather than
-// hardcoding the same expression a second time: this used to duplicate
-// it as a literal string, and a later mobile-peek fix to LANE_WIDTH's
-// own formula would have silently desynced the two (the pill landing
-// at the wrong height) if this weren't sharing the one export instead.
+// Desktop (sm:+) keeps the card-relative anchor this originally
+// shipped with: a fixed 24px below the *card's own* bottom edge, not a
+// flat bottom-6 — reported live as the pill feeling disconnected,
+// floating in empty page space below whatever the card happened to
+// leave behind it. CaseStudyStage's own cards are vertically centered
+// in a 100svh stage and size themselves by aspect-ratio(440/600)
+// against their own width — this works that same formula backwards to
+// land 24px under that edge at any viewport, without this component
+// needing to measure anything. Imports CaseStudyStage's own LANE_WIDTH
+// rather than hardcoding the same expression a second time: this used
+// to duplicate it as a literal string, and the mobile-peek fix to
+// LANE_WIDTH's own formula would have silently desynced the two (the
+// pill landing at the wrong height) if this weren't sharing the one
+// export instead.
 const CARD_BOTTOM_GAP_PX = 24;
 const PILL_TOP = `calc(50svh + (${LANE_WIDTH} * 600 / 440) / 2 + ${CARD_BOTTOM_GAP_PX}px)`;
 
@@ -41,7 +44,26 @@ export function CaseStudyNav({
   const atEnd = index === count - 1;
 
   return (
-    <div className="fixed inset-x-0 z-20 flex justify-center px-4" style={{ top: PILL_TOP }}>
+    // Mobile drops the card-relative anchor above for a flat bottom-6 —
+    // the exact mirror of Nav's own top-6 — instead: reported live as
+    // wanting real breathing room here and the card centered "between
+    // the navbar on top and the arrows on the bottom", not just centered
+    // in the raw viewport. Nav's own fixed top-6 pill and this fixed
+    // bottom-6 one reserve the *same* footprint on each edge regardless
+    // of the active card's own height, so CaseStudyStage's plain
+    // items-center (already exactly 50svh, Nav/pill being `fixed` never
+    // participate in that box's own centering math) already lands the
+    // card exactly centered between them with no other change needed —
+    // and, since that footprint no longer depends on tightly hugging the
+    // card's own bottom edge, the gap above this pill reads as
+    // deliberate room rather than the old fixed 24px. Desktop keeps the
+    // original dynamic top instead: switching *it* to bottom-6 too would
+    // pull the pill up the screen on a tall viewport, a real change to
+    // an already-tuned desktop layout nothing here asked for.
+    <div
+      className="fixed inset-x-0 z-20 flex justify-center bottom-6 px-4 sm:bottom-auto sm:top-[var(--pill-top)]"
+      style={{ "--pill-top": PILL_TOP } as CSSProperties}
+    >
       <div className="flex items-center gap-1 rounded-full border border-border-disabled bg-bg-default p-1 backdrop-blur-[5px]">
         <button
           type="button"

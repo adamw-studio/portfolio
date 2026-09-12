@@ -54,9 +54,6 @@ const HEADING_SIZES = {
   // No tracking override: unlike every other size here, this one's own
   // Figma node has no letter-spacing class at all, just the default.
   section: "text-[20px] leading-6",
-  // Overview/summary-card scale (Figma 87:1449) — a heading that sits
-  // alongside body copy, not a full-page statement.
-  md: "text-[24px] leading-[28px] tracking-[-0.192px]",
   // A page whose whole composition IS the headline — "one page might be
   // primarily editorial typography" from the brief. Scales down hard on
   // narrow viewports rather than wrapping a 56px headline into a wall of
@@ -65,7 +62,38 @@ const HEADING_SIZES = {
   xl: "text-[40px] leading-[44px] tracking-[-0.6px] sm:text-[64px] sm:leading-[68px] sm:tracking-[-1px]",
 } as const;
 
-export function Heading({ children, size = "md", className = "" }: { children: ReactNode; size?: keyof typeof HEADING_SIZES; className?: string }) {
+// `md` — every card's own page title (Overview/summary-card scale,
+// Figma 87:1449) — is the one size Figma actually draws twice: 24px at
+// this system's 440px desktop card reference (105:3001) and 20px at
+// its 354px mobile one (124:5094), a real, deliberate downsize on
+// mobile, not the same size just wrapping differently. Interpolated
+// off the card's own width (a container query — every "md" heading
+// lives inside CardBody, already inside ScrollFadeCard's own
+// [container-type:inline-size] frame) using the exact same two content-
+// box reference widths (352px/438px — see CardBody's own comment for
+// why not the literal 354/440) CardBody's own fluid gap already solves
+// from, which is why this comes out to the identical coefficients.
+// leading-[28px] stays flat, not part of this interpolation: Figma's
+// own mobile node has no explicit line-height of its own for this text
+// (only its ambient 24px group default, which this size has never
+// matched even at the existing desktop size) — changing it wasn't
+// asked for and risks unpicking already-tuned vertical rhythm.
+const MD_HEADING_FONT_SIZE = "clamp(20px, calc(4.651163cqw + 3.627907px), 24px)";
+const MD_HEADING_TRACKING = "clamp(-0.192px, calc(-0.037209cqw - 0.02902px), -0.16px)";
+
+type HeadingSize = keyof typeof HEADING_SIZES | "md";
+
+export function Heading({ children, size = "md", className = "" }: { children: ReactNode; size?: HeadingSize; className?: string }) {
+  if (size === "md") {
+    return (
+      <p
+        className={`font-sans font-semibold leading-[28px] text-text-primary ${className}`}
+        style={{ fontSize: MD_HEADING_FONT_SIZE, letterSpacing: MD_HEADING_TRACKING }}
+      >
+        {children}
+      </p>
+    );
+  }
   return <p className={`font-sans font-semibold text-text-primary ${HEADING_SIZES[size]} ${className}`}>{children}</p>;
 }
 

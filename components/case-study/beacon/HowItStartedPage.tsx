@@ -1,15 +1,78 @@
-import { Eyebrow, Heading, BodyCopy, Media, ScrollFadeCard } from "@/components/case-study/primitives";
+import { Eyebrow, Heading, BodyCopy, ScrollFadeCard } from "@/components/case-study/primitives";
+
+// Figma 114:3662 — a small org-chart-style diagram: "Portfolio" branching
+// into the three products it actually held at this point in the story
+// (Beacon, I2I, Orchestro), matching the copy below it almost word for
+// word ("two additional products... joined the Orchestro portfolio").
+// Real content, not a placeholder like the noise-texture graphic this
+// slot used to hold — literal Figma layout, but every position is a
+// percentage of this box's own 382x240 frame (not the literal px),
+// since the whole thing scales as one unit with the card's own width
+// below 472px viewports (CaseStudyStage's own LANE_WIDTH), the same
+// technique OverviewPage's own screenshot-crop already uses.
+//
+// bg-bg-tertiary (translucent), not -solid: this box's own parent card
+// is already fully opaque (bg-tertiary-solid), so there's no page
+// background left for a translucent tint to leak through here — the
+// dot-bleed problem that forced -solid onto the *card* itself doesn't
+// apply to something nested safely inside it.
+const PORTFOLIO_PRODUCTS = [
+  { label: "Beacon", top: "19.17%", color: "#00a2c2" }, // this site's own established teal accent (globals.css's own comment on why it's a literal, not a token)
+  { label: "I2I", top: "43.33%", color: "#6458c3" },
+  { label: "Orchestro", top: "67.5%", color: "#007bff" }, // same blue BeaconComposer's own send button already uses
+] as const;
+
+function PortfolioDiagram() {
+  return (
+    <div className="relative h-full w-full overflow-hidden rounded-2xl bg-bg-tertiary">
+      {/* Figma's own connector (Vector 11) — a plain dashed branch from
+          one point to three, exported as a single path. border-subtle,
+          not the literal rgba(244,244,244,0.1) Figma's export hardcodes:
+          that literal *is* border-subtle's own dark-theme value (compare
+          globals.css), and the token is what actually inverts correctly
+          in light theme instead of staying a dark-only line. */}
+      <svg
+        aria-hidden
+        className="absolute"
+        style={{ left: "37.43%", top: "25.83%", width: "17.93%", height: "48.54%" }}
+        viewBox="0 0 68.5 117.5"
+        fill="none"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0 58.5H30M30 58.5V0.5H68.5M30 58.5H68.5M30 58.5V117H68.5"
+          stroke="var(--color-border-subtle)"
+          strokeDasharray="8 8"
+        />
+      </svg>
+      <span
+        className="absolute flex items-center justify-center whitespace-nowrap rounded-full bg-bg-secondary px-2.5 py-1 font-sans text-[14px] leading-6 text-text-primary"
+        style={{ left: "17.8%", top: "43.33%", width: "18.32%" }}
+      >
+        Portfolio
+      </span>
+      {/* text-[#f4f4f4], not the theme-flipping text-text-primary: these
+          three pills keep their own fixed saturated fill regardless of
+          site theme (same reasoning OverviewPage's own always-dark cover
+          gives its text a fixed literal), so the label needs to stay
+          light against them either way rather than flipping to dark text
+          on a bright color in light theme. */}
+      {PORTFOLIO_PRODUCTS.map(({ label, top, color }) => (
+        <span
+          key={label}
+          className="absolute flex items-center justify-center whitespace-nowrap rounded-full px-2.5 py-1 font-sans text-[14px] leading-6 text-[#f4f4f4]"
+          style={{ left: "56.02%", top, width: "26.18%", backgroundColor: color }}
+        >
+          {label}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 // Figma 105:3001 — this card's own redesign: "How it started" retitled
-// "Where it started" with a "[01]" step number above it, the image
-// moved from after the copy to right after the heading, and the old
-// gallery-with-inert-arrows (97:2131/CaseStudyImagePlaceholder) dropped
-// for a single plain placeholder box instead. Figma's own fill for that
-// box is a busy teal/white noise-and-linework graphic, not a real
-// screenshot of anything Beacon-shaped — same tell as this card's own
-// former gallery slot (ship no actual images yet rather than
-// fabricating content), so this stays a plain Media placeholder rather
-// than reproducing that texture as if it were real.
+// "Where it started" with a "[01]" step number above it, and the image
+// moved from after the copy to right after the heading.
 //
 // bg-tertiary-solid (opaque), not bg-tertiary (5% alpha) + backdrop-
 // blur: reported live as the page's own dot-grid background still
@@ -18,11 +81,9 @@ import { Eyebrow, Heading, BodyCopy, Media, ScrollFadeCard } from "@/components/
 // behind it no matter how much it's blurred. globals.css's own comment
 // on bg-tertiary-solid has the exact blend.
 //
-// Still ScrollFadeCard: heading + step number + the now-bigger 240px
-// image + both paragraphs land well past the card's 600px budget
-// (709px by Figma's own block heights) — more overflow than before,
-// if anything, now that the image sits above the copy instead of a
-// smaller gallery slot below it.
+// Still ScrollFadeCard: heading + step number + the 240px diagram +
+// both paragraphs land well past the card's 600px budget (709px by
+// Figma's own block heights).
 export default function HowItStartedPage() {
   return (
     <ScrollFadeCard
@@ -38,7 +99,9 @@ export default function HowItStartedPage() {
           <Eyebrow style={{ fontFeatureSettings: '"zero" 1, "lnum" 1, "tnum" 1' }}>[01]</Eyebrow>
           <Heading size="md">Where it started</Heading>
         </div>
-        <Media ratio="382/240" />
+        <div className="aspect-[382/240] w-full">
+          <PortfolioDiagram />
+        </div>
         <div className="flex flex-col gap-6">
           <BodyCopy weight="medium">
             After 1.5 years of working on client business-building projects at McKinsey, I joined Orchestro (formerly

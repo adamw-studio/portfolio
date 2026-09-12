@@ -21,8 +21,17 @@ const ACTIVE_SCALE = 1.06;
 // How much an inactive card dims relative to the active one — a small
 // step down, not a heavy fade: neighbors should still read as legible,
 // inviting content (the brief's own "obvious the section can be
-// navigated horizontally"), not a disabled/ghost state.
-const INACTIVE_OPACITY = 0.6;
+// navigated horizontally"), not a disabled/ghost state. A brightness
+// filter, not opacity — every card here is a translucent bg-tertiary
+// panel with its own backdrop-blur, and *opacity* on an ancestor of a
+// backdrop-filter element forces the browser to recomposite that whole
+// layer against whatever's actually behind it (the page's raw, still-
+// sharp dot grid), re-introducing those dots at (1 - opacity) strength
+// right through the card's own blur — reported live as "dots
+// overflowing" the inactive cards. brightness() darkens the card's own
+// already-composited pixels in place instead, with no new translucency
+// for anything behind it to leak through.
+const INACTIVE_BRIGHTNESS = 0.6;
 
 // Same strong ease-out cubic-bezier this whole system already uses for
 // every other page transition — evaluated by hand (Newton-Raphson on
@@ -95,11 +104,11 @@ export function CaseStudyStage({
   // of this).
   const drag = useRef({ dragging: false, startX: 0, startScrollLeft: 0, moved: false, pointerId: 0 });
 
-  // Writes each slide's transform/opacity/z-index directly (bypassing
+  // Writes each slide's transform/filter/z-index directly (bypassing
   // React state) so this can run every animation frame without
   // re-rendering the page tree 60 times a second — the same reasoning
   // drag-to-scroll already writes scrollLeft directly rather than
-  // through setState. No CSS transition on transform/opacity: the value
+  // through setState. No CSS transition on transform/filter: the value
   // itself already changes smoothly frame-to-frame (scrollLeft moves
   // smoothly whether from a drag's own momentum or the eased tween
   // below), so a *second*, independently-timed transition layered on
@@ -117,7 +126,7 @@ export function CaseStudyStage({
       const progress = Math.min(distance / unit, 1); // 0 = centered/active, 1 = a full step away or further
       const settledness = 1 - progress;
       el.style.transform = `scale(${1 + (ACTIVE_SCALE - 1) * settledness})`;
-      el.style.opacity = String(INACTIVE_OPACITY + (1 - INACTIVE_OPACITY) * settledness);
+      el.style.filter = `brightness(${INACTIVE_BRIGHTNESS + (1 - INACTIVE_BRIGHTNESS) * settledness})`;
       // The scaled-up active card visually grows past its own lane into
       // the gap either side — bumped above its (unscaled) neighbors so
       // that growth reads as "on top of", not "cut off by", whichever

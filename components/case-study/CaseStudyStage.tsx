@@ -4,11 +4,42 @@ import { useCallback, useEffect, useRef } from "react";
 import { useTheme } from "@/components/ThemeContext";
 import type { CaseStudyPageConfig } from "@/components/case-study/types";
 
-// Figma 97:2143's own 30px gap between cards, and the same lane width
-// every page's own card already renders at (min(440px, viewport-32px) —
-// the mobile safety margin CaseStudyNav/BeaconComposer also use).
+// Figma 97:2143's own 30px gap between cards.
 const GAP_PX = 30;
-const LANE_WIDTH = "min(440px, calc(100vw - 32px))";
+// ThemeContext's own page-dots wrapper (ThemeContext.tsx) puts a px-4
+// (16px each side) on literally every page, this carousel's own scroll
+// container included — so this stage's own scroller box is never
+// actually 100vw wide, it's 100vw minus this, regardless of anything
+// declared in this file. Every width/padding formula below has to
+// subtract this first, or it's measuring against a viewport that isn't
+// the scroller's own real one; missing this the first time around is
+// exactly what made the peek fix below land asymmetric (confirmed live
+// via getBoundingClientRect: the scroller's own box started 16px in
+// from the true viewport edge on both sides, not at it).
+const PAGE_PADDING_PX = 32;
+// How much of a neighboring card should stay visible on either side of
+// the centered active one, on viewports narrow enough that the card
+// can't sit at its full 440px — this is what makes "keep adjacent
+// cards visible so it's obvious the section scrolls" (the brief's own
+// wording) actually hold on a real phone, not just on desktop where
+// the viewport is wide enough to peek regardless. Reported live as
+// fully broken: the old margin (PAGE_PADDING_PX/2 = 16px) was
+// *smaller* than GAP_PX (30px) itself, so a neighbor's near edge never
+// even crossed into the visible margin — mobile showed one card with
+// dead empty space on both sides, no hint of the carousel at all. This
+// has to clear GAP_PX before any sliver can show; 42px clears it with
+// enough left over (~12px) to read as a real, deliberate peek rather
+// than a rounding accident.
+const PEEK_PX = 42;
+// Same lane width every page's own card renders at — capped at 440px,
+// or the scroller's own available width (view width, less the page's
+// own outer padding above) minus a peek margin on each side once the
+// viewport gets too narrow for 440px. Exported so CaseStudyNav can
+// derive its own pill position from this exact same formula instead of
+// duplicating the literal (see that file's own PILL_TOP for why: it
+// used to hardcode this same expression, and the peek fix above would
+// have silently desynced the two if it only changed one of them).
+export const LANE_WIDTH = `min(440px, calc(100vw - ${PAGE_PADDING_PX}px - ${PEEK_PX * 2}px))`;
 // How long a real, in-flight scroll goes quiet before this treats it as
 // "settled" and reports the nearest card upward — long enough to not
 // fire mid-drag on a slow pointer, short enough that Prev/Next's own
@@ -288,8 +319,20 @@ export function CaseStudyStage({
       // the still-expanded toolbar covers it. svh is the browser's own
       // smallest-toolbar-state height, so the stage never assumes more
       // room than the pill can actually always count on.
-      className="scrollbar-none flex h-[100svh] w-full cursor-grab touch-pan-x snap-x snap-mandatory items-center overflow-x-auto px-[max(16px,calc((100vw-440px)/2))] py-20 active:cursor-grabbing"
-      style={{ gap: GAP_PX }}
+      className="scrollbar-none flex h-[100svh] w-full cursor-grab touch-pan-x snap-x snap-mandatory items-center overflow-x-auto py-20 active:cursor-grabbing"
+      // paddingInline, not a Tailwind px-[...] arbitrary class: this has
+      // to stay the exact same expression LANE_WIDTH derives its own
+      // peek from (max(PEEK_PX, (100vw-PAGE_PADDING_PX-440px)/2)) —
+      // first/last slide can only ever scroll to center if this padding
+      // is at least as wide as the peek margin LANE_WIDTH already
+      // assumes exists on either side. Keeping both as JS constants
+      // (PEEK_PX, PAGE_PADDING_PX) rules out the two silently drifting
+      // apart the way this and LANE_WIDTH's old hardcoded "16px" already
+      // had before this fix.
+      style={{
+        gap: GAP_PX,
+        paddingInline: `max(${PEEK_PX}px, calc((100vw - ${PAGE_PADDING_PX}px - 440px) / 2))`,
+      }}
     >
       {pages.map((page, i) => {
         const ActiveComponent = page.Component;

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { themedIcon } from "@/components/themedIcon";
+import { LANE_WIDTH } from "@/components/case-study/CaseStudyStage";
 
 // Figma 90:1761 — a segmented pill sharing the same solid bg-bg-default
 // + border-border-disabled + backdrop-blur "glass chrome" convention
@@ -15,11 +16,15 @@ import { themedIcon } from "@/components/themedIcon";
 // in empty page space below whatever the card happened to leave behind
 // it. CaseStudyStage's own cards are vertically centered in a 100svh
 // stage and size themselves by aspect-ratio(440/600) against their own
-// width (min(440px, 100vw-32px), CaseStudyStage's LANE_WIDTH) — this
-// works the same formula backwards to land 24px under that edge at any
-// viewport, without this component needing to measure anything.
+// width — this works that same formula backwards to land 24px under
+// that edge at any viewport, without this component needing to measure
+// anything. Imports CaseStudyStage's own LANE_WIDTH rather than
+// hardcoding the same expression a second time: this used to duplicate
+// it as a literal string, and a later mobile-peek fix to LANE_WIDTH's
+// own formula would have silently desynced the two (the pill landing
+// at the wrong height) if this weren't sharing the one export instead.
 const CARD_BOTTOM_GAP_PX = 24;
-const PILL_TOP = `calc(50svh + (min(440px, calc(100vw - 32px)) * 600 / 440) / 2 + ${CARD_BOTTOM_GAP_PX}px)`;
+const PILL_TOP = `calc(50svh + (${LANE_WIDTH} * 600 / 440) / 2 + ${CARD_BOTTOM_GAP_PX}px)`;
 
 export function CaseStudyNav({
   index,

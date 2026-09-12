@@ -11,11 +11,21 @@ import { Heading, BodyCopy, ScrollFadeCard } from "@/components/case-study/primi
 // asset embedded as this fill, not a real screen recording of Beacon) —
 // its own first frame is the actual static screenshot the canvas shows,
 // so that's what's committed here as a plain jpg.
+//
+// The card's own surface is bg-tertiary-solid (opaque), not bg-tertiary
+// (5% alpha) + backdrop-blur: reported live as the page's own dot-grid
+// background still showing through the card, just softened by the blur
+// rather than actually hidden — a translucent surface can't fully block
+// what's behind it no matter how much it's blurred. globals.css's own
+// comment on bg-tertiary-solid has the exact blend. The screenshot's own
+// bg-tertiary fallback fill below is unrelated — it's fully covered by a
+// real photo once that loads, and sits behind this now-opaque card
+// either way, so it never has anything patterned to leak through.
 export default function SoWhereAreWeNowPage() {
   return (
     <ScrollFadeCard
       style={{ aspectRatio: "440 / 600" }}
-      className="w-full max-w-[440px] rounded-[20px] border border-border-disabled bg-bg-tertiary shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)] backdrop-blur-[16px]"
+      className="w-full max-w-[440px] rounded-[20px] border border-border-disabled bg-bg-tertiary-solid shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)]"
     >
       <div className="flex flex-col gap-6 p-7">
         <Heading size="md">So, where are we now?</Heading>

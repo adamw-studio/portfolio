@@ -321,7 +321,16 @@ export function ScrollFadeCard({
             style={{
               maskImage: "linear-gradient(to top, black, transparent)",
               WebkitMaskImage: "linear-gradient(to top, black, transparent)",
-              background: "linear-gradient(to top, var(--color-bg-default) 15%, transparent)",
+              // bg-tertiary-solid, not bg-default — this fade blends
+              // toward the *card's* own resting surface, not the page's.
+              // Those two used to be close enough in practice, but now
+              // that every ScrollFadeCard user has its own distinct
+              // opaque bg-tertiary-solid fill (not a translucent tint
+              // over bg-default any more), fading toward bg-default left
+              // a visibly wrong-toned strip right at the bottom edge —
+              // reported live as "a small gap on the bottom" while
+              // scrolling.
+              background: "linear-gradient(to top, var(--color-bg-tertiary-solid) 15%, transparent)",
             }}
           />
         )}
@@ -332,19 +341,26 @@ export function ScrollFadeCard({
 
 // The plain rounded frame shared by every text-only case-study card
 // ("First steps", "Collecting insights", "Turning point") — same
-// bg-tertiary/border-disabled/backdrop-blur "quiet raised panel"
-// treatment as HowItStartedPage's own card (see that file's comment for
-// why), and the same 440x600 aspect-ratio every card in this system
-// sizes itself by. Pulled out once three pages had hand-rolled an
-// identical div; also fixes the same border/overflow split ScrollFade-
-// Card's own doc comment explains — the border/background/shadow live
-// on this outer frame, which never clips its own content, while a
-// separate inner layer (same radius, its own overflow-hidden) is what
-// actually clips anything that might otherwise bleed past the curve.
+// bg-tertiary-solid/border-disabled "quiet raised panel" treatment as
+// HowItStartedPage's own card (see that file's comment for why), and
+// the same 440x600 aspect-ratio every card in this system sizes itself
+// by. Pulled out once three pages had hand-rolled an identical div;
+// also fixes the same border/overflow split ScrollFadeCard's own doc
+// comment explains — the border/background/shadow live on this outer
+// frame, which never clips its own content, while a separate inner
+// layer (same radius, its own overflow-hidden) is what actually clips
+// anything that might otherwise bleed past the curve.
+//
+// bg-tertiary-solid (opaque), not bg-tertiary (5% alpha) + backdrop-
+// blur: reported live as the page's own dot-grid background still
+// showing through the card surface, just softened by the blur rather
+// than actually hidden — a translucent surface can't fully block what's
+// behind it no matter how much it's blurred. globals.css's own comment
+// on bg-tertiary-solid has the exact blend.
 export function TextCard({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
     <div
-      className={`w-full max-w-[440px] rounded-[20px] border border-border-disabled bg-bg-tertiary shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)] backdrop-blur-[16px] ${className}`}
+      className={`w-full max-w-[440px] rounded-[20px] border border-border-disabled bg-bg-tertiary-solid shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)] ${className}`}
       style={{ aspectRatio: "440 / 600" }}
     >
       <div className="flex h-full w-full flex-col gap-6 overflow-hidden rounded-[inherit] p-7">{children}</div>

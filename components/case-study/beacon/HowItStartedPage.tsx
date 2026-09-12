@@ -11,8 +11,12 @@ import { Eyebrow, Heading, BodyCopy, Media, ScrollFadeCard } from "@/components/
 // fabricating content), so this stays a plain Media placeholder rather
 // than reproducing that texture as if it were real.
 //
-// bg-tertiary/border-disabled + backdrop-blur-[16px] card treatment,
-// unchanged from before this redesign.
+// bg-tertiary-solid (opaque), not bg-tertiary (5% alpha) + backdrop-
+// blur: reported live as the page's own dot-grid background still
+// showing through the card surface, just softened by the blur rather
+// than actually hidden — a translucent surface can't fully block what's
+// behind it no matter how much it's blurred. globals.css's own comment
+// on bg-tertiary-solid has the exact blend.
 //
 // Still ScrollFadeCard: heading + step number + the now-bigger 240px
 // image + both paragraphs land well past the card's 600px budget
@@ -23,7 +27,7 @@ export default function HowItStartedPage() {
   return (
     <ScrollFadeCard
       style={{ aspectRatio: "440 / 600" }}
-      className="w-full max-w-[440px] rounded-[20px] border border-border-disabled bg-bg-tertiary shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)] backdrop-blur-[16px]"
+      className="w-full max-w-[440px] rounded-[20px] border border-border-disabled bg-bg-tertiary-solid shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)]"
     >
       <div className="flex flex-col gap-6 p-7">
         <div className="flex flex-col gap-1">

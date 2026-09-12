@@ -8,6 +8,12 @@
   --color-bg-default: #f4f4f4;
   --color-bg-secondary: rgba(13, 13, 13, 0.05);
   --color-bg-tertiary: rgba(13, 13, 13, 0.05);
+  /* bg-tertiary pre-blended over bg-default into one flat, fully opaque
+     color — for a surface that needs to actually block whatever's behind
+     it (the case-study cards' own page-dots background bleeding through
+     their 5%-alpha bg-tertiary fill, reported live), not just tint it.
+     13*0.05 + 244*0.95 ≈ 232 per channel. */
+  --color-bg-tertiary-solid: #e8e8e8;
   --color-text-primary: #0d0d0d;
   --color-text-secondary: rgba(13, 13, 13, 0.7);
   --color-text-subtle: rgba(13, 13, 13, 0.4);
@@ -67,6 +73,9 @@
      bg/bg-tertiary = #f4f4f40d (~5% opacity). Previously had these swapped. */
   --color-bg-secondary: rgba(244, 244, 244, 0.1);
   --color-bg-tertiary: rgba(244, 244, 244, 0.05);
+  /* Same opaque pre-blend as :root's own, against this theme's own
+     #0d0d0d base instead: 244*0.05 + 13*0.95 ≈ 25 per channel. */
+  --color-bg-tertiary-solid: #191919;
   --color-text-primary: #f4f4f4;
   --color-text-secondary: rgba(244, 244, 244, 0.7);
   --color-text-subtle: rgba(244, 244, 244, 0.4);
@@ -85,6 +94,7 @@
   --color-bg-default: var(--color-bg-default);
   --color-bg-secondary: var(--color-bg-secondary);
   --color-bg-tertiary: var(--color-bg-tertiary);
+  --color-bg-tertiary-solid: var(--color-bg-tertiary-solid);
   --color-text-primary: var(--color-text-primary);
   --color-text-secondary: var(--color-text-secondary);
   --color-text-subtle: var(--color-text-subtle);

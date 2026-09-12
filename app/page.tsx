@@ -67,15 +67,20 @@ export default function Home() {
       {/* Nav is `fixed` (see Nav.tsx) — out of normal document flow, so it
           never pushes this content down on its own. Nav is back at the
           *top* of the viewport again (Figma 41:10445's own redesign,
-          after a stint bottom-anchored). 180px (100px section-gap rhythm
-          + a requested 80px on top) is real breathing room *below* the
-          bar itself, not just clearance — the previous 100px cleared its
-          ~36px height + 24px offset with only ~40px left over, which
-          read as cramped directly under a fixed bar rather than as an
-          intentional gap. */}
+          after a stint bottom-anchored). 124px lands the intro ~60px
+          below the bar's own bottom edge (measured live: top-6 (24px) +
+          the pill's own ~36px height = 64px, then +60px of real
+          breathing room on top of that) — reported live as wanting the
+          intro noticeably closer to the bar than the previous 180px
+          (~116px of clearance) read as. Same value at every viewport:
+          Nav's own height/offset don't change on mobile (no responsive
+          classes on it), so there's no separate mobile figure to tune.
+          Everything below the intro is normal flow under this one
+          padding value, so it all shifts up together with no separate
+          change needed. */}
       <Nav />
 
-      <div className="mx-auto w-full max-w-[688px] pt-[180px]">
+      <div className="mx-auto w-full max-w-[688px] pt-[124px]">
         {/* Figma 51:10930 — one flat 80px gap among the intro block, the
             card cluster, and "What I do", not the nested 100/120 two-
             rhythm structure (and flourish-divider elements) an earlier,

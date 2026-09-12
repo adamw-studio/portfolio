@@ -551,3 +551,22 @@ export function TextCard({ children, className = "" }: { children: ReactNode; cl
     </ScrollFadeCard>
   );
 }
+
+// A full-bleed single-photo card — no eyebrow, no heading, no padding,
+// just one image filling the whole 440x600 lane edge to edge (Figma's
+// own repeated "gallery interlude" pattern for the Documentary case
+// study: several standalone photo/poster cards between the narrative
+// ones, not images embedded inside a text card the way Beacon/Robotics'
+// own Exhibit does it). No ScrollFadeCard/CardBody here — a single
+// image never needs to scroll, and this card has nothing else in it
+// for a fade cue to ever hide.
+export function ImageCard({ src, alt }: { src: string; alt: string }) {
+  return (
+    <div
+      className="relative w-full max-w-[440px] overflow-hidden rounded-[20px] border border-border-disabled bg-bg-tertiary shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)]"
+      style={{ aspectRatio: "440 / 600" }}
+    >
+      <Image src={src} alt={alt} fill className="object-cover" sizes="(min-width: 480px) 440px, 100vw" />
+    </div>
+  );
+}

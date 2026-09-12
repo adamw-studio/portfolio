@@ -68,17 +68,17 @@ const PROJECTS: Project[] = [
     linked: true,
   },
   {
-    // Figma 55:11891 — a genuinely new project with no case-study page
-    // yet (per live direction: render it unlinked rather than build a
-    // placeholder /work route for it). No backdropSrc: its whole cover
-    // is the DesignSystemCollage component instead of a single Image.
-    id: "design-system",
-    description: "Rethinking the system around how design, product and engineering can actually build together.",
-    role: "Lead designer",
-    year: "2024-",
-    linked: false,
-    comingSoon: true,
-    comingSoonColor: "#544831",
+    id: "documentary",
+    // Figma 57:24482 — shorter than this project's own /work/documentary
+    // copy, dropping the trailing "for a documentary celebrating 40 years
+    // of creative work" clause outright, not just trimmed for space.
+    description: "Translating an artist’s world from canvas to screen. Designing the poster and typography system.",
+    role: "Graphic Designer",
+    year: "2025",
+    backdropSrc: "/images/home/documentary-poster-closeup.jpg",
+    backdropAlt: "Close-up of the \"Fekete Fehér Kék Zöld Piros\" film posters scattered together",
+    bordered: true,
+    linked: true,
   },
   {
     id: "monday",
@@ -97,17 +97,17 @@ const PROJECTS: Project[] = [
     comingSoon: true,
   },
   {
-    id: "documentary",
-    // Figma 57:24482 — shorter than this project's own /work/documentary
-    // copy, dropping the trailing "for a documentary celebrating 40 years
-    // of creative work" clause outright, not just trimmed for space.
-    description: "Translating an artist’s world from canvas to screen. Designing the poster and typography system.",
-    role: "Graphic Designer",
-    year: "2025",
-    backdropSrc: "/images/home/documentary-poster-closeup.jpg",
-    backdropAlt: "Close-up of the \"Fekete Fehér Kék Zöld Piros\" film posters scattered together",
-    bordered: true,
-    linked: true,
+    // Figma 55:11891 — a genuinely new project with no case-study page
+    // yet (per live direction: render it unlinked rather than build a
+    // placeholder /work route for it). No backdropSrc: its whole cover
+    // is the DesignSystemCollage component instead of a single Image.
+    id: "design-system",
+    description: "Rethinking the system around how design, product and engineering can actually build together.",
+    role: "Lead designer",
+    year: "2024-",
+    linked: false,
+    comingSoon: true,
+    comingSoonColor: "#544831",
   },
 ];
 

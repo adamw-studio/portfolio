@@ -339,17 +339,27 @@ export function ScrollFadeCard({
   );
 }
 
-// The plain rounded frame shared by every text-only case-study card
-// ("First steps", "Collecting insights", "Turning point") — same
-// bg-tertiary-solid/border-disabled "quiet raised panel" treatment as
+// The rounded frame shared by every text-only case-study card ("First
+// steps", "Collecting insights", "Turning point") — same bg-tertiary-
+// solid/border-disabled "quiet raised panel" treatment as
 // HowItStartedPage's own card (see that file's comment for why), and
 // the same 440x600 aspect-ratio every card in this system sizes itself
-// by. Pulled out once three pages had hand-rolled an identical div;
-// also fixes the same border/overflow split ScrollFadeCard's own doc
-// comment explains — the border/background/shadow live on this outer
-// frame, which never clips its own content, while a separate inner
-// layer (same radius, its own overflow-hidden) is what actually clips
-// anything that might otherwise bleed past the curve.
+// by. Pulled out once three pages had hand-rolled an identical div.
+//
+// A thin ScrollFadeCard preset, not its own plain div: this used to be
+// exactly that — content at Figma's own 382-wide desktop column fits
+// these pages' copy with room to spare, so it looked like nothing here
+// would ever need to scroll. That's true at the card's full 440px
+// width, but the card's own aspect-ratio locks its *height* to whatever
+// width it's actually given, and on a narrow phone that width (and so
+// the height) shrinks well past what desktop measured against, while
+// the body copy's own font size doesn't shrink with it — reported live
+// as a card's own text getting cut off mid-sentence on mobile, with no
+// fade or any indication there was more below. Every text card gets the
+// same real scroll + fade safety net now, matching what a card that
+//*does* overflow at full width (HowItStartedPage, say) already had —
+// "will this fit" turned out not to be a per-page constant once the
+// viewport itself is part of the equation.
 //
 // bg-tertiary-solid (opaque), not bg-tertiary (5% alpha) + backdrop-
 // blur: reported live as the page's own dot-grid background still
@@ -359,11 +369,11 @@ export function ScrollFadeCard({
 // on bg-tertiary-solid has the exact blend.
 export function TextCard({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div
-      className={`w-full max-w-[440px] rounded-[20px] border border-border-disabled bg-bg-tertiary-solid shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)] ${className}`}
+    <ScrollFadeCard
       style={{ aspectRatio: "440 / 600" }}
+      className={`w-full max-w-[440px] rounded-[20px] border border-border-disabled bg-bg-tertiary-solid shadow-[0px_1px_16px_0px_rgba(23,23,23,0.06)] ${className}`}
     >
-      <div className="flex h-full w-full flex-col gap-6 overflow-hidden rounded-[inherit] p-7">{children}</div>
-    </div>
+      <div className="flex flex-col gap-6 p-7">{children}</div>
+    </ScrollFadeCard>
   );
 }

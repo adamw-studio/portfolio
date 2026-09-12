@@ -1,10 +1,11 @@
 import { Heading, BodyCopy, TextCard } from "@/components/case-study/primitives";
 
 // Figma 101:2685 — same text-only card treatment as "First steps"/
-// "Collecting insights". Four paragraphs still land inside the card's
-// 600px budget (Figma's own text block is 456px tall against a 600px
-// card), so nothing here needs to scroll — TextCard's own frame is
-// enough, no ScrollFadeCard needed.
+// "Collecting insights". Four paragraphs land inside the card's 600px
+// budget at Figma's own desktop width (its text block is 456px tall
+// against a 600px card) — TextCard's own built-in scroll+fade only
+// actually engages if a narrow phone's aspect-ratio-shrunk card ever
+// gets too short for this copy to fit at full size.
 export default function TurningPointPage() {
   return (
     <TextCard>

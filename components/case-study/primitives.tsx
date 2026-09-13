@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { themedIcon } from "@/components/themedIcon";
+import { useTheme } from "@/components/ThemeContext";
 
 /**
  * Small, deliberately dumb building blocks individual case-study pages
@@ -361,6 +362,46 @@ export function LoopIcon({ className = "" }: { className?: string }) {
   );
 }
 
+// Figma 148:7775 ("notes") — a small document/note-card glyph, used
+// alongside LoopIcon above as the *other* finding-card icon Beacon's own
+// "So, where are we now?" section needs (148:7705): its two findings
+// each carry their own distinct icon (this one for "Canvas - Chat
+// spatial disconnect", LoopIcon's own "agile" glyph for "What we
+// changed"), not one shared icon reused for both. Same fill="currentColor"
+// treatment as LoopIcon for the same reason — Figma's own export bakes
+// in a fixed rgba(244,244,244,0.4), which is exactly this system's own
+// text-subtle token in dark theme but wouldn't flip correctly in light.
+export function NotesIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" className={className} aria-hidden>
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M4.83333 9.33333C4.83333 9.05719 5.05719 8.83333 5.33333 8.83333L10.6667 8.83333C10.9428 8.83333 11.1667 9.05719 11.1667 9.33333C11.1667 9.60948 10.9428 9.83333 10.6667 9.83333L5.33333 9.83333C5.05719 9.83333 4.83333 9.60948 4.83333 9.33333Z"
+        fill="currentColor"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M4.83333 6.66667C4.83333 6.39052 5.05719 6.16667 5.33333 6.16667H6.66667C6.94281 6.16667 7.16667 6.39052 7.16667 6.66667C7.16667 6.94281 6.94281 7.16667 6.66667 7.16667H5.33333C5.05719 7.16667 4.83333 6.94281 4.83333 6.66667Z"
+        fill="currentColor"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M4.83333 12C4.83333 11.7239 5.05719 11.5 5.33333 11.5H8C8.27614 11.5 8.5 11.7239 8.5 12C8.5 12.2761 8.27614 12.5 8 12.5H5.33333C5.05719 12.5 4.83333 12.2761 4.83333 12Z"
+        fill="currentColor"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M6.66667 0.166667C6.94281 0.166667 7.16667 0.390524 7.16667 0.666667V3.33333C7.16667 3.60948 6.94281 3.83333 6.66667 3.83333C6.39052 3.83333 6.16667 3.60948 6.16667 3.33333V2.5H4C3.53976 2.5 3.16667 2.8731 3.16667 3.33333V13.3333C3.16667 13.7936 3.53976 14.1667 4 14.1667H12C12.4602 14.1667 12.8333 13.7936 12.8333 13.3333V3.33333C12.8333 2.8731 12.4602 2.5 12 2.5H9.66667C9.39052 2.5 9.16667 2.27614 9.16667 2C9.16667 1.72386 9.39052 1.5 9.66667 1.5H12C13.0125 1.5 13.8333 2.32081 13.8333 3.33333V13.3333C13.8333 14.3459 13.0125 15.1667 12 15.1667H4C2.98748 15.1667 2.16667 14.3459 2.16667 13.3333V3.33333C2.16667 2.32081 2.98748 1.5 4 1.5H6.16667V0.666667C6.16667 0.390524 6.39052 0.166667 6.66667 0.166667Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 export function InsightTag({ children }: { children: ReactNode }) {
   return (
     <span className="inline-flex items-center gap-2.5 rounded-lg bg-bg-secondary px-2.5 py-0.5 font-sans text-[14px] leading-6 text-text-secondary">
@@ -400,16 +441,19 @@ export function Exhibit({
   caption,
   video = false,
   poster,
+  height = 240,
 }: {
   src: string;
   alt: string;
   caption?: string;
   video?: boolean;
   poster?: string;
+  /** Exhibit box height in px — every existing caller (Robotics/Documentary) sizes its own images for the default 240px; Beacon's own exhibits (Figma 148:7779 etc.) are drawn at 300px, a real difference confirmed against that node's own metadata, not an inconsistency to normalize away — passing 240 there under-cropped/squeezed the image relative to what object-cover was meant to show, reported live as "the ratio of these cards are not good." */
+  height?: number;
 }) {
   return (
     <div className="flex w-full flex-col items-center gap-3">
-      <div className="relative h-[240px] w-full overflow-hidden rounded-2xl bg-bg-tertiary">
+      <div className="relative w-full overflow-hidden rounded-2xl bg-bg-tertiary" style={{ height }}>
         {video ? (
           <video
             src={src}
@@ -567,6 +611,77 @@ export function ImageCard({ src, alt }: { src: string; alt: string }) {
       style={{ aspectRatio: "440 / 600" }}
     >
       <Image src={src} alt={alt} fill className="object-cover" sizes="(min-width: 480px) 440px, 100vw" />
+    </div>
+  );
+}
+
+// Figma's own "Card / Default" (136:5929 "Quick review" / 138:6710 "Key
+// findings") — a fixed 300x400 tile, image slot (optional — the Key
+// findings variant has none, just heading pinned top and description
+// pinned bottom) over an extrabold-italic heading, justify-between so
+// the description always lands flush with the card's own bottom edge
+// regardless of how much heading/image sits above it. Used exclusively
+// inside CardRow (this system's own embedded horizontal browser) — never
+// standalone, unlike TextCard/ImageCard above.
+//
+// image slot: three states.
+// - omitted (Key findings' own cards): no slot at all, heading sits at
+//   the very top.
+// - `image` (no `media`): Figma's own Quick review nodes originally had
+//   an empty 170px slot with no fill at all (get_design_context returned
+//   no asset for it) — a reserved spot the design never filled, same as
+//   Robotics' OutcomePage empty icon slot — so a plain bg-bg-tertiary
+//   fill with nothing in it is the faithful reproduction of THAT state.
+// - `media` (light/dark video pair): the actual asset the empty slot was
+//   reserved for, supplied afterward — a small looping brand video,
+//   swapped per theme since it was authored as two separate exports
+//   ("Beacon-Dark"/"Beacon-Light"), not one clip meant to read correctly
+//   against either background.
+export function SummaryCard({
+  heading,
+  description,
+  image,
+  media,
+}: {
+  heading: string;
+  description: string;
+  image?: boolean;
+  media?: { light: string; dark: string };
+}) {
+  // Called unconditionally regardless of whether `media` is passed —
+  // hooks can't be called conditionally, so this reads the theme even
+  // for cards that end up not using it rather than branching on `media`
+  // first.
+  const { theme } = useTheme();
+  return (
+    // No shadow here, unlike this system's other cards (TextCard/
+    // ImageCard just above) — reported live as reading poorly and
+    // looking inconsistent specifically on these: sitting inside
+    // CardRow's own horizontally-scrolling strip with several siblings
+    // visible at once, this card's own shadow reads as a flat gray halo
+    // rather than real depth, unlike a single full-bleed carousel card
+    // that's the only thing on screen. Border + surface color alone
+    // carry the edge here instead.
+    <div className="flex h-[400px] w-full flex-col items-start justify-between overflow-hidden rounded-[20px] border border-border-disabled bg-bg-tertiary-solid p-3">
+      <div className="flex w-full flex-col items-start gap-2">
+        {media ? (
+          <div className="relative h-[170px] w-full shrink-0 overflow-hidden rounded-lg bg-bg-tertiary">
+            <video
+              key={theme}
+              src={theme === "light" ? media.light : media.dark}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 size-full object-cover"
+            />
+          </div>
+        ) : (
+          image && <div className="h-[170px] w-full shrink-0 rounded-lg bg-bg-tertiary" aria-hidden />
+        )}
+        <p className="font-sans text-[20px] font-extrabold italic leading-7 tracking-[-0.16px] text-text-primary">{heading}</p>
+      </div>
+      <p className="font-sans text-[14px] leading-6 tracking-[-0.112px] text-text-subtle">{description}</p>
     </div>
   );
 }

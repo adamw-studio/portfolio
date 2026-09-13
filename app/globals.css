@@ -366,3 +366,30 @@ body {
 .page-loading-spin {
   animation: page-loading-spin 2.503s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 }
+
+/* Beacon's "Portfolio" connector (components/case-study/beacon/
+   HowItStarted.tsx, Figma 138:6029) — a hand-drawn arrow, exported with
+   no baked-in opacity of its own (get_motion_context confirmed a 2000ms
+   timeline on this node but returned no usable keyframe/easing data
+   beyond that — this reveal is this system's own restrained default for
+   something entering, not a frame-accurate reproduction of a sequence
+   there's no real data for). Once per mount, not infinite — a hand-drawn
+   line only ever gets drawn once — and ease-out (this system's own
+   strong curve, same value as EASE_OUT in components/motion/tokens.ts)
+   since it's entering, not moving in place. */
+@keyframes connector-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.connector-stroke {
+  animation: connector-reveal 500ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .connector-stroke {
+    animation: none;
+  }
+}

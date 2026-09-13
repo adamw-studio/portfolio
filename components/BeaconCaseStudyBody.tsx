@@ -1,22 +1,36 @@
-import { CaseStudy } from "@/components/case-study/CaseStudy";
-import { BEACON_PAGES } from "@/components/case-study/beacon/pages";
+import Nav from "@/components/Nav";
+import BottomEdgeFade from "@/components/BottomEdgeFade";
+import BeaconLongForm from "@/components/case-study/beacon/BeaconLongForm";
 
 // The actual case-study content, split out from BeaconCaseStudy.tsx so it
-// can be next/dynamic-imported with ssr:false there. Beacon is
-// password-gated (PasswordGate.tsx) — if this content lived directly in
-// BeaconCaseStudy's own server-rendered JSX, Next.js would still have to
-// serialize all of it into the page's initial HTML/flight payload for the
-// client component to receive as `children`, whether or not the gate ever
-// displays it — visible to anyone via "View Source" or a plain curl, no
-// password or JS needed. Loading it as a separate chunk, fetched only
-// after a correct submit, keeps the actual copy out of the page until
-// then.
+// can be next/dynamic-imported with ssr:false there (see that file's own
+// doc comment for why — Beacon is password-gated and this keeps the copy
+// out of the initial HTML/flight payload until unlocked).
 //
-// Rebuilt from scratch (Figma 87:1192) as a page-by-page presentation
-// instead of one long scrolling narrative — see components/case-study/
-// for the reusable framework this and every future case study renders
-// through. The narrative itself (BEACON_PAGES) is just data: reordering,
-// adding or editing pages happens there, not in this file.
+// Rebuilt a second time (Figma 136:5703) — back to one long scrolling
+// page instead of the page-by-page presentation this shipped as most
+// recently (components/case-study/beacon/pages.tsx and its own
+// "*Page.tsx" components are gone, not just unlisted). <Nav/> is
+// rendered directly here now rather than by CaseStudy.tsx (which owned
+// it for the page-by-page version, alongside its own bottom Prev/Next
+// chrome) — this rebuild has no page-level Prev/Next of its own, only
+// the two in-page CardRow browsers BeaconLongForm's own sections render.
+//
+// <BottomEdgeFade/> — the same fixed bottom-of-viewport blur/gradient
+// strip the home page uses (app/page.tsx), added here on direct
+// instruction so a long-scrolling page reads consistently across the
+// site rather than the home page being the only one with it. Same
+// reasoning as there: fixed and pointer-events-none, so it sits above
+// this page's own content without ever intercepting a click meant for
+// it, and it needs no props — it already reads the page's own bg-default/
+// bg-tertiary tokens directly, which flip correctly with this page's own
+// ThemeProvider exactly like Home's.
 export default function BeaconCaseStudyBody() {
-  return <CaseStudy pages={BEACON_PAGES} />;
+  return (
+    <>
+      <Nav />
+      <BeaconLongForm />
+      <BottomEdgeFade />
+    </>
+  );
 }

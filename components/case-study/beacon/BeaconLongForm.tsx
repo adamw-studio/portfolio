@@ -5,10 +5,9 @@ import FragmentedProduct from "@/components/case-study/beacon/FragmentedProduct"
 import CollectingInsights from "@/components/case-study/beacon/CollectingInsights";
 import KeyFindingsRow from "@/components/case-study/beacon/KeyFindingsRow";
 import Reflection from "@/components/case-study/beacon/Reflection";
-import QualityTiles from "@/components/case-study/beacon/QualityTiles";
+import WorkshopQuestionsExhibit from "@/components/case-study/beacon/WorkshopQuestionsExhibit";
 import TurningPoint from "@/components/case-study/beacon/TurningPoint";
 import SoWhereAreWeNow from "@/components/case-study/beacon/SoWhereAreWeNow";
-import IdeationFlow from "@/components/case-study/beacon/IdeationFlow";
 
 // Figma 136:5703 ("Beacon-Project-Page") — rebuilt as one long scrolling
 // page again, not the page-by-page card carousel Beacon shipped with
@@ -35,8 +34,10 @@ import IdeationFlow from "@/components/case-study/beacon/IdeationFlow";
 // Every section's own doc comment covers what carried over from the old
 // carousel's components (most copy/diagrams did, verbatim) vs. what's
 // genuinely new in this fetch (the Quick review/Key findings rows
-// themselves, QualityTiles as its own section, four re-sourced images
-// in SoWhereAreWeNow).
+// themselves, and four re-sourced images in SoWhereAreWeNow).
+// WorkshopQuestionsExhibit replaces this section's own earlier
+// QualityTiles.tsx (an interactive sticky-note fan) with a single flat
+// recap image, on direct instruction — see that file's own doc comment.
 export default function BeaconLongForm() {
   return (
     // items-center, not a single shared max-w-[1240px] column with every
@@ -58,11 +59,13 @@ export default function BeaconLongForm() {
     // block end at 732 to the narrative block's start at 776, that block's
     // own end at 2272 to Key findings at 2316, and on through Reflection
     // and Quality tiles), while both of Figma's own multi-section GROUPS
-    // (the narrative block, and Turning point/So where are we now/
-    // Ideation flow inside one shared 148:7720 frame) use 64px between
-    // their own children specifically. This file's first pass had the
-    // two swapped (64 outer, 44 inner) — backwards from what the file
-    // actually specifies once measured, not just visually close.
+    // (the narrative block, and Turning point/So where are we now) use
+    // 64px between their own children specifically. This file's first
+    // pass had the two swapped (64 outer, 44 inner) — backwards from
+    // what the file actually specifies once measured, not just visually
+    // close. Ideation flow is no longer a sibling here — a later fetch
+    // (158:1354) folded it back into SoWhereAreWeNow.tsx as that
+    // section's own final subsection; see that file's own doc comment.
     <div className="mx-auto flex w-full flex-col items-center gap-11 pb-32 pt-32 sm:pt-36">
       <Hero />
       <QuickReviewRow />
@@ -73,11 +76,12 @@ export default function BeaconLongForm() {
       </div>
       <KeyFindingsRow />
       <Reflection />
-      <QualityTiles />
+      <div className="w-full max-w-[512px]">
+        <WorkshopQuestionsExhibit />
+      </div>
       <div className="flex w-full max-w-[512px] flex-col gap-16">
         <TurningPoint />
         <SoWhereAreWeNow />
-        <IdeationFlow />
       </div>
     </div>
   );

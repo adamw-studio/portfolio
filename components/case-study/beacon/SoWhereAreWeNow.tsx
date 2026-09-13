@@ -1,36 +1,60 @@
-import Image from "next/image";
-import { Heading, BodyCopy, LoopIcon, NotesIcon, Exhibit } from "@/components/case-study/primitives";
+import { Heading, BodyCopy, Eyebrow, Exhibit } from "@/components/case-study/primitives";
 
-// Figma 148:7705 (re-fetched) — this section got noticeably shorter than
-// the version it replaces: the "floating island" exhibit and the whole
-// "Ideation phase" block (2 more exhibits + 2 more paragraphs) are gone
-// from THIS node entirely. They didn't disappear from the page — Figma
-// promoted "Ideation phase" to its own top-level section with a real
-// heading of its own ("Ideation flow", node 148:8593 — see that file),
-// not a subsection nested under this one any more. This file now covers
-// only the intro + hero screenshot + "Insights gained" findings.
+// Figma 158:1354 — a full restructure of this section, folding what
+// used to be its own separate top-level page section (IdeationFlow.tsx,
+// "Next up: Ideation flow") back into THIS one as its own final
+// subsection, not a sibling of it — this fetch's own single frame
+// contains both, back to back, with a hairline divider between them
+// (and a second one further up), not two independently-spaced page
+// sections. IdeationFlow.tsx is removed outright; BeaconLongForm.tsx no
+// longer renders it separately.
 //
-// Other real changes from the version this replaces:
-// - The hero screenshot now comes AFTER all three intro paragraphs, not
-//   between the first and the other two.
-// - "Insights gained" is a plain section heading now (Heading
-//   size="section"), not the small icon+pill InsightTag component.
-// - The two findings each carry their own distinct icon (NotesIcon for
-//   "Canvas - Chat spatial disconnect", LoopIcon for "What we changed"),
-//   not one shared icon reused for both — and the first finding sits in
-//   its own bordered panel, the second doesn't.
-// - No dashed divider between the intro block and "Insights gained" —
-//   just a 44px gap, confirmed against this node's own export (no
-//   divider/vector present at all here, unlike earlier version of this
-//   page which had one).
+// Real content changes from the version this replaces, confirmed
+// directly against this node rather than carried over on assumption:
+// - The Nike value-pools hero screenshot (beacon-ideation-nike-value-
+//   pools.jpg) is gone. Not relocated — this node has no third exhibit
+//   in the intro at all.
+// - "Insights gained" is gone as its own heading, and so is the NotesIcon-
+//   bordered-panel / LoopIcon treatment the two findings used to have.
+//   In its place: one flowing paragraph ending in the same two
+//   interview quotes, now plain italic text-subtle (not text-secondary,
+//   not boxed).
+// - Two hairline dividers (Figma "Vector 52/53", a 1px border-subtle
+//   line) now separate the page's own three real beats here: the
+//   interview-feedback paragraph, "What we changed", and "Next up:
+//   Ideation flow" — a structural device this section didn't have
+//   before.
+// - The Ideation subsection gained a third exhibit slot ahead of the
+//   two it already had: Figma's own "Frame 2147204703" child has no
+//   fill at all (an intentionally still-empty spot, not an asset this
+//   fetch failed to surface), labeled with the same bracketed Eyebrow
+//   style "[ Quick review ]" already uses elsewhere on this page.
+//   Filled directly with a real screen recording supplied afterward
+//   (the author's own Figma canvas working the Ideation problem space)
+//   — compressed from a 150MB/3022x1790 source via avconvert
+//   (Preset960x540, no ffmpeg in this environment) down to a real web
+//   asset, with a first-frame poster extracted the same way this site's
+//   other video exhibits already use one.
+// - The gallery video's own caption text is unchanged, and this node's
+//   own flat export of that same beat is a raw 1920x1080 GIF (1000+
+//   frames, ~400MB) rather than a video — reused as-is (beacon-
+//   gallery-1.mp4 + its poster) rather than importing that GIF
+//   verbatim; it's the same screen recording, just exported differently,
+//   and the site's own already-optimized loop is the better asset.
+function Divider() {
+  return <div className="h-px w-full bg-border-subtle" />;
+}
+
+const SUBHEADING = "font-sans text-[16px] font-semibold leading-6 text-text-primary";
+
 export default function SoWhereAreWeNow() {
   return (
-    <div className="flex w-full max-w-[512px] flex-col gap-2">
-      <Heading size="section" className="tracking-[-0.8px]">
-        So, where are we now?
-      </Heading>
-      <div className="flex w-full flex-col gap-11">
-        <div className="flex w-full flex-col gap-4">
+    <div className="flex w-full max-w-[512px] flex-col gap-6">
+      <div className="flex w-full flex-col gap-2">
+        <Heading size="section" className="tracking-[-0.8px]">
+          So where are we now?
+        </Heading>
+        <div className="flex w-full flex-col">
           <BodyCopy>
             Since the workshop, I’ve been continuously iterating on the new direction for Beacon together with my PM,
             Milan.
@@ -42,57 +66,91 @@ export default function SoWhereAreWeNow() {
               the experience along the way.
             </BodyCopy>
           </div>
-          <div className="relative h-[300px] w-full overflow-hidden rounded-2xl bg-bg-tertiary">
-            <div className="absolute left-[4.3%] top-[7%] h-[119.33%] w-[103.52%] overflow-hidden rounded-xl">
-              <Image
-                src="/images/home/beacon-ideation-nike-value-pools.jpg"
-                alt="Screenshot of the Beacon Ideation view: a list of AI-generated value pools for a US athletic-footwear company alongside a detail panel for 'AI performance intelligence', with a Compare action to evaluate options side by side"
-                fill
-                className="object-cover"
-                sizes="(min-width: 480px) 512px, 100vw"
-              />
-            </div>
+        </div>
+      </div>
+
+      <div className="flex w-full flex-col gap-4">
+        <div className="flex w-full flex-col">
+          <BodyCopy>
+            Conducting usability testing sessions throughout the process highlighted areas for improvement. Several
+            users noted that the canvas and chat interactions felt disjointed.
+          </BodyCopy>
+          <BodyCopy className="italic" muted>
+            “ Now what I struggle is like, I am looking my problem here, but the conversation is far away, is on the
+            other side”
+          </BodyCopy>
+          <BodyCopy className="italic" muted>
+            “ I kind of have to mentally bounce between left and right for my actions...”
+          </BodyCopy>
+        </div>
+        <Divider />
+        <div className="flex w-full flex-col gap-4">
+          <div className="flex w-full flex-col">
+            <p className={SUBHEADING}>What we changed</p>
+            <BodyCopy>
+              In the next iteration, we brought guidance and actions closer to where users were already working and
+              moved the chat composer to the center of the creation flow, keeping the conversation and user’s
+              attention in one place.
+            </BodyCopy>
           </div>
+          <Exhibit
+            src="/images/home/beacon-ideation-question-exhibit.jpg"
+            alt="A structured guided question ('Starting fresh or validating something you already have?') surfaced inline with the chat composer at the center of the workspace, with Skip and Continue actions"
+            caption="We moved the chat composer to the center of the creation flow, keeping the conversation and users’ attention in one place."
+            height={350}
+          />
+        </div>
+      </div>
+
+      <Divider />
+
+      <div className="flex w-full flex-col gap-4">
+        <div className="flex w-full flex-col">
+          <p className={SUBHEADING}>
+            <span className="text-text-subtle">Next up:</span> Ideation flow
+          </p>
+          <BodyCopy>
+            The ideation phase has been one of our most challenging areas yet. Today, Beacon can generate multiple
+            value pools to give users a head start, but our research showed that this isn’t enough. Users want to be
+            more involved in the process. They want to shape, challenge, and develop ideas themselves rather than
+            simply receive AI-generated suggestions.
+          </BodyCopy>
         </div>
 
-        <div className="flex w-full flex-col gap-4">
-          <Heading size="section" className="tracking-[-0.8px]">
-            Insights gained
-          </Heading>
-          <div className="flex w-full flex-col gap-7">
-            <div className="flex w-full flex-col items-start gap-2 rounded-lg border border-border-subtle p-2">
-              <div className="flex w-full items-center gap-2">
-                <NotesIcon className="size-4 shrink-0 text-text-subtle" />
-                <p className="font-sans text-[14px] font-semibold leading-6 text-text-primary">Canvas - Chat spatial disconnect</p>
-              </div>
-              <div className="flex w-full flex-col items-start gap-1">
-                <p className="font-sans text-[14px] italic leading-6 text-text-secondary">
-                  “ Now what I struggle is like, I am looking my problem here, but the conversation is far away, is on the other side”
-                </p>
-                <p className="font-sans text-[14px] italic leading-6 text-text-secondary">
-                  “ I kind of have to mentally bounce between left and right for my actions...”
-                </p>
-              </div>
-            </div>
-            <div className="flex w-full flex-col gap-4">
-              <div className="flex w-full flex-col items-start">
-                <div className="flex w-full items-center gap-2">
-                  <LoopIcon className="size-4 shrink-0 text-text-subtle" />
-                  <p className="font-sans text-[14px] font-semibold leading-6 text-text-primary">What we changed</p>
-                </div>
-                <BodyCopy>
-                  The feedback revealed that separating the conversation from the canvas was splitting users’
-                  attention. In the next iteration, we brought guidance and actions closer to where users were
-                  already working.
-                </BodyCopy>
-              </div>
-              <Exhibit
-                src="/images/home/beacon-ideation-question-exhibit.jpg"
-                alt="A structured guided question ('Starting fresh or validating something you already have?') surfaced inline with the chat composer at the center of the workspace, with Skip and Continue actions"
-                caption="We moved the chat composer to the center of the creation flow, keeping the conversation and users’ attention in one place."
-                height={300}
-              />
-            </div>
+        <div className="flex w-full flex-col gap-2">
+          <Eyebrow>[ My creative process &amp; thinking through the problem space for Ideation phase ]</Eyebrow>
+          <Exhibit
+            video
+            src="/images/home/beacon-ideation-process.mp4"
+            poster="/images/home/beacon-ideation-process-poster.jpg"
+            alt="Screen recording of the author's own Figma canvas working through the Ideation phase's problem space, sketching and annotating as the thinking develops"
+            height={350}
+          />
+        </div>
+
+        <div className="flex w-full flex-col gap-2">
+          <BodyCopy>
+            That’s the problem we’re currently tackling: how might we combine the speed and intelligence of AI with
+            the user’s own expertise and judgment? Below are a few snapshots of where that exploration is taking us.
+          </BodyCopy>
+          <div className="py-3">
+            <Exhibit
+              src="/images/home/beacon-value-pool-compare-exhibit.jpg"
+              alt="Close-up of the Beacon Ideation detail panel's Get Started and Compare actions, letting a user weigh one value pool against another before committing"
+              caption="Allow a more collaborative approach when users need to make a decision on which Value Pool they want to continue"
+              height={350}
+            />
+          </div>
+          <Eyebrow>Prototype:</Eyebrow>
+          <div className="py-3">
+            <Exhibit
+              video
+              src="/images/home/beacon-gallery-1.mp4"
+              poster="/images/home/beacon-gallery-1-poster.jpg"
+              alt="Looping screen recording of the Beacon workspace: navigating between a company's profile sections while a generated value-pool card and its supporting research stay open alongside"
+              caption="Assisting users in gaining a clearer understanding of the current situation, the next steps, and the overall process they will follow"
+              height={350}
+            />
           </div>
         </div>
       </div>

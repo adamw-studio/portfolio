@@ -437,23 +437,48 @@ export function Finding({ title, children }: { title: string; children: ReactNod
 // "make sure it works and loops" with zero JS).
 export function Exhibit({
   src,
+  darkSrc,
   alt,
   caption,
   video = false,
   poster,
   height = 240,
+  frame = true,
 }: {
   src: string;
+  /** Dark-theme counterpart for a static image with theme-specific
+   * artwork baked in (transparent PNGs with light-on-transparent vs.
+   * dark-on-transparent strokes, e.g. Beacon's own diagram exhibits) —
+   * not for a color/invert difference a CSS filter could handle. Only
+   * meaningful for the image branch (`video` false); a themed video
+   * pair is passed in as `src` directly by the caller instead, since
+   * that swap already needs its own `useTheme()` read for the src
+   * string itself. */
+  darkSrc?: string;
   alt: string;
   caption?: string;
   video?: boolean;
   poster?: string;
   /** Exhibit box height in px — every existing caller (Robotics/Documentary) sizes its own images for the default 240px; Beacon's own exhibits (Figma 148:7779 etc.) are drawn at 300px, a real difference confirmed against that node's own metadata, not an inconsistency to normalize away — passing 240 there under-cropped/squeezed the image relative to what object-cover was meant to show, reported live as "the ratio of these cards are not good." */
   height?: number;
+  /** false drops the bg-bg-tertiary card box (background fill + rounded
+   * corners) around the image, leaving just the artwork itself — for a
+   * transparent-background illustration that's meant to sit directly on
+   * the page, not look like a screenshot in a frame (Beacon's own
+   * diagram exhibits: "remove backgrounds and borders" once the boxed
+   * version read as an unwanted visible card behind hand-drawn line
+   * art). Default true keeps every existing photographic/video caller
+   * unchanged. */
+  frame?: boolean;
 }) {
+  const { theme } = useTheme();
+  const resolvedSrc = !video && darkSrc && theme === "dark" ? darkSrc : src;
   return (
     <div className="flex w-full flex-col items-center gap-3">
-      <div className="relative w-full overflow-hidden rounded-2xl bg-bg-tertiary" style={{ height }}>
+      <div
+        className={`relative w-full ${frame ? "overflow-hidden rounded-2xl bg-bg-tertiary" : ""}`}
+        style={{ height }}
+      >
         {video ? (
           <video
             src={src}
@@ -466,7 +491,7 @@ export function Exhibit({
             className="absolute inset-0 size-full object-cover"
           />
         ) : (
-          <Image src={src} alt={alt} fill className="object-cover" sizes="(min-width: 480px) 384px, 100vw" />
+          <Image src={resolvedSrc} alt={alt} fill className="object-cover" sizes="(min-width: 480px) 384px, 100vw" />
         )}
       </div>
       {caption && <p className="max-w-[312px] text-center font-sans text-[10px] leading-normal text-text-secondary">{caption}</p>}

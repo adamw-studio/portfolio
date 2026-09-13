@@ -106,29 +106,13 @@ export default function Home() {
                 24px serif treatment onto the smaller 16px sans one (see
                 pageHeading), confirmed via this node's own metadata, not
                 assumed to stay unchanged just because the surrounding
-                layout didn't move. The small circle-"i" glyph (Figma
-                53:11343) is purely decorative: no href, tooltip, or
-                click behavior is specified on this node, so it renders
-                inert (aria-hidden) rather than inventing an interaction
-                Figma never gave it. Rebuilt as an inline SVG with theme
-                CSS vars rather than imported as a static asset — Figma's
-                own export bakes literal dark-theme hex/opacity values
-                (#0d0d0d fill, rgba(244,244,244,*) strokes) straight into
-                the SVG, which is exactly bg-default/border-subtle/
-                text-subtle in dark mode and wrong outright in light
-                mode; the CSS vars resolve to the right color in both. */}
-            <div className="flex w-full items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <HeadingFlourish />
-                <h1 className={pageHeading}>Hey, I am Adam</h1>
-              </div>
-              <svg aria-hidden viewBox="0 0 26 26" width={24} height={24} fill="none" className="shrink-0">
-                <circle cx="13" cy="13" r="12" fill="var(--color-bg-default)" stroke="var(--color-border-subtle)" />
-                <path
-                  d="M13.8374 9.03174C13.8374 9.30518 13.7485 9.53532 13.5708 9.72217C13.3976 9.90902 13.1812 10.0024 12.9214 10.0024C12.4611 10.0024 12.231 9.7723 12.231 9.31201C12.231 9.03402 12.3175 8.80387 12.4907 8.62158C12.6685 8.43929 12.8826 8.34814 13.1333 8.34814C13.3475 8.34814 13.5184 8.40511 13.646 8.51904C13.7736 8.63298 13.8374 8.80387 13.8374 9.03174ZM11.4448 17.6519V17.2896C12.0692 17.1619 12.3813 17.0229 12.3813 16.8726V13.1196C12.3813 12.8097 12.3677 12.5773 12.3403 12.4224C12.313 12.2674 12.2332 12.1603 12.1011 12.1011C11.9735 12.0373 11.7547 11.9894 11.4448 11.9575V11.6157C11.7638 11.561 12.0897 11.4881 12.4224 11.397C12.755 11.3058 13.0513 11.2033 13.311 11.0894H13.6118V16.8726C13.6118 16.9272 13.6847 16.9956 13.8306 17.0776C13.981 17.1551 14.2225 17.2257 14.5552 17.2896V17.6519H11.4448Z"
-                  fill="var(--color-text-subtle)"
-                />
-              </svg>
+                layout didn't move. The small circle-"i" glyph Figma
+                53:11343 shows here was purely decorative (no href,
+                tooltip, or click behavior) and was removed on direct
+                feedback. */}
+            <div className="flex items-center gap-2.5">
+              <HeadingFlourish />
+              <h1 className={pageHeading}>Hey, I am Adam</h1>
             </div>
 
             {/* One flowing paragraph, plain text throughout — Figma

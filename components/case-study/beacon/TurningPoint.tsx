@@ -1,14 +1,17 @@
 import { Fragment } from "react";
 import { Heading, BodyCopy } from "@/components/case-study/primitives";
 
-// Figma 148:7528 (re-fetched) — same three-quote Beam panel, but the
-// connector between quotes is a real hand-drawn arrow asset this time
-// (Vector 13, reused twice — Figma's own node repeats the identical
-// asset for both connectors), not a CSS dashed line: that was this
-// file's own earlier stand-in for a connector Figma's first fetch
-// didn't surface a real asset for. Same fill:#0D0D0D-baked-in situation
-// as FragmentedProduct.tsx's own arrows — needs the reverse of
-// themedIcon's own invert direction (invert only in dark theme).
+// Figma 154:348 (re-fetched) — same three-quote Beam panel and the same
+// hand-drawn connector asset (Vector 13, reused twice) as the previous
+// fetch, but this one's own metadata caught a real sizing mismatch: the
+// quote pills aren't full-width inside the panel. Each one is a fixed
+// 328px, centered within the 512px panel (93px of breathing room on
+// both sides), not stretched out to fill the panel's own padded
+// content box — and the panel's padding is vertical-only (29px), not
+// the uniform p-6 this file guessed at before a real fetch measured it.
+// Same fill:#0D0D0D-baked-in situation as FragmentedProduct.tsx's own
+// arrows — needs the reverse of themedIcon's own invert direction
+// (invert only in dark theme).
 const BEAM_QUOTES = [
   "What if the entire journey could unfold through conversation?",
   "Users stay in control. Beacon guides rather than dictates.",
@@ -33,11 +36,11 @@ export default function TurningPoint() {
           The workshop marked a turning point. We started thinking about Beacon differently, not as a rigid,
           step-by-step experience, but as something more conversational, flexible, and user-led.
         </BodyCopy>
-        <div className="flex w-full flex-col items-center gap-3 rounded-2xl bg-bg-tertiary p-6">
+        <div className="flex w-full flex-col items-center gap-2 rounded-2xl bg-bg-tertiary px-4 py-[29px]">
           {BEAM_QUOTES.map((quote, index) => (
             <Fragment key={quote}>
               {index > 0 && <BeamConnector />}
-              <div className="flex w-full items-center justify-center rounded-xl border border-border-subtle px-2.5 py-1">
+              <div className="flex w-full max-w-[328px] items-center justify-center rounded-xl border border-border-subtle px-2.5 py-1">
                 <p className="font-sans text-[14px] font-semibold leading-6 text-text-primary">{quote}</p>
               </div>
             </Fragment>

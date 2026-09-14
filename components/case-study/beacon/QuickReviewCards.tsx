@@ -3,34 +3,26 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-// Figma 158:1066 (resting fan) + 109:3520/3526/3532/3538/3544/3550 (each
-// card's own expanded "Card / Default" state) — the home page's own
-// scattered card-stack (see AboutCardStack.tsx), re-themed with this
-// page's own six "Quick review" beats instead of the About section's
-// six. Explicit instruction: "same logic as on the home page with
-// these cards" — so this ports AboutCardStack's whole interaction
-// wholesale (stagger reveal, hover lift/neighbor-nudge, click-to-expand
-// with a settled row for the other five, outside-click/Escape to
-// close), not just its resting layout the way QualityTiles.tsx
-// deliberately left the click interaction out. The six colors/text-
-// colors below came back an exact match for five of AboutCardStack's
-// own six pairs (same brand palette, different cards wearing it) —
-// "Listening to users" is the one genuine new pair (#6458c3/#eceaf8 at
-// rest — its own expanded node says #ede3e9 instead, close enough to
-// read as the same "not yet refreshed on every node" situation
-// AboutCardStack's own doc comment already flags for two of its cards,
-// not a real per-state difference worth a second color field).
+// Figma 158:1066 (resting fan) + twelve 109:35xx nodes, one small and
+// one large card per project ("<Project> - Small"/"<Project> - Large",
+// fetched by their own real node IDs this time, not the generic "Card /
+// Default" name an earlier, shallower fetch returned). Two structurally
+// different states, on direct correction — "the current interaction
+// model is structurally different from the design, treat images 2 and
+// 4 as the specification":
 //
-// `image` (one static JPEG per card, not a shared looping video the
-// way this file's first pass had it): both the 158:1066 resting fetch
-// and each card's own 109:35xx expanded fetch render this area as an
-// empty placeholder frame, but their own flat PNG exports make the
-// real intent unambiguous — six distinct abstract textures (halftone
-// maps, a dot field, wavy stripes), not six repeats of one brand clip.
-// Sourced via download_assets' own rawImages on the resting node at
-// their full 1280x960 export size, then re-encoded to JPEG (they're
-// fully opaque, no alpha channel in use) since the halftone/noise
-// patterns compress far worse as PNG than the site's other imagery.
+// 1. Resting fan (unchanged from the previous pass, already verified
+//    against Figma's own flat screenshot pixel-for-pixel — see CARDS'
+//    own comment below). Click any card to open the gallery.
+// 2. Gallery: NOT "one giant selected card over a pile of the other
+//    five" (this file's own previous model, ported wholesale from
+//    AboutCardStack without checking whether Beacon's own expanded
+//    state actually worked the same way — it doesn't). Every one of
+//    the twelve nodes' own get_metadata position was fetched directly:
+//    the six projects sit as three pairs per row, two rows, each pair
+//    a small card + a large card side by side, small card first. Exact
+//    gaps below are measured from those twelve absolute positions, not
+//    estimated from the screenshot.
 type CardData = {
   id: string;
   color: string;
@@ -38,8 +30,8 @@ type CardData = {
   text: string;
   description: string;
   image: string;
-  /** Pre-rotation top-left position (px), within this component's own
-   * fixed 705x196 reference frame — see the width/height note below. */
+  /** Pre-rotation top-left position (px), within the fan's own fixed
+   * 705x196 reference frame — see FAN_W/FAN_H's own comment below. */
   x: number;
   y: number;
   rotate: number;
@@ -49,58 +41,34 @@ const CARD_W = 130;
 const CARD_H = 162;
 const CARD_RADIUS = 10; // --radius-m
 
-// Position math, same technique AboutCardStack's own doc comment
-// explains: Figma exports a rotated element as a non-rotated wrapper
-// div sized to that element's rotated bounding box, centered on the
-// actual card — so each card's own pre-rotation (x, y) here is that
+// Position math: Figma exports a rotated element as a non-rotated
+// wrapper div sized to that element's rotated bounding box, centered on
+// the actual card — so each card's own pre-rotation (x, y) here is that
 // wrapper's own center, re-based to this card's fixed 130x162 box
 // (center - (65, 81)), computed from node 158:1066's own get_metadata
-// (each of its six children's absolute canvas position), not the
-// approximate calc(%+px) values get_design_context returns for a node
-// nested this deep. "A vision workshop" carries Figma's own rotate: 0
-// and needed no such back-computation — its frame already gives the
-// unrotated box directly. Rotation itself verified against each
-// wrapper's own width/height (a rotated 130x162 box's bounding
-// dimensions solve for a unique angle) rather than trusted from
-// get_design_context's own literal class name alone.
+// (each of its six children's absolute canvas position). "A vision
+// workshop" carries Figma's own rotate: 0 and needed no such back-
+// computation — its frame already gives the unrotated box directly.
 //
-// Re-measured TWICE now, live, both times reported as "not well-
-// aligned"/"do you really think this card is in a good place" against
-// "Joining Orchestro" specifically:
-//
-// 1. The Figma file itself moved between this file's first fetch and
-//    its next one — two cards' own rotation genuinely changed (0→15°
-//    "Designing what's next", 8.3°→4.88° "Meet Beam"), and every other
-//    card's position shifted by a few px too. Re-fetched and replaced
-//    all six x/y/rotate values for that.
-// 2. That re-fetch still looked wrong for "Joining Orchestro" specifically
-//    (and, it turns out, "Listening to users" — the same bug, just not
-//    reported live because it's less visually obvious there): get_metadata
-//    reports a wrapper y of 291.65 for this card's own rotated frame
-//    (158:1067), but get_design_context's own generated CSS for the
-//    exact same node independently says `top-[258px]` — a real, ~34px
-//    disagreement between the two tools for this one node. Every OTHER
-//    card's own y agreed between both tools to within rounding — the
-//    pattern across all six is that get_metadata's own y is only wrong
-//    for the two NEGATIVELY-rotated cards (this one at -15°, "Listening
-//    to users" at -8.28°); every positively-rotated (or unrotated) card
-//    checked out fine. Confirmed by simulating both candidate y values
-//    as filled rotated rectangles and comparing the resulting silhouette
-//    against Figma's own flat screenshot: get_design_context's `top`
-//    value reproduces Figma's own shape (and, as a side confirmation,
-//    the resulting container height matches this frame's own reported
-//    195.125 almost exactly); get_metadata's own y does not. Using
-//    get_design_context's top for these two cards' y from here on,
-//    get_metadata for everything else (x, width/height, and every other
-//    card's y) — the discrepancy is specific to y on negative rotation,
-//    not a reason to distrust get_metadata wholesale.
+// Verified against Figma's own flat screenshot, not just trusted from
+// the metadata numbers: rendered both this file's candidate y values
+// and get_metadata's own raw (buggy, for negative rotations — see the
+// git history on this file) y as filled rotated rectangles and diffed
+// the resulting silhouette against Figma's own PNG export pixel-for-
+// pixel. These values reproduce it — a single connected silhouette
+// spanning the full frame width, matching notch-for-notch, and the
+// resulting frame height (below) lands within a few hundredths of a
+// px of Figma's own reported 195.125. If this ever needs re-measuring,
+// repeat that comparison rather than trusting either tool's numbers on
+// their own — get_metadata and get_design_context have each been wrong
+// here before, in different, non-overlapping ways.
 const CARDS: CardData[] = [
   {
     id: "joining-orchestro",
     color: "#f8ecd7",
     textColor: "#544831",
     text: "Joining Orchestro",
-    description: "Became the first full-time designer, after 1.5 years building client projects at McKinsey.",
+    description: "Became the first full-time designer, after 1.5 years building client projects at McKinsey & Company.",
     image: "/images/home/beacon-review-joining-orchestro.jpg",
     x: 18.75,
     y: 14.06,
@@ -110,13 +78,8 @@ const CARDS: CardData[] = [
     id: "fragmented-product",
     color: "#ee3334",
     textColor: "#ede3e9",
-    // Figma 109:3526's own expanded node — genuinely different copy
-    // from this card's earlier "Took ownership of a product suite with
-    // no consistent design direction across it." (that line was this
-    // file's own guess, written before this node had real copy to
-    // check against).
-    description: "Inherited Beacon with no consistent design direction across the experience.",
     text: "A fragmented product",
+    description: "Inherited Beacon with no consistent design direction across the experience.",
     image: "/images/home/beacon-review-fragmented-product.jpg",
     x: 152.65,
     y: 16.51,
@@ -138,7 +101,7 @@ const CARDS: CardData[] = [
     color: "#00f790",
     textColor: "#004f00",
     text: "A vision workshop",
-    description: "Led leadership in London to rethink what the next generation of Beacon should be.",
+    description: "Led workshop for leadership in London to rethink what the next generation of Beacon should be.",
     image: "/images/home/beacon-review-vision-workshop.jpg",
     x: 313.45,
     y: 19.1,
@@ -176,36 +139,53 @@ const CARDS: CardData[] = [
 // actually renders and clip the rightmost card against the wrapper's
 // own overflow-hidden edge; a few px of unused right margin costs
 // nothing visible.
-// Height: 196, corrected alongside the CARDS y-fix above — recomputed
-// from the six cards' own true rotated extents using the corrected y
-// values, and lands almost exactly on this frame's own reported
-// 195.125 (a good sign the y-fix is right, not just a fix for the one
-// card that got reported live).
-const CONTAINER_W = 705;
-const CONTAINER_H = 196;
+// Height: 196, recomputed from the six cards' own true rotated extents
+// using the CARDS y-values above — lands almost exactly on this
+// frame's own reported 195.125.
+const FAN_W = 705;
+const FAN_H = 196;
 
-// Expanded-card sizing below (301x400, 12px padding, 20px radius, a
-// 170px image area) is carried over unchanged from AboutCardStack.tsx —
-// and confirmed, not just assumed, by each card's own 109:35xx "Card /
-// Default" node: every one of the six reports this exact same box,
-// down to the pixel, so "same logic as on the home page" turned out to
-// literally be the same expanded-card spec too, not just the same
-// interaction technique. What those six nodes don't cover is the
-// SETTLED row layout (the other five cards' positions once one is
-// open) — Figma has no equivalent multi-card composition for this
-// section, so that part still reuses the home page's own five measured
-// slot positions/z-order, re-based onto this card set's own SELECTED_X
-// (itself derived from CONTAINER_W, so it tracks this file's own width
-// rather than assuming it stays close to AboutCardStack's own 655).
-const SELECTED_W = 301;
-const SELECTED_H = 400;
-const SELECTED_RADIUS = 20;
-const SELECTED_PADDING = 12;
-const SELECTED_IMAGE_H = 170;
-const SELECTED_TITLE_TEXT = "font-sans font-extrabold text-[24px] leading-[28px] tracking-[-0.192px]";
-const SELECTED_SHADOW = (alpha: number) => `0px 1px 2px 0px rgba(23,23,23,${alpha})`;
 const RESTING_TEXT = "font-sans font-extrabold text-[16px] leading-[18px] tracking-[-0.128px]";
 const RESTING_PADDING = 8;
+
+const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)";
+const STAGGER_MS = 60;
+const HOVER_MS = 180;
+const HOVER_LIFT = 12;
+const HOVER_ROTATE_FACTOR = 0.45;
+const HOVER_NEIGHBOR_GAP = 7;
+
+// Gallery layout — measured directly off get_metadata's own absolute
+// position for all twelve nodes (JoiningOrchestro/FragmentedProduct/
+// Listening/VisionWorkshop/MeetBeam/WhatsNext, each "- Small" and
+// "- Large"), not estimated from the screenshot: every pair's own small
+// card sits immediately left of its large card (28px gap, both top-
+// aligned), three pairs per row with 65px between pairs, two rows with
+// 67px between them. The six projects' own reading order (left-to-
+// right, top row then bottom) already matches CARDS' own array order
+// above, so rendering CARDS in a 3-column grid reproduces Figma's own
+// grouping with no re-sorting needed.
+const GALLERY_SMALL_W = 130;
+const GALLERY_SMALL_H = 162;
+const GALLERY_LARGE_W = 301;
+const GALLERY_LARGE_H = 400;
+const GALLERY_PAIR_GAP = 28; // small → large, within one project's own pair
+const GALLERY_COLUMN_GAP = 65; // between pairs, same row
+const GALLERY_ROW_GAP = 67; // between the two rows
+const GALLERY_PAIR_W = GALLERY_SMALL_W + GALLERY_PAIR_GAP + GALLERY_LARGE_W;
+// Natural width at the full three-per-row layout — used only as the
+// upper breakpoint in the column-count check below; every other
+// dimension (actual rendered width/height at whatever column count
+// that check picks) is computed at render time from `galleryColumns`.
+const GALLERY_W = GALLERY_PAIR_W * 3 + GALLERY_COLUMN_GAP * 2;
+
+const GALLERY_LARGE_TITLE = "font-sans font-extrabold text-[24px] leading-[28px] tracking-[-0.192px]";
+// Figma's own expanded-card description node has no tracking override
+// at all (unlike the collapsed title's -0.128px) — confirmed directly
+// against 109:3520 etc.'s own generated CSS, not carried over from the
+// old single-card-expand model's own description style.
+const GALLERY_DESC = "font-sans text-[16px] leading-6";
+const GALLERY_MS = 450;
 
 function withAlpha(hex: string, alpha: number) {
   const n = parseInt(hex.replace("#", ""), 16);
@@ -215,45 +195,16 @@ function withAlpha(hex: string, alpha: number) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-const SELECTED_X = CONTAINER_W / 2 - SELECTED_W / 2;
-const SELECTED_Y = 0;
-
-// AboutCardStack's own five measured settled-row slots (Figma node
-// 37:10045), re-based onto this component's own SELECTED_X so the
-// settled row and the active card share one consistent origin
-// regardless of CONTAINER_W — see that file's own doc comment for how
-// OPEN_ORIGIN_X/these offsets were derived.
-const OPEN_ORIGIN_X = SELECTED_X - 118;
-const OTHER_SLOTS: { x: number; y: number }[] = [
-  { x: OPEN_ORIGIN_X + 21.3, y: 364.45 },
-  { x: OPEN_ORIGIN_X + 108.7, y: 359.91 },
-  { x: OPEN_ORIGIN_X + 198.7, y: 367.04 },
-  { x: OPEN_ORIGIN_X + 326.98, y: 367.04 },
-  { x: OPEN_ORIGIN_X + 409.0, y: 367.0 },
-];
-const OTHER_SLOT_Z = [1, 2, 3, 5, 4];
-const CONTAINER_EXPANDED_H = 556;
-const MIN_SELECTED_SCALE = 0.78;
-
-const EASE_OUT = "cubic-bezier(0.23, 1, 0.32, 1)";
-const STAGGER_MS = 60;
-const OPEN_MS = 450;
-const CLOSE_MS = 350;
-const HOVER_MS = 180;
-const DESCRIPTION_OPEN_DELAY_MS = 290;
-const DESCRIPTION_MS = 220;
-const HOVER_LIFT = 12;
-const HOVER_ROTATE_FACTOR = 0.45;
-const HOVER_NEIGHBOR_GAP = 7;
-
 export default function QuickReviewCards() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [canHover, setCanHover] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [galleryOpen, setGalleryOpen] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [scale, setScale] = useState(1);
+  const [fanScale, setFanScale] = useState(1);
+  const [galleryScale, setGalleryScale] = useState(1);
+  const [galleryColumns, setGalleryColumns] = useState(3);
   const [hasRevealedOnce, setHasRevealedOnce] = useState(false);
 
   useEffect(() => {
@@ -269,12 +220,32 @@ export default function QuickReviewCards() {
     setCanHover(window.matchMedia("(hover: hover) and (pointer: fine)").matches);
   }, []);
 
+  // The fan scales-to-fit whatever width this component actually has —
+  // same technique this file already used before this rewrite. The
+  // gallery does the same, but against a per-breakpoint natural width
+  // instead of always GALLERY_W's own full three-column 1507px: at a
+  // narrow width, scaling a fixed three-per-row layout down to fit
+  // shrinks its 16-24px type well past readable (reported live as
+  // "shrink cards until text becomes unreadable" being exactly what
+  // not to do) before the composition even needs to lose a column. Pick
+  // the widest column count (3, 2, then 1 pair per row) that still fits
+  // at scale 1, then only scale down the (now narrower) result if even
+  // one column doesn't fit outright — matching the brief's own
+  // "reduce project groups per row" over shrinking text into a single
+  // illegible strip.
   useEffect(() => {
     const wrapper = wrapperRef.current;
     if (!wrapper || typeof ResizeObserver === "undefined") return;
-    const updateScale = () => setScale(Math.min(1, wrapper.clientWidth / CONTAINER_W));
-    updateScale();
-    const observer = new ResizeObserver(updateScale);
+    const update = () => {
+      const w = wrapper.clientWidth;
+      setFanScale(Math.min(1, w / FAN_W));
+      const columns = w >= GALLERY_W ? 3 : w >= GALLERY_PAIR_W * 2 + GALLERY_COLUMN_GAP ? 2 : 1;
+      const naturalWidth = GALLERY_PAIR_W * columns + GALLERY_COLUMN_GAP * (columns - 1);
+      setGalleryColumns(columns);
+      setGalleryScale(Math.min(1, w / naturalWidth));
+    };
+    update();
+    const observer = new ResizeObserver(update);
     observer.observe(wrapper);
     return () => observer.disconnect();
   }, []);
@@ -310,12 +281,12 @@ export default function QuickReviewCards() {
   }, [visible, hasRevealedOnce]);
 
   useEffect(() => {
-    if (!selectedId) return;
+    if (!galleryOpen) return;
     const onPointerDown = (e: PointerEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) setSelectedId(null);
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) setGalleryOpen(false);
     };
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedId(null);
+      if (e.key === "Escape") setGalleryOpen(false);
     };
     window.addEventListener("pointerdown", onPointerDown);
     window.addEventListener("keydown", onKeyDown);
@@ -323,84 +294,113 @@ export default function QuickReviewCards() {
       window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [selectedId]);
+  }, [galleryOpen]);
 
-  const effectiveScale = selectedId ? Math.max(scale, MIN_SELECTED_SCALE) : scale;
-  let xCompress = 1;
-  if (selectedId && scale < MIN_SELECTED_SCALE) {
-    const wrapperWidth = scale * CONTAINER_W;
-    const settledCenterX = SELECTED_X + SELECTED_W / 2;
-    const offsetX = (wrapperWidth - CONTAINER_W * effectiveScale) / 2;
-    const leftSlotX = OTHER_SLOTS[0].x;
-    const rightSlotX = OTHER_SLOTS[OTHER_SLOTS.length - 1].x;
-    const kLeft = (-offsetX / effectiveScale - settledCenterX) / (leftSlotX - settledCenterX);
-    const kRight = ((wrapperWidth - offsetX) / effectiveScale - CARD_W - settledCenterX) / (rightSlotX - settledCenterX);
-    xCompress = Math.max(0, Math.min(1, kLeft, kRight));
-  }
+  const fanHeight = FAN_H * fanScale + 24;
+  const galleryRows = Math.ceil(CARDS.length / galleryColumns);
+  const galleryNaturalW = GALLERY_PAIR_W * galleryColumns + GALLERY_COLUMN_GAP * (galleryColumns - 1);
+  const galleryNaturalH = GALLERY_LARGE_H * galleryRows + GALLERY_ROW_GAP * (galleryRows - 1);
+  const galleryHeight = galleryNaturalH * galleryScale + 24;
 
   return (
     <div
       ref={wrapperRef}
-      className="flex w-full items-start justify-center overflow-hidden pt-6"
+      className="relative w-full overflow-hidden"
       style={{
-        height: (selectedId ? CONTAINER_EXPANDED_H : CONTAINER_H) * effectiveScale + 24,
-        transition: reducedMotion ? undefined : `height ${selectedId ? OPEN_MS : CLOSE_MS}ms ${EASE_OUT}`,
+        height: galleryOpen ? galleryHeight : fanHeight,
+        transition: reducedMotion ? undefined : `height ${GALLERY_MS}ms ${EASE_OUT}`,
       }}
     >
+      {/* Fan — the active layer at rest (position: relative, so it sets
+          this wrapper's own height); becomes an inert, absolutely-
+          positioned backdrop the instant the gallery opens, so it never
+          fights the gallery for layout space during the crossfade. */}
       <div
-        className="relative shrink-0"
+        className="flex w-full items-start justify-center pt-6"
         style={{
-          width: CONTAINER_W,
-          height: CONTAINER_H,
-          transform: `scale(${effectiveScale})`,
-          transformOrigin: "top center",
-          transition: reducedMotion ? undefined : `transform ${selectedId ? OPEN_MS : CLOSE_MS}ms ${EASE_OUT}`,
+          position: galleryOpen ? "absolute" : "relative",
+          inset: galleryOpen ? 0 : undefined,
+          opacity: galleryOpen ? 0 : 1,
+          pointerEvents: galleryOpen ? "none" : "auto",
+          transition: reducedMotion ? undefined : `opacity ${GALLERY_MS}ms ${EASE_OUT}`,
         }}
       >
-        {(() => {
-          const otherIds = CARDS.filter((c) => c.id !== selectedId).map((c) => c.id);
-          const hoveredIndex = hoveredId ? CARDS.findIndex((c) => c.id === hoveredId) : -1;
-          return CARDS.map((card, i) => {
+        <div
+          className="relative shrink-0"
+          style={{
+            width: FAN_W,
+            height: FAN_H,
+            transform: `scale(${fanScale})`,
+            transformOrigin: "top center",
+          }}
+        >
+          {CARDS.map((card, i) => {
+            const hoveredIndex = hoveredId ? CARDS.findIndex((c) => c.id === hoveredId) : -1;
             let neighborNudge = 0;
-            if (!selectedId && hoveredIndex !== -1 && card.id !== hoveredId) {
+            if (hoveredIndex !== -1 && card.id !== hoveredId) {
               if (i === hoveredIndex - 1) neighborNudge = -HOVER_NEIGHBOR_GAP;
               else if (i === hoveredIndex + 1) neighborNudge = HOVER_NEIGHBOR_GAP;
             }
+            const hovered = canHover && !galleryOpen && hoveredId === card.id;
             return (
-              <Card
+              <FanCard
                 key={card.id}
                 card={card}
                 visible={visible}
                 reducedMotion={reducedMotion}
                 delay={hasRevealedOnce ? 0 : i * STAGGER_MS}
-                selected={selectedId === card.id}
-                dimmed={selectedId !== null && selectedId !== card.id}
-                hovered={canHover && !selectedId && hoveredId === card.id}
+                hovered={hovered}
                 neighborNudge={neighborNudge}
-                otherIndex={otherIds.indexOf(card.id)}
-                xCompress={xCompress}
-                onToggle={() => setSelectedId((current) => (current === card.id ? null : card.id))}
+                onToggle={() => setGalleryOpen(true)}
                 onHoverChange={(isHovered) => setHoveredId((current) => (isHovered ? card.id : current === card.id ? null : current))}
               />
             );
-          });
-        })()}
+          })}
+        </div>
+      </div>
+
+      {/* Gallery — the reverse of the fan: inert backdrop at rest,
+          becomes the active (position: relative) layer once open. */}
+      <div
+        className="flex w-full items-start justify-center pt-6"
+        style={{
+          position: galleryOpen ? "relative" : "absolute",
+          inset: galleryOpen ? undefined : 0,
+          opacity: galleryOpen ? 1 : 0,
+          pointerEvents: galleryOpen ? "auto" : "none",
+          transition: reducedMotion ? undefined : `opacity ${GALLERY_MS}ms ${EASE_OUT}`,
+        }}
+      >
+        <div
+          className="grid shrink-0"
+          style={{
+            width: galleryNaturalW,
+            gridTemplateColumns: `repeat(${galleryColumns}, ${GALLERY_PAIR_W}px)`,
+            columnGap: GALLERY_COLUMN_GAP,
+            rowGap: GALLERY_ROW_GAP,
+            transform: `scale(${galleryScale})`,
+            transformOrigin: "top center",
+          }}
+        >
+          {CARDS.map((card) => (
+            <div key={card.id} className="flex items-start" style={{ gap: GALLERY_PAIR_GAP }}>
+              <GalleryCard variant="small" card={card} onClick={() => setGalleryOpen(false)} />
+              <GalleryCard variant="large" card={card} onClick={() => setGalleryOpen(false)} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
-function Card({
+function FanCard({
   card,
   visible,
   reducedMotion,
   delay,
-  selected,
-  dimmed,
   hovered,
   neighborNudge,
-  otherIndex,
-  xCompress,
   onToggle,
   onHoverChange,
 }: {
@@ -408,34 +408,22 @@ function Card({
   visible: boolean;
   reducedMotion: boolean;
   delay: number;
-  selected: boolean;
-  dimmed: boolean;
   hovered: boolean;
   neighborNudge: number;
-  otherIndex: number;
-  xCompress: number;
   onToggle: () => void;
   onHoverChange: (hovered: boolean) => void;
 }) {
-  const slot = OTHER_SLOTS[otherIndex];
-  const settledCenterX = SELECTED_X + SELECTED_W / 2;
-  const x = selected ? SELECTED_X : dimmed ? settledCenterX + (slot.x - settledCenterX) * xCompress : card.x + neighborNudge;
-  const y = selected ? SELECTED_Y : dimmed ? slot.y : card.y - (hovered ? HOVER_LIFT : 0);
-  const rotate = selected ? 0 : dimmed ? card.rotate : card.rotate * (hovered ? 1 - HOVER_ROTATE_FACTOR : 1);
+  const x = card.x + neighborNudge;
+  const y = card.y - (hovered ? HOVER_LIFT : 0);
+  const rotate = card.rotate * (hovered ? 1 - HOVER_ROTATE_FACTOR : 1);
   const entranceScale = reducedMotion || visible ? 1 : 0.92;
   const hoverScale = hovered ? 1.03 : 1;
-  const width = selected ? SELECTED_W : CARD_W;
-  const height = selected ? SELECTED_H : CARD_H;
-  const radius = selected ? SELECTED_RADIUS : CARD_RADIUS;
-  const padding = selected ? SELECTED_PADDING : RESTING_PADDING;
-  const transitionMs = selected ? OPEN_MS : dimmed ? CLOSE_MS : hovered ? HOVER_MS : CLOSE_MS;
 
   return (
     <div
       role="button"
       tabIndex={0}
-      aria-pressed={selected}
-      aria-label={`${card.text}${selected ? " (selected)" : ""}`}
+      aria-label={`Open ${card.text}`}
       onClick={onToggle}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -449,83 +437,89 @@ function Card({
       onBlur={() => onHoverChange(false)}
       className="absolute left-0 top-0 flex cursor-pointer flex-col justify-between overflow-hidden outline-none will-change-transform focus-visible:ring-2 focus-visible:ring-text-primary"
       style={{
-        width,
-        height,
-        padding,
-        borderRadius: radius,
+        width: CARD_W,
+        height: CARD_H,
+        padding: RESTING_PADDING,
+        borderRadius: CARD_RADIUS,
         backgroundColor: card.color,
         opacity: reducedMotion || visible ? 1 : 0,
-        boxShadow: SELECTED_SHADOW(selected ? 0.4 : 0),
         isolation: "isolate",
-        zIndex: selected ? 10 : hovered ? 6 : dimmed ? 2 + OTHER_SLOT_Z[otherIndex] : 1,
+        zIndex: hovered ? 6 : 1,
         transform: `translate3d(${x}px, ${y}px, 0) rotate(${rotate}deg) scale(${entranceScale * hoverScale})`,
         transition: reducedMotion
           ? undefined
-          : [
-              `opacity 400ms ${EASE_OUT} ${delay}ms`,
-              `transform ${selected || dimmed ? transitionMs : hovered ? HOVER_MS : 500}ms ${EASE_OUT} ${selected || dimmed ? 0 : delay}ms`,
-              `width ${transitionMs}ms ${EASE_OUT}`,
-              `height ${transitionMs}ms ${EASE_OUT}`,
-              `padding ${transitionMs}ms ${EASE_OUT}`,
-              `border-radius ${transitionMs}ms ${EASE_OUT}`,
-              `box-shadow ${transitionMs}ms ${EASE_OUT}`,
-            ].join(", "),
+          : [`opacity 400ms ${EASE_OUT} ${delay}ms`, `transform ${hovered ? HOVER_MS : 500}ms ${EASE_OUT} ${delay}ms`].join(", "),
       }}
     >
       <div className="flex w-full shrink-0 flex-col gap-2">
-        <div
-          className="relative w-full shrink-0 overflow-hidden rounded-[8px]"
-          style={{
-            height: selected ? SELECTED_IMAGE_H : 60,
-            transition: reducedMotion ? undefined : `height ${transitionMs}ms ${EASE_OUT}`,
-          }}
-        >
-          <Image
-            src={card.image}
-            alt=""
-            aria-hidden
-            fill
-            sizes="(min-width: 480px) 301px, 130px"
-            className="object-cover"
-          />
+        <div className="relative h-[60px] w-full shrink-0 overflow-hidden rounded-[8px]">
+          <Image src={card.image} alt="" aria-hidden fill sizes="130px" className="object-cover" />
         </div>
-        {!selected && <div className="h-px w-full shrink-0" style={{ backgroundColor: card.textColor }} />}
+        <div className="h-px w-full shrink-0" style={{ backgroundColor: card.textColor }} />
       </div>
-      <div className="flex w-full flex-col gap-2">
-        <p
-          className={`w-full break-words ${selected ? SELECTED_TITLE_TEXT : RESTING_TEXT}`}
-          style={{
-            color: card.textColor,
-            transition: reducedMotion ? undefined : `font-size ${transitionMs}ms ${EASE_OUT}, color ${transitionMs}ms ${EASE_OUT}`,
-          }}
-        >
-          {card.text}
-        </p>
-        {selected && <div className="h-px w-full shrink-0" style={{ backgroundColor: card.textColor }} />}
-        <div
-          className="grid w-full"
-          style={{
-            gridTemplateRows: selected ? "1fr" : "0fr",
-            transition: reducedMotion ? undefined : `grid-template-rows ${transitionMs}ms ${EASE_OUT}`,
-          }}
-        >
-          <p
-            aria-hidden={!selected}
-            className="w-full min-h-0 overflow-hidden break-words font-sans text-[16px] leading-[normal] tracking-[-0.128px]"
-            style={{
-              color: withAlpha(card.textColor, 0.8),
-              opacity: selected ? 1 : 0,
-              transform: `translateY(${selected ? 0 : 8}px)`,
-              transition: reducedMotion
-                ? undefined
-                : `opacity ${DESCRIPTION_MS}ms ${EASE_OUT} ${selected ? DESCRIPTION_OPEN_DELAY_MS : 0}ms, transform ${DESCRIPTION_MS}ms ${EASE_OUT} ${selected ? DESCRIPTION_OPEN_DELAY_MS : 0}ms`,
-              pointerEvents: selected ? "auto" : "none",
-            }}
-          >
-            {card.description}
+      <p className={`w-full break-words ${RESTING_TEXT}`} style={{ color: card.textColor }}>
+        {card.text}
+      </p>
+    </div>
+  );
+}
+
+// Small and large gallery cards are two genuinely different Figma
+// nodes, not one card CSS-scaled into the other (scaling the DOM large
+// card down would blur its text and throw off its border-radius/
+// padding relative to its own size) — rendered as two real variants
+// sharing only the underlying project data. The small variant has no
+// divider between image and title (confirmed against 109:3581 etc.'s
+// own generated CSS — genuinely absent, not an oversight, unlike the
+// fan card above which does have one).
+function GalleryCard({ variant, card, onClick }: { variant: "small" | "large"; card: CardData; onClick: () => void }) {
+  const large = variant === "large";
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      aria-label={`${card.text}${large ? ", details" : ""} — close gallery`}
+      onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      className="flex shrink-0 cursor-pointer flex-col justify-between overflow-hidden outline-none transition-transform duration-150 ease-out hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-text-primary"
+      style={{
+        width: large ? GALLERY_LARGE_W : GALLERY_SMALL_W,
+        height: large ? GALLERY_LARGE_H : GALLERY_SMALL_H,
+        padding: large ? 12 : RESTING_PADDING,
+        borderRadius: large ? 20 : CARD_RADIUS,
+        backgroundColor: card.color,
+      }}
+    >
+      {/* Large: image + title grouped at the top (gap-2), description
+          pushed to the bottom by the outer justify-between, generous
+          empty space between them. Small: no divider, no grouping —
+          image alone at the top, title alone at the bottom, same
+          justify-between doing the work directly (confirmed against
+          109:3581 etc.'s own metadata: its title sits at y=118 while
+          the image block ends at y=68, a ~50px gap plain gap-stacking
+          wouldn't produce — this card is only 162px tall). */}
+      {large ? (
+        <div className="flex w-full shrink-0 flex-col gap-2">
+          <div className="relative w-full shrink-0 overflow-hidden rounded-[8px]" style={{ height: 170 }}>
+            <Image src={card.image} alt="" aria-hidden fill sizes="301px" className="object-cover" />
+          </div>
+          <p className={`w-full break-words ${GALLERY_LARGE_TITLE}`} style={{ color: card.textColor }}>
+            {card.text}
           </p>
         </div>
-      </div>
+      ) : (
+        <div className="relative w-full shrink-0 overflow-hidden rounded-[8px]" style={{ height: 60 }}>
+          <Image src={card.image} alt="" aria-hidden fill sizes="130px" className="object-cover" />
+        </div>
+      )}
+      <p className={`w-full break-words ${large ? GALLERY_DESC : RESTING_TEXT}`} style={{ color: large ? withAlpha(card.textColor, 0.8) : card.textColor }}>
+        {large ? card.description : card.text}
+      </p>
     </div>
   );
 }

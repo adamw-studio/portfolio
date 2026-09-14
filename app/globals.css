@@ -67,6 +67,49 @@
   --radius-sm: 8px;
   --radius-m: 10px;
   --radius-lg: 12px;
+
+  /* The site's one shared text-reveal system (components/Reveal.tsx) —
+     every Reveal-wrapped element reads its transform distance,
+     transition duration, and easing from here, keyed by `tier`, rather
+     than each call site inventing its own numbers. Deliberately
+     theme-independent (not duplicated into .theme-dark below): motion
+     should read identically in both themes, only color tokens flip.
+     Values are intentionally restrained ("editorial text settling into
+     place," not "marketing site text flying in") — short travel
+     distances, mid-length durations, one shared ease-out curve, no
+     per-tier easing variation.
+     - eyebrow: small italic labels ("[ Quick review ]", date lines).
+     - heading: ordinary section/card headings.
+     - hero: the page's own single largest headline per view (home
+       page's "Hey, I am Adam", a case-study's own Header.tsx headline).
+     - body: paragraph copy, opted into per call site (BodyCopy's own
+       `reveal` prop), not applied to every paragraph by default. */
+  --motion-text-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-text-duration-eyebrow: 460ms;
+  --motion-text-duration-heading: 600ms;
+  --motion-text-duration-hero: 720ms;
+  --motion-text-duration-body: 520ms;
+  --motion-text-distance-eyebrow: 8px;
+  --motion-text-distance-heading: 12px;
+  --motion-text-distance-hero: 16px;
+  --motion-text-distance-body: 10px;
+}
+
+/* Reveal.tsx's own JS prefers-reduced-motion check is what actually
+   decides whether an element ever animates at all (see that file's own
+   comment — it skips the hidden pre-reveal phase entirely rather than
+   racing a CSS override against a transition already in flight). This
+   is the defense-in-depth fallback for the numbers themselves: zeroed
+   out under the same query, so anything that ever reads these custom
+   properties directly (rather than through Reveal's own JS check) still
+   can't produce a large motion under reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-text-distance-eyebrow: 0px;
+    --motion-text-distance-heading: 0px;
+    --motion-text-distance-hero: 0px;
+    --motion-text-distance-body: 0px;
+  }
 }
 
 /* Dark theme, scoped to the Home page (node 100:880 / 194:503) rather than

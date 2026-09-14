@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+
+// This project statically pre-renders every route — useLayoutEffect
+// warns on that server pass even though nothing here depends on running
+// during it. Aliasing to plain useEffect for that one pass silences the
+// warning without changing behavior (same helper as Reveal.tsx's own,
+// duplicated locally rather than shared across two files for one line).
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 type CardData = {
   id: string;
@@ -337,7 +344,14 @@ const HOVER_NEIGHBOR_GAP = 7;
 
 export default function AboutCardStack() {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  // Defaults true, not false — this component's own server-rendered
+  // (and no-JS) HTML must show the resting card fan fully visible, not
+  // permanently invisible, if JS never runs to flip it. See the
+  // mount-only layout effect just below the reduced-motion read for how
+  // this gets armed back to its actual pre-reveal state for a
+  // JS-enabled visitor, before the browser ever paints it — same
+  // progressive-enhancement shape as Reveal.tsx's own "initial" phase.
+  const [visible, setVisible] = useState(true);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [canHover, setCanHover] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -385,6 +399,18 @@ export default function AboutCardStack() {
     const observer = new ResizeObserver(updateScale);
     observer.observe(wrapper);
     return () => observer.disconnect();
+  }, []);
+
+  // Arms the hidden pre-reveal state before the browser's first paint —
+  // mount-only ([], not gated on reducedMotion: see Reveal.tsx's own
+  // fuller comment on why gating this on a signal that isn't known for
+  // certain until a later passive effect would risk leaving `visible`
+  // stuck false for a reduced-motion visitor instead of correcting it).
+  // The reveal effect just below already handles reducedMotion turning
+  // out to be true by setting `visible` straight back to true, whether
+  // that's known immediately or only after this first commit.
+  useIsomorphicLayoutEffect(() => {
+    setVisible(false);
   }, []);
 
   // One-time reveal when the composition scrolls into view — not a

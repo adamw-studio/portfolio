@@ -7,6 +7,8 @@ import BottomEdgeFade from "@/components/BottomEdgeFade";
 import { ThemeProvider } from "@/components/ThemeContext";
 import { themedIcon } from "@/components/themedIcon";
 import { bodyText } from "@/components/typography";
+import { Reveal } from "@/components/Reveal";
+import { REVEAL_STAGGER_LOOSE } from "@/components/motion";
 
 // Both this page's own headings ("Hey, I am Adam" and "What I do") share
 // one literal style. Figma 84:1045 bumps this to 20px/tracking-[-0.8px],
@@ -110,9 +112,18 @@ export default function Home() {
                 53:11343 shows here was purely decorative (no href,
                 tooltip, or click behavior) and was removed on direct
                 feedback. */}
+            {/* This page's one hero: mode="load" (reveals right on page
+                load, not on scroll — it's already on screen at first
+                paint) and the "hero" tier (this system's own slowest,
+                longest-travel reveal), the bio paragraph right behind it
+                at a loose stagger step. Everything else Reveal touches
+                on this page is scroll-triggered instead — see the
+                "Approach" heading below. */}
             <div className="flex items-center gap-2.5">
               <HeadingFlourish />
-              <h1 className={pageHeading}>Hey, I am Adam</h1>
+              <Reveal as="h1" tier="hero" mode="load" className={pageHeading}>
+                Hey, I am Adam
+              </Reveal>
             </div>
 
             {/* One flowing paragraph, plain text throughout — Figma
@@ -126,11 +137,11 @@ export default function Home() {
                 Orchestro read as ordinary text now, matching this node
                 exactly rather than assuming the older, chip'd version
                 still applies. */}
-            <p className={bodyText}>
+            <Reveal as="p" tier="body" mode="load" delay={REVEAL_STAGGER_LOOSE} className={bodyText}>
               I’m a Senior Product Designer at McKinsey &amp; Company. Currently leading design for Beacon and
               co-designing Orchestro. Over the last 5+ years, I’ve gone from brand design to building products
               from scratch and working on enterprise software.
-            </p>
+            </Reveal>
 
             {/* Figma 52:11143 — a new Email/LinkedIn/Instagram row
                 under the bio, absent from every earlier fetch of this
@@ -175,15 +186,24 @@ export default function Home() {
           <div className="mx-auto flex w-full max-w-[512px] flex-col items-start gap-4">
             <div className="flex items-center gap-2.5">
               <HeadingFlourish />
-              <h2 className={pageHeading}>Approach</h2>
+              {/* mode="scroll" (the default) here, unlike the hero above —
+                  this section sits below the fold on most viewports, so
+                  it reveals as it enters view rather than on page load. */}
+              <Reveal as="h2" tier="heading" className={pageHeading}>
+                Approach
+              </Reveal>
             </div>
             <div className="flex w-full flex-col items-start gap-4">
               <div className="flex w-full flex-col items-start gap-3">
-                <p className={bodyText}>
+                {/* Only this section's own lead paragraph reveals — its
+                    second paragraph stays plain, same restraint as this
+                    system's own "don't animate every line of long-form
+                    body copy" guidance. */}
+                <Reveal as="p" tier="body" className={bodyText}>
                   I own my work end to end, from early concepts to shipped outcomes. I’ve worked on large
                   enterprise products as well as smaller, ambitious ones, but I’m most energized when I’m close to
                   the problem, shaping ideas from the ground up and seeing my work make a real difference.
-                </p>
+                </Reveal>
                 <p className={bodyText}>
                   That’s when design feels most meaningful to me: when a small team comes together around an
                   existing problem, cares deeply about solving it, and maybe, along the way, changes a little

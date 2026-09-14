@@ -1,7 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
+
+// This project statically pre-renders every route — useLayoutEffect
+// warns on that server pass even though nothing here depends on running
+// during it. Aliasing to plain useEffect for that one pass silences the
+// warning without changing behavior.
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 // Figma 158:1066 (resting fan) + 109:3520/3526/3532/3538/3544/3550 (each
 // card's own expanded "Card / Default" state) — the home page's own
@@ -257,7 +263,14 @@ const HOVER_NEIGHBOR_GAP = 7;
 
 export default function QuickReviewCards() {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  // Defaults true, not false — this component's own server-rendered
+  // (and no-JS) HTML must show the resting card fan fully visible, not
+  // permanently invisible, if JS never runs to flip it. Armed back to
+  // its real pre-reveal state by the mount-only layout effect below,
+  // before a JS-enabled visitor's browser ever paints it — same
+  // progressive-enhancement shape as components/Reveal.tsx's own
+  // "initial" phase.
+  const [visible, setVisible] = useState(true);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [canHover, setCanHover] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -286,6 +299,15 @@ export default function QuickReviewCards() {
     const observer = new ResizeObserver(updateScale);
     observer.observe(wrapper);
     return () => observer.disconnect();
+  }, []);
+
+  // Arms the hidden pre-reveal state before the browser's first paint —
+  // mount-only, not gated on reducedMotion (see Reveal.tsx's own fuller
+  // comment on why: that signal isn't known for certain until a later
+  // passive effect, and the reveal effect just below already corrects
+  // `visible` back to true if reducedMotion does turn out to be true).
+  useIsomorphicLayoutEffect(() => {
+    setVisible(false);
   }, []);
 
   useEffect(() => {

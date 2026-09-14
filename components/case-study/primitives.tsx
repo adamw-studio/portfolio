@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { themedIcon } from "@/components/themedIcon";
 import { useTheme } from "@/components/ThemeContext";
+import { Reveal } from "@/components/Reveal";
+import { REVEAL_STAGGER_TIGHT } from "@/components/motion";
 
 /**
  * Small, deliberately dumb building blocks individual case-study pages
@@ -29,11 +31,18 @@ import { useTheme } from "@/components/ThemeContext";
 // (HowItStartedPage) to opt into tabular/lining/slashed-zero numerals
 // (Figma's own font-feature-settings) without every plain-text Eyebrow
 // use paying for a feature that only matters for digits.
+//
+// Reveal (tier="eyebrow") wraps every use of this component — the
+// site's own shared text-reveal system (see Reveal.tsx), applied here
+// once rather than at each of this component's own call sites, so
+// every eyebrow/step-number/section-label across every case study
+// (this system's own "[ Quick review ]"-style labels included) reveals
+// with the same restrained motion for free.
 export function Eyebrow({ children, style }: { children: ReactNode; style?: CSSProperties }) {
   return (
-    <p className="font-sans text-[14px] italic leading-6 tracking-[-0.112px] text-text-subtle" style={style}>
+    <Reveal as="p" tier="eyebrow" className="font-sans text-[14px] italic leading-6 tracking-[-0.112px] text-text-subtle" style={style}>
       {children}
-    </p>
+    </Reveal>
   );
 }
 
@@ -84,18 +93,37 @@ const MD_HEADING_TRACKING = "clamp(-0.192px, calc(-0.037209cqw - 0.02902px), -0.
 
 type HeadingSize = keyof typeof HEADING_SIZES | "md";
 
+// "lg"/"xl" are this system's own hero scale — "a page whose whole
+// composition IS the headline" (HEADING_SIZES' own comment above) — so
+// they reveal on Reveal's slower, longer-travel "hero" tier; every
+// other size (a card's own page title, a sub-section heading) uses the
+// ordinary "heading" tier.
+const HEADING_TIER: Record<HeadingSize, "heading" | "hero"> = {
+  sm: "heading",
+  section: "heading",
+  md: "heading",
+  lg: "hero",
+  xl: "hero",
+};
+
 export function Heading({ children, size = "md", className = "" }: { children: ReactNode; size?: HeadingSize; className?: string }) {
   if (size === "md") {
     return (
-      <p
+      <Reveal
+        as="p"
+        tier={HEADING_TIER[size]}
         className={`font-sans font-semibold leading-[28px] text-text-primary ${className}`}
         style={{ fontSize: MD_HEADING_FONT_SIZE, letterSpacing: MD_HEADING_TRACKING }}
       >
         {children}
-      </p>
+      </Reveal>
     );
   }
-  return <p className={`font-sans font-semibold text-text-primary ${HEADING_SIZES[size]} ${className}`}>{children}</p>;
+  return (
+    <Reveal as="p" tier={HEADING_TIER[size]} className={`font-sans font-semibold text-text-primary ${HEADING_SIZES[size]} ${className}`}>
+      {children}
+    </Reveal>
+  );
 }
 
 // weight: "normal" (default, unchanged for every existing use) or
@@ -103,23 +131,34 @@ export function Heading({ children, size = "md", className = "" }: { children: R
 // specifically calls for PP Neue Montreal Medium, not Regular, a
 // deliberate step up from every other page's body text rather than a
 // one-off worth its own component.
+//
+// reveal: false by default, deliberately NOT wired into Reveal the
+// automatic way Eyebrow/Heading are above — this system's own brief is
+// explicit that long-form body copy should not all animate ("do not
+// animate every line of long-form body copy... no excessive animation
+// on long-form body copy"), and a case-study page can run BodyCopy a
+// dozen times in one section. Opt a specific paragraph in (a section's
+// own lead line, a hero's supporting copy) by passing `reveal`, rather
+// than every paragraph on the page moving on scroll by default.
 export function BodyCopy({
   children,
   muted = false,
   weight = "normal",
   className = "",
+  reveal = false,
 }: {
   children: ReactNode;
   muted?: boolean;
   weight?: "normal" | "medium";
   className?: string;
+  reveal?: boolean;
 }) {
+  const classes = `font-sans text-[14px] leading-6 tracking-[-0.112px] ${weight === "medium" ? "font-medium" : "font-normal"} ${muted ? "text-text-subtle" : "text-text-primary"} ${className}`;
+  if (!reveal) return <p className={classes}>{children}</p>;
   return (
-    <p
-      className={`font-sans text-[14px] leading-6 tracking-[-0.112px] ${weight === "medium" ? "font-medium" : "font-normal"} ${muted ? "text-text-subtle" : "text-text-primary"} ${className}`}
-    >
+    <Reveal as="p" tier="body" className={classes}>
       {children}
-    </p>
+    </Reveal>
   );
 }
 
@@ -721,9 +760,22 @@ export function SummaryCard({
         ) : (
           image && <div className="h-[170px] w-full shrink-0 rounded-lg bg-bg-tertiary" aria-hidden />
         )}
-        <p className="font-sans text-[20px] font-extrabold italic leading-7 tracking-[-0.16px] text-text-primary">{heading}</p>
+        {/* Card title, then description a tight stagger step behind it
+            (REVEAL_STAGGER_TIGHT) — "card content: title can reveal
+            shortly after [the card], description can follow with a
+            small stagger," this system's own request for exactly this
+            card shape. Both "scroll"-triggered independently (their own
+            IntersectionObserver each), same as every other Reveal use —
+            simpler and just as correct here as a shared parent trigger
+            would be, since title and description sit only a few px
+            apart and cross the viewport edge together in practice. */}
+        <Reveal as="p" tier="heading" className="font-sans text-[20px] font-extrabold italic leading-7 tracking-[-0.16px] text-text-primary">
+          {heading}
+        </Reveal>
       </div>
-      <p className="font-sans text-[14px] leading-6 tracking-[-0.112px] text-text-subtle">{description}</p>
+      <Reveal as="p" tier="body" delay={REVEAL_STAGGER_TIGHT} className="font-sans text-[14px] leading-6 tracking-[-0.112px] text-text-subtle">
+        {description}
+      </Reveal>
     </div>
   );
 }

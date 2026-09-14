@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 
 // Figma 164:2729 ("Group 6", the Quick Review card fan) — same
 // scattered card-stack technique as Beacon's own QuickReviewCards.tsx
@@ -35,7 +34,7 @@ type CardData = {
   color: string;
   textColor: string;
   text: string;
-  image: string;
+  video: string;
   /** Pre-rotation top-left position (px), within this component's own
    * fixed 568x186 reference frame. */
   x: number;
@@ -47,22 +46,24 @@ const CARD_W = 130;
 const CARD_H = 162;
 const CARD_RADIUS = 10; // --radius-m
 
-// Two textures cover all five cards (a checkerboard for the two cream
-// cards AND the blue one, a wave pattern for the two yellow ones) —
-// get_design_context's own export shows each card's own top area as an
-// empty placeholder frame, but download_assets' own four raw images on
-// this node (a small + large export of each of the two textures) make
-// the real intent unambiguous. Reported live as "the second card does
-// not show the visual animation" — the blue card's own checkerboard was
-// missed the first time round: it's easy to miss in the composite fan
-// screenshot (its own top edge sits mostly behind card 1 and card 3),
-// but an isolated screenshot of just that card (161:1739) shows the
-// same checkerboard fill as the two cream cards, not a bare solid
-// color. Four raw images for five cards was never "one card has no
-// image" — it's two unique source textures, one of them (checkerboard)
-// just placed on three cards instead of one.
-const CHECKERBOARD = "/images/home/robotics-review-checkerboard.jpg";
-const WAVE = "/images/home/robotics-review-wave.jpg";
+// Two LOOPING VIDEOS cover all five cards (a checkerboard for the two
+// cream cards AND the blue one, a wave pattern for the two yellow
+// ones), not the static stills this file first shipped with —
+// get_design_context's own export only ever offered a flat PNG per
+// card, so the first pass reasonably read these as static textures.
+// Reported live as "these cards should use the videos in it," with the
+// two real source clips supplied directly (Revolution Robotics'
+// RewiredIA-loop.mp4/UsabilityIssues.mp4): each is a 6-7s, 1120x840,
+// ~10-12fps loop of exactly one of the two patterns — confirmed by
+// pulling a frame from each (cv2) and comparing it pixel-for-pixel
+// against the two still images this file used to reference — not a
+// coincidence of similar-looking art, the stills WERE poster frames of
+// these same two clips all along. Re-encoded to 640x480 (avconvert,
+// Preset640x480 — no ffmpeg in this environment; source is already a
+// clean 4:3, so this preset doesn't distort it) since each clip only
+// ever renders into a 130x60px card slot here.
+const CHECKERBOARD_VIDEO = "/images/home/robotics-review-checkerboard.mp4";
+const WAVE_VIDEO = "/images/home/robotics-review-wave.mp4";
 
 const CARDS: CardData[] = [
   {
@@ -70,7 +71,7 @@ const CARDS: CardData[] = [
     color: "#f8ecd7",
     textColor: "#544831",
     text: "Designing for independence",
-    image: CHECKERBOARD,
+    video: CHECKERBOARD_VIDEO,
     x: 9.95,
     y: 9.3,
     rotate: -7.45,
@@ -80,7 +81,7 @@ const CARDS: CardData[] = [
     color: "#0055bf",
     textColor: "#ede3e9",
     text: "Research with real users",
-    image: CHECKERBOARD,
+    video: CHECKERBOARD_VIDEO,
     x: 143.85,
     y: 11.74,
     rotate: 11.02,
@@ -90,7 +91,7 @@ const CARDS: CardData[] = [
     color: "#fff03b",
     textColor: "#363f22",
     text: "Iterative validation",
-    image: WAVE,
+    video: WAVE_VIDEO,
     x: 204.65,
     y: 4.34,
     rotate: -4,
@@ -100,7 +101,7 @@ const CARDS: CardData[] = [
     color: "#f8ecd7",
     textColor: "#544831",
     text: "45 kids involved",
-    image: CHECKERBOARD,
+    video: CHECKERBOARD_VIDEO,
     x: 304.65,
     y: 14.33,
     rotate: 0,
@@ -110,7 +111,7 @@ const CARDS: CardData[] = [
     color: "#fff03b",
     textColor: "#363f22",
     text: "A scalable new experience",
-    image: WAVE,
+    video: WAVE_VIDEO,
     x: 425.66,
     y: 14.33,
     rotate: 7.45,
@@ -259,7 +260,15 @@ function Card({
       }}
     >
       <div className="relative h-[60px] w-full shrink-0 overflow-hidden rounded-[8px]">
-        <Image src={card.image} alt="" aria-hidden fill sizes="130px" className="object-cover" />
+        <video
+          src={card.video}
+          aria-hidden
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 size-full object-cover"
+        />
       </div>
       <div className="flex w-full flex-1 flex-col justify-end">
         <p className={`w-full break-words ${RESTING_TEXT}`} style={{ color: card.textColor }}>

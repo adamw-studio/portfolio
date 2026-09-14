@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 
 // Figma 165:2834 ("Group 6", the Quick Review card fan) — same
 // scattered card-stack technique as Robotics' own QuickReviewCards.tsx
@@ -18,16 +17,32 @@ import Image from "next/image";
 // All four cards share ONE texture (checkerboard), not a mix of two the
 // way Robotics' own five do — confirmed via download_assets on this
 // node returning a single small+large pair, and every card's own
-// isolated get_screenshot showing the same pattern. Reused directly
-// from Robotics' own saved file (robotics-review-checkerboard.jpg) — a
-// byte-for-byte identical export, not a coincidence worth a second
-// copy of the same image under a different name.
+// isolated get_screenshot showing the same pattern.
+//
+// Video, not the static still this file first shipped with — Robotics'
+// own QuickReviewCards.tsx got the same fix for the same reason (see
+// its own doc comment for the fuller story: the "checkerboard" still
+// was itself just a poster frame of a real looping clip, RewiredIA-
+// loop.mp4, supplied directly and confirmed pixel-for-pixel against
+// that still). Reused directly from Robotics' own saved file
+// (robotics-review-checkerboard.mp4) rather than a second copy under a
+// different name — same asset both projects' own Figma files draw the
+// identical checkerboard fill from.
 //
 // Position math and the negative-rotation get_metadata/
 // get_design_context caveat: identical technique to Robotics' own file
 // (see its own doc comment for the fuller explanation) — applied again
 // here for "Context" (-7.45°) and "Contributions" (-4°), the two
 // negatively-rotated cards.
+//
+// Re-measured live, reported as misaligned: the Figma file itself moved
+// between this file's first fetch and this re-fetch (165:2835) — "Story
+// behind" changed the most (11.02°→5.04° rotation, a smaller/different
+// wrapper box, its own x/y shifted with it), and every other card's own
+// position shifted by a few px too, the same "the design itself moved"
+// situation Beacon's own QuickReviewCards doc comment already
+// describes happening there. Every x/y value below is from this
+// re-fetch, not the original one.
 type CardData = {
   id: string;
   color: string;
@@ -43,7 +58,7 @@ type CardData = {
 const CARD_W = 130;
 const CARD_H = 162;
 const CARD_RADIUS = 10; // --radius-m
-const CHECKERBOARD = "/images/home/robotics-review-checkerboard.jpg";
+const CHECKERBOARD_VIDEO = "/images/home/robotics-review-checkerboard.mp4";
 
 const CARDS: CardData[] = [
   {
@@ -52,7 +67,7 @@ const CARDS: CardData[] = [
     textColor: "#f8ecd7",
     text: "Context",
     x: 9.95,
-    y: 9.3,
+    y: 7.74,
     rotate: -7.45,
   },
   {
@@ -60,9 +75,9 @@ const CARDS: CardData[] = [
     color: "#5c0404",
     textColor: "#f8ecd7",
     text: "Story behind",
-    x: 143.85,
-    y: 11.74,
-    rotate: 11.02,
+    x: 127.11,
+    y: 10.19,
+    rotate: 5.04,
   },
   {
     id: "contributions",
@@ -70,7 +85,7 @@ const CARDS: CardData[] = [
     textColor: "#f8ecd7",
     text: "Contributions",
     x: 204.65,
-    y: 4.34,
+    y: 6.78,
     rotate: -4,
   },
   {
@@ -79,18 +94,19 @@ const CARDS: CardData[] = [
     textColor: "#f8ecd7",
     text: "Teaser",
     x: 304.65,
-    y: 14.33,
+    y: 16.78,
     rotate: 0,
   },
 ];
 
 // Card 4's own unrotated box reaches to exactly 434.65 (304.65 + 130) —
-// the fan's own rightmost extent (wider than card 3's own rotated
-// bounding box, 199.16 + 140.98 ≈ 340.14) — rounded up a little for the
-// same reason every other fan's own CONTAINER_W is. Height matches
-// card 2's own bottom edge (≈184.68), same as Robotics.
+// the fan's own rightmost extent (card 3's own rotated bounding box
+// only reaches ≈340.14) — rounded up a little for the same reason
+// every other fan's own CONTAINER_W is. Height matches card 4's own
+// bottom edge (16.78 + 162 ≈ 178.78, this fan's own group height per
+// get_metadata) with a small buffer.
 const CONTAINER_W = 436;
-const CONTAINER_H = 186;
+const CONTAINER_H = 182;
 
 const RESTING_TEXT = "font-sans font-extrabold text-[16px] leading-[18px] tracking-[-0.128px]";
 
@@ -223,7 +239,15 @@ function Card({
       }}
     >
       <div className="relative h-[60px] w-full shrink-0 overflow-hidden rounded-[8px]">
-        <Image src={CHECKERBOARD} alt="" aria-hidden fill sizes="130px" className="object-cover" />
+        <video
+          src={CHECKERBOARD_VIDEO}
+          aria-hidden
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 size-full object-cover"
+        />
       </div>
       <div className="flex w-full flex-1 flex-col justify-end">
         <p className={`w-full break-words ${RESTING_TEXT}`} style={{ color: card.textColor }}>

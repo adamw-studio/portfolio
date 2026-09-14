@@ -719,19 +719,11 @@ function Card({
             />
           )}
         </div>
-        {/* Figma 76:293 etc. — a hairline divider (0.5px stroke, "Vector
-            10") between the video and the title, present only in the
-            *resting* card (this same card's own expanded node, e.g.
-            Foundation's 57:24536, has no such line at all — confirmed
-            absent, not just unfetched). Colored per-card to match that
-            card's own textColor: five of the six cards' own divider
-            assets literally are that exact hex; the sixth ("I care
-            about", #EDE3E9 vs. its own title's #eceaf8) is close enough
-            to read as the same intended pair that it's almost certainly
-            Figma's own asset not getting re-exported after that card's
-            text color was last tweaked — textColor used uniformly here
-            rather than hardcoding one card's own slightly-off exception. */}
-        {!selected && <div className="h-px w-full shrink-0" style={{ backgroundColor: card.textColor }} />}
+        {/* Figma 76:293 etc. draws a hairline divider here (0.5px stroke,
+            "Vector 10") between the video and the title in the resting
+            card — dropped on direct instruction ("remove the lines from
+            the cards"), reported live against a screenshot of these
+            cards showing it. */}
       </div>
       <div className="flex w-full flex-col gap-2">
         {/* Stays visible on a settled (dimmed) card — Figma's own
@@ -752,15 +744,9 @@ function Card({
           {card.text}
         </p>
         {/* Figma's six expanded "Card / Default" nodes all add this same
-            hairline divider directly below the title (absent from every
-            resting node, which instead has it above the title, between
-            it and the video — a structural flip, not the same element
-            just restyled). Rendered only when selected, matching Figma's
-            own expanded-only placement; no open/close transition of its
-            own since the title/description around it don't fade this in
-            gradually either — it's part of the same one-beat font/color
-            swap those already do. */}
-        {selected && <div className="h-px w-full shrink-0" style={{ backgroundColor: card.textColor }} />}
+            hairline divider directly below the title — dropped for the
+            same reason and at the same time as the resting card's own
+            divider just above. */}
         {/* Collapsed to zero layout height via the grid-rows 0fr/1fr trick
             (not just opacity: 0) whenever this card isn't selected — kept
             mounted throughout (not conditionally rendered) so it still

@@ -94,6 +94,20 @@ const CARD_RADIUS = 10; // --radius-m
 //    get_metadata for everything else (x, width/height, and every other
 //    card's y) — the discrepancy is specific to y on negative rotation,
 //    not a reason to distrust get_metadata wholesale.
+//
+// x is a deliberate departure from Figma's own raw measurement, not
+// another data-source correction: reported live as the two edge cards
+// ("Joining Orchestro," "Designing what's next") reading as disconnected
+// from the group. Figma's own gaps genuinely are uneven — the two outer
+// gaps (card1→2, card5→6) measured roughly 129-134px against the three
+// inner gaps' own 61-114px — real per Figma, but not what was asked
+// for here. Cards 2-5's own x (and the gaps between them) are
+// untouched; card 1 stays anchored at its own measured x (0 is this
+// frame's own left edge); every card from 2 on is shifted left by a
+// uniform 33.9px (tightening the 1→2 gap to roughly match gap 3→4's
+// own 100px), and card 6 gets an additional 28.46px on top of that
+// (tightening 5→6 to the same ~100px) — closing both outer gaps
+// toward the inner ones' own scale instead of inventing a new rhythm.
 const CARDS: CardData[] = [
   {
     id: "joining-orchestro",
@@ -118,7 +132,7 @@ const CARDS: CardData[] = [
     description: "Inherited Beacon with no consistent design direction across the experience.",
     text: "A fragmented product",
     image: "/images/home/beacon-review-fragmented-product.jpg",
-    x: 152.65,
+    x: 118.75,
     y: 16.51,
     rotate: 11.02,
   },
@@ -129,7 +143,7 @@ const CARDS: CardData[] = [
     text: "Listening to users",
     description: "Interviews revealed people liked the concept, but didn’t trust the AI outputs.",
     image: "/images/home/beacon-review-listening-users.jpg",
-    x: 213.45,
+    x: 179.55,
     y: 9.1,
     rotate: -8.28,
   },
@@ -140,7 +154,7 @@ const CARDS: CardData[] = [
     text: "A vision workshop",
     description: "Led leadership in London to rethink what the next generation of Beacon should be.",
     image: "/images/home/beacon-review-vision-workshop.jpg",
-    x: 313.45,
+    x: 279.55,
     y: 19.1,
     rotate: 0,
   },
@@ -151,7 +165,7 @@ const CARDS: CardData[] = [
     text: "Meet Beam",
     description: "Reimagined Beacon as a conversational, chat-led experience with an AI companion.",
     image: "/images/home/beacon-review-meet-beam.jpg",
-    x: 427.22,
+    x: 393.32,
     y: 19.1,
     rotate: 4.88,
   },
@@ -162,26 +176,21 @@ const CARDS: CardData[] = [
     text: "Designing what’s next",
     description: "Now prototyping how AI speed and human judgment work together in ideation.",
     image: "/images/home/beacon-review-designing-next.jpg",
-    x: 555.68,
+    x: 493.32,
     y: 19.06,
     rotate: 15,
   },
 ];
 
-// Width: rightmost is card 6's own flat right edge in its rotated
-// bounding box (555.68 origin + its own 167.5-wide rotated box ≈
-// 704.4) — kept generous (rather than trimmed to this frame's own
-// reported 662.499-wide bounding box) since under-sizing this would
-// make the responsive scale-to-fit read the fan as wider than it
-// actually renders and clip the rightmost card against the wrapper's
-// own overflow-hidden edge; a few px of unused right margin costs
-// nothing visible.
-// Height: 196, corrected alongside the CARDS y-fix above — recomputed
-// from the six cards' own true rotated extents using the corrected y
-// values, and lands almost exactly on this frame's own reported
-// 195.125 (a good sign the y-fix is right, not just a fix for the one
-// card that got reported live).
-const CONTAINER_W = 705;
+// Width: recomputed alongside the CARDS x-tightening above — card 6's
+// own rotated bounding box now reaches to ≈642 (493.32 origin, own
+// center at +65, ±83.75 half-width at 15°), rounded up a little for
+// the same reason the old, wider value was: under-sizing this makes
+// the responsive scale-to-fit read the fan as wider than it actually
+// renders and clips the rightmost card against the wrapper's own
+// overflow-hidden edge.
+// Height: unchanged — the x-tightening didn't touch any card's own y.
+const CONTAINER_W = 648;
 const CONTAINER_H = 196;
 
 // Expanded-card sizing below (301x400, 12px padding, 20px radius, a
@@ -390,6 +399,17 @@ export default function QuickReviewCards() {
   );
 }
 
+// Structure checked directly against 109:3581 ("Joining Orchestro -
+// Small") and 109:3520 ("...- Large") — the same two nodes as their
+// own six siblings all share one layout, confirmed there previously —
+// rather than assumed from AboutCardStack's own card, whose "hairline
+// divider between the media and the title" doc comment this file's own
+// resting/expanded card had carried over unexamined. Neither Beacon
+// node has a divider anywhere: the resting card is just image, then
+// title pushed to the card's own bottom edge by this element's own
+// justify-between; the expanded card is image+title grouped at the
+// top (gap-2) and description pushed to the bottom the same way, nothing
+// between title and description either.
 function Card({
   card,
   visible,
@@ -447,7 +467,7 @@ function Card({
       onMouseLeave={() => onHoverChange(false)}
       onFocus={() => onHoverChange(true)}
       onBlur={() => onHoverChange(false)}
-      className="absolute left-0 top-0 flex cursor-pointer flex-col justify-between overflow-hidden outline-none will-change-transform focus-visible:ring-2 focus-visible:ring-text-primary"
+      className="absolute left-0 top-0 flex cursor-pointer flex-col overflow-hidden outline-none will-change-transform focus-visible:ring-2 focus-visible:ring-text-primary"
       style={{
         width,
         height,
@@ -472,6 +492,16 @@ function Card({
             ].join(", "),
       }}
     >
+      {/* Two top-level groups, not three — matches 109:3581/109:3520
+          exactly: [image, title-if-selected] grouped together at the
+          top (gap-2), then a second, flex-1 group that fills the rest
+          of the card and justifies its own content to the bottom. Doing
+          it this way (rather than three siblings under one outer
+          justify-between) matters specifically for the resting state:
+          a third, zero-height flex sibling still counts as a
+          justify-between participant and would split the remaining
+          space into two gaps instead of one, floating the title in the
+          middle of the card instead of flush at the bottom. */}
       <div className="flex w-full shrink-0 flex-col gap-2">
         <div
           className="relative w-full shrink-0 overflow-hidden rounded-[8px]"
@@ -489,19 +519,30 @@ function Card({
             className="object-cover"
           />
         </div>
-        {!selected && <div className="h-px w-full shrink-0" style={{ backgroundColor: card.textColor }} />}
+        {selected && (
+          <p
+            className={`w-full break-words ${SELECTED_TITLE_TEXT}`}
+            style={{
+              color: card.textColor,
+              transition: reducedMotion ? undefined : `color ${transitionMs}ms ${EASE_OUT}`,
+            }}
+          >
+            {card.text}
+          </p>
+        )}
       </div>
-      <div className="flex w-full flex-col gap-2">
-        <p
-          className={`w-full break-words ${selected ? SELECTED_TITLE_TEXT : RESTING_TEXT}`}
-          style={{
-            color: card.textColor,
-            transition: reducedMotion ? undefined : `font-size ${transitionMs}ms ${EASE_OUT}, color ${transitionMs}ms ${EASE_OUT}`,
-          }}
-        >
-          {card.text}
-        </p>
-        {selected && <div className="h-px w-full shrink-0" style={{ backgroundColor: card.textColor }} />}
+      <div className="flex w-full flex-1 flex-col justify-end">
+        {!selected && (
+          <p
+            className={`w-full break-words ${RESTING_TEXT}`}
+            style={{
+              color: card.textColor,
+              transition: reducedMotion ? undefined : `color ${transitionMs}ms ${EASE_OUT}`,
+            }}
+          >
+            {card.text}
+          </p>
+        )}
         <div
           className="grid w-full"
           style={{
@@ -511,7 +552,7 @@ function Card({
         >
           <p
             aria-hidden={!selected}
-            className="w-full min-h-0 overflow-hidden break-words font-sans text-[16px] leading-[normal] tracking-[-0.128px]"
+            className="w-full min-h-0 overflow-hidden break-words font-sans text-[16px] leading-6"
             style={{
               color: withAlpha(card.textColor, 0.8),
               opacity: selected ? 1 : 0,

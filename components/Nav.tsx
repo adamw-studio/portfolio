@@ -65,7 +65,19 @@ const navItemInactive = "border-transparent font-normal text-text-subtle hover:b
 // even if it were wanted.
 const solidPill = "border border-border-disabled bg-bg-default";
 
-export default function Nav() {
+// Figma 164:2274 ("Segmented Control," the case-study variant of this
+// same component) — a case-study page swaps the Home/Play links for a
+// single plain project-name label instead: not a link (there's nowhere
+// else for it to go), not styled like an active segment either (no
+// bg-tertiary/border-disabled pill behind it — this export's own Nav
+// Item has neither), just text-primary at the segment's own regular
+// weight. `w-[66.667px]` (navItemBase's own fixed width, sized for
+// "Home"/"Play" specifically) is dropped here too — a project name is
+// a different length on every case study and Figma's own export never
+// constrains this node's width at all.
+const projectLabel = "flex items-center justify-center gap-[3px] rounded-[20px] px-2 py-1.5 text-[14px] font-normal leading-4 tracking-[-0.112px] text-text-primary";
+
+export default function Nav({ label }: { label?: string } = {}) {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
 
@@ -77,14 +89,18 @@ export default function Nav() {
     // opposite edge.
     <div className="fixed inset-x-0 top-6 z-20 flex justify-center px-4">
       <div className={`relative flex items-center gap-1 overflow-hidden rounded-full p-1 ${solidPill}`}>
-        {links.map((link) => {
-          const active = isActiveHref(pathname, link.activeMatch);
-          return (
-            <Link key={link.href} href={link.href} className={`${navItemBase} ${active ? navItemActive : navItemInactive}`}>
-              {link.label}
-            </Link>
-          );
-        })}
+        {label ? (
+          <span className={projectLabel}>{label}</span>
+        ) : (
+          links.map((link) => {
+            const active = isActiveHref(pathname, link.activeMatch);
+            return (
+              <Link key={link.href} href={link.href} className={`${navItemBase} ${active ? navItemActive : navItemInactive}`}>
+                {link.label}
+              </Link>
+            );
+          })
+        )}
 
         {/* Theme segment: both icons always visible (Figma's own two-
             state segmented control), the *inner* icon's own bg-bg-

@@ -17,11 +17,12 @@ const BEACON_PASSWORD = "PrEtZelDay2_0_2_6";
 // "use client": ssr:false only works from inside a Client Component.
 const BeaconCaseStudyBody = dynamic(() => import("@/components/BeaconCaseStudyBody"), { ssr: false });
 
-// The sitewide <Nav /> (Home/Play + theme toggle, top-center) is rendered
-// by CaseStudy.tsx itself, alongside its own bottom-center Prev/Next
-// chrome (CaseStudyNav) — the two sit at opposite edges so neither
-// crowds the other. PasswordGate keeps rendering its own BackButton
-// while locked either way, independent of this.
+// <Nav label="Beacon"/> and <BackButton/> are rendered by
+// BeaconCaseStudyBody itself (unlike the sitewide Home/Play <Nav/> plus
+// bottom-center Prev/Next chrome CaseStudy.tsx renders for the other,
+// page-by-page case studies) — this one has no page-level Prev/Next of
+// its own. PasswordGate keeps rendering its own BackButton while locked
+// either way, independent of this.
 export default function BeaconCaseStudy() {
   return (
     <ThemeProvider>

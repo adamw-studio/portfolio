@@ -1,19 +1,12 @@
-import { Eyebrow, Heading, BodyCopy, TextCard } from "@/components/case-study/primitives";
+import { Heading, BodyCopy } from "@/components/case-study/primitives";
 
-// Figma 126:5248 — a "[02]" step number and three paragraphs, each
-// separated by a genuine blank-line paragraph in Figma's own text node
-// (unlike Context's own two adjacent paragraphs) — reproduced as three
-// separate BodyCopy elements in a gap-6 column, this system's own
-// established pattern for that blank-line spacing. Plain TextCard: all
-// three paragraphs land inside the card's 600px budget at Figma's own
-// 440px desktop width.
-export default function SixMonthsEarlierPage() {
+// Figma 165:2773 — three paragraphs, each separated by a genuine
+// blank-line paragraph in Figma's own text node, carried over verbatim
+// from the old page-by-page SixMonthsEarlierPage.tsx.
+export default function SixMonthsEarlierSection() {
   return (
-    <TextCard>
-      <div className="flex flex-col gap-1">
-        <Eyebrow style={{ fontFeatureSettings: '"zero" 1, "lnum" 1, "tnum" 1' }}>[02]</Eyebrow>
-        <Heading size="md">6 months earlier</Heading>
-      </div>
+    <div className="flex w-full flex-col gap-2">
+      <Heading size="section">6 months earlier</Heading>
       <div className="flex flex-col gap-6">
         <BodyCopy>
           One day, my mom invited me to lunch. We started talking about her plans for her 60th birthday that autumn.
@@ -30,6 +23,6 @@ export default function SixMonthsEarlierPage() {
           remarkable 40-minute documentary celebrating my mom’s life, work and career so far.
         </BodyCopy>
       </div>
-    </TextCard>
+    </div>
   );
 }

@@ -35,7 +35,7 @@ type CardData = {
   color: string;
   textColor: string;
   text: string;
-  image: string | null;
+  image: string;
   /** Pre-rotation top-left position (px), within this component's own
    * fixed 568x186 reference frame. */
   x: number;
@@ -47,13 +47,20 @@ const CARD_W = 130;
 const CARD_H = 162;
 const CARD_RADIUS = 10; // --radius-m
 
-// Two textures cover four of the five cards (a checkerboard for the
-// two cream cards, a wave pattern for the two yellow ones) —
+// Two textures cover all five cards (a checkerboard for the two cream
+// cards AND the blue one, a wave pattern for the two yellow ones) —
 // get_design_context's own export shows each card's own top area as an
 // empty placeholder frame, but download_assets' own four raw images on
-// this node (a small + large export of each of two textures) make the
-// real intent unambiguous. The blue card carries no raw image anywhere
-// in the subtree — solid color only, not a missing asset.
+// this node (a small + large export of each of the two textures) make
+// the real intent unambiguous. Reported live as "the second card does
+// not show the visual animation" — the blue card's own checkerboard was
+// missed the first time round: it's easy to miss in the composite fan
+// screenshot (its own top edge sits mostly behind card 1 and card 3),
+// but an isolated screenshot of just that card (161:1739) shows the
+// same checkerboard fill as the two cream cards, not a bare solid
+// color. Four raw images for five cards was never "one card has no
+// image" — it's two unique source textures, one of them (checkerboard)
+// just placed on three cards instead of one.
 const CHECKERBOARD = "/images/home/robotics-review-checkerboard.jpg";
 const WAVE = "/images/home/robotics-review-wave.jpg";
 
@@ -73,7 +80,7 @@ const CARDS: CardData[] = [
     color: "#0055bf",
     textColor: "#ede3e9",
     text: "Research with real users",
-    image: null,
+    image: CHECKERBOARD,
     x: 143.85,
     y: 11.74,
     rotate: 11.02,
@@ -251,13 +258,9 @@ function Card({
           : [`opacity 400ms ${EASE_OUT} ${delay}ms`, `transform ${hovered ? HOVER_MS : REST_MS}ms ${EASE_OUT} ${hovered ? 0 : delay}ms`].join(", "),
       }}
     >
-      {card.image ? (
-        <div className="relative h-[60px] w-full shrink-0 overflow-hidden rounded-[8px]">
-          <Image src={card.image} alt="" aria-hidden fill sizes="130px" className="object-cover" />
-        </div>
-      ) : (
-        <div className="h-[60px] w-full shrink-0" />
-      )}
+      <div className="relative h-[60px] w-full shrink-0 overflow-hidden rounded-[8px]">
+        <Image src={card.image} alt="" aria-hidden fill sizes="130px" className="object-cover" />
+      </div>
       <div className="flex w-full flex-1 flex-col justify-end">
         <p className={`w-full break-words ${RESTING_TEXT}`} style={{ color: card.textColor }}>
           {card.text}

@@ -41,11 +41,13 @@ export default function DiscoveryPage() {
               src="/images/home/robotics-discovery-kit.jpg"
               alt="A robotics kit's parts and cables laid out on a workshop table, ready for assembly"
               caption="Kids had a difficult time to follow the onboarding flow within the app"
+              width={384}
             />
             <Exhibit
               src="/images/home/robotics-discovery-control.jpg"
               alt="Kids controlling an assembled robot with a phone, seen from above"
               caption="Kids loved navigation of the control center, but they were asking for a way to watch the robots through the screen"
+              width={384}
             />
           </div>
         </div>

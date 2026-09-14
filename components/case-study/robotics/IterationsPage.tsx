@@ -27,6 +27,7 @@ export default function IterationsPage() {
           src="/images/home/robotics-iterations-flow.jpg"
           alt="A UX flow diagram mapping the robot-configuration screen's states and an interactive-components map, in white wireframe lines on black"
           caption="Prototypes were developed and iteratively improved, starting with the most complex flow, the robot configuration."
+          width={384}
         />
 
         <Divider />
@@ -54,6 +55,7 @@ export default function IterationsPage() {
           src="/images/home/robotics-gallery-1.jpg"
           alt="Workshop notes and the robotics kit laid out on a table"
           caption="For live testing sessions with kids, we prepared food, drink and a little gift, which was a special part for your robotics kit - provided by the company"
+          width={384}
         />
       </CardBody>
     </ScrollFadeCard>

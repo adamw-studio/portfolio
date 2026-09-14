@@ -80,10 +80,12 @@ export default function OutcomePage() {
           src="/images/home/robotics-outcome-library-1.jpg"
           alt="A grid of design-system component variants: card layouts with motor and sensor controls in different states"
           caption="I’ve created a comprehensive design library that helped engineers continue to work on implementing new features in the future."
+          width={384}
         />
         <Exhibit
           src="/images/home/robotics-outcome-library-2.jpg"
           alt="Filter panels and phone-screen mockups showing the app's Learning Mode and coding screens"
+          width={384}
         />
         <BodyCopy>
           In total, we tested our designs with 45 kids, ensuring the final product was not only intuitive and fun but

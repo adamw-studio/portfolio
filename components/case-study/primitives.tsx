@@ -443,6 +443,7 @@ export function Exhibit({
   video = false,
   poster,
   height = 240,
+  width = 512,
   frame = true,
 }: {
   src: string;
@@ -461,6 +462,22 @@ export function Exhibit({
   poster?: string;
   /** Exhibit box height in px — every existing caller (Robotics/Documentary) sizes its own images for the default 240px; Beacon's own exhibits (Figma 148:7779 etc.) are drawn at 300px, a real difference confirmed against that node's own metadata, not an inconsistency to normalize away — passing 240 there under-cropped/squeezed the image relative to what object-cover was meant to show, reported live as "the ratio of these cards are not good." */
   height?: number;
+  /** The box's own rendered width at the viewport `height` was designed
+   * for — Beacon's own narrative column (512px) by default; Robotics'
+   * ScrollFadeCard callers pass their own narrower effective width
+   * (384px, after CardBody's padding) instead. Used only to derive the
+   * box's aspect ratio (`width / height`), not applied as a literal
+   * size — the box itself always renders at `w-full` of its actual
+   * parent. Without this, a flat `height` in px stayed exactly that
+   * tall even once the surrounding column had already shrunk well
+   * below `width` (a phone screen), squeezing what `object-cover` had
+   * to show into a far more cropped, nearly-square box than the design
+   * ever intended and cutting real content off the sides — reported
+   * live as "images are not responsive and cut off in mobile."
+   * Deriving height from this ratio instead keeps the box's own visual
+   * proportions constant at every width, scaling it down the same way
+   * the rest of the page already does. */
+  width?: number;
   /** false drops the bg-bg-tertiary card box (background fill + rounded
    * corners) around the image, leaving just the artwork itself — for a
    * transparent-background illustration that's meant to sit directly on
@@ -477,7 +494,7 @@ export function Exhibit({
     <div className="flex w-full flex-col items-center gap-3">
       <div
         className={`relative w-full ${frame ? "overflow-hidden rounded-2xl bg-bg-tertiary" : ""}`}
-        style={{ height }}
+        style={{ aspectRatio: `${width} / ${height}` }}
       >
         {video ? (
           <video

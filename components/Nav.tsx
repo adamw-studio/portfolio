@@ -145,38 +145,26 @@ export default function Nav({ label }: { label?: string } = {}) {
           only happened to work at one specific canvas width.
           gap-3 (12px): the back button's own gap from the date widget
           next to it, matching this fetch's own Frame 2147204721.
-          NavDateWidget itself is `hidden sm:flex` when `label` is set
-          (case-study pages only), not the earlier `invisible lg:visible`
-          this file used before the back button moved into this same
-          flex row: that older trick was working around the OLD back
-          button's own `fixed` position colliding with this widget below
-          a certain width; now that both live in one normal flex row
-          there's nothing left to collide with — this hides the widget
-          below `sm` because Figma's own mobile export (178:4288) drops
-          it outright at that width, leaving only the back button in
-          this slot.
-          Now unconditional (every Nav, `label` or not), not just the
-          case-study variant: the home page's own Nav was left showing
-          its widget at every width on the reasoning that nothing there
-          competes for the same space the way a case-study page's back
-          button does — true, but incomplete. Checked live at 375px: the
-          date widget's own fixed-width text column (NavDateWidget's own
-          w-[71px]) can't shrink at all, so once the segmented control's
-          own padding grew (12px, up from 8px), the *theme toggle* on
-          the opposite flex-1 side absorbed the entire deficit instead
-          and rendered visibly crushed (28px wide, half its own 56px
-          natural size) — a real, if less obvious, overflow bug on the
-          one Nav variant this hidden-below-sm treatment hadn't reached
-          yet. */}
+          NavDateWidget itself now always renders — the width squeeze
+          that used to justify hiding the *whole* thing below `sm` (both
+          here and on the case-study variant) turned out to only ever be
+          about its own weekday/date text column, not the clock icon
+          next to it (24px, never the problem): that text column now
+          hides itself internally below `sm` (see NavDateWidget.tsx's
+          own comment), leaving just the icon in this slot at every
+          width. That's a deliberate reversal of an earlier version of
+          this same comment, which hid the icon along with the text —
+          the clock widget's own hover/tap-to-expand interaction needs
+          to stay reachable on a phone ("do not make the interaction
+          inaccessible on touch devices"), which hiding the icon
+          entirely would have broken outright. */}
       <div className="flex flex-1 items-center gap-3">
         {label && (
           <Link href="/" aria-label="Back to home" className={backButtonClasses}>
             <Image src="/images/home/work-back-arrow.svg" alt="" width={16} height={16} className={themedIcon} />
           </Link>
         )}
-        <div className="hidden sm:flex">
-          <NavDateWidget />
-        </div>
+        <NavDateWidget />
       </div>
 
       <div className="flex shrink-0 items-center gap-1">

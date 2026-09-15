@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useTheme } from "@/components/ThemeContext";
+import { BUDAPEST_TZ, getBudapestTime } from "@/components/budapestClock";
 
 // Figma 175:4031 (light) / 175:3994 (dark) — the nav's own "watch
 // widget," rebuilt as a live analog clock (real hour/minute hands)
@@ -47,16 +48,28 @@ const TICKS: { cx: number; cy: number; r: number; accent?: boolean }[] = [
 // clockwise for a positive angle with Y pointing down (the same
 // convention a clock face already uses), so no sign flip is needed
 // going from "degrees clockwise from 12 o'clock" to this transform.
+//
+// Budapest's own wall-clock time, not the visitor's local time: this
+// clock (and the expanded widget it grows into, NavClockWidget.tsx) is
+// "MY local clock / portfolio identity, not the visitor's location" —
+// getBudapestTime resolves the real instant `date` represents into
+// Budapest's own hour/minute/second via Intl, correctly tracking CET/
+// CEST across DST changes rather than a fixed offset. Milliseconds
+// still come from the real `date` (Intl only reports whole seconds) —
+// folded back in here for the same sub-second hand smoothness as before.
 function getHandAngles(date: Date) {
-  const hours = date.getHours() % 12;
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds() + date.getMilliseconds() / 1000;
-  const minuteAngle = ((minutes + seconds / 60) / 60) * 360;
-  const hourAngle = ((hours + (minutes + seconds / 60) / 60) / 12) * 360;
+  const { hour, minute, second } = getBudapestTime(date);
+  const seconds = second + date.getMilliseconds() / 1000;
+  const hours = hour % 12;
+  const minuteAngle = ((minute + seconds / 60) / 60) * 360;
+  const hourAngle = ((hours + (minute + seconds / 60) / 60) / 12) * 360;
   return { hourAngle, minuteAngle };
 }
 
-const TIME_LABEL_FORMAT = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit" });
+// Budapest time here too, matching the hands themselves — an aria-label
+// reading out the visitor's own local time while the hands point at
+// Budapest's would just be a second, disagreeing clock.
+const TIME_LABEL_FORMAT = new Intl.DateTimeFormat("en-US", { timeZone: BUDAPEST_TZ, hour: "numeric", minute: "2-digit" });
 
 export function AnalogClock() {
   const { theme } = useTheme();

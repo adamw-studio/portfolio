@@ -2,9 +2,9 @@
 // so multiple section components (page.tsx, SelectedWorks.tsx, …) can share
 // one definition instead of redeclaring the same classes.
 
-// Body copy shares one style throughout: 14px/24px line-height, tracking
-// -0.128px, in Geist.
-export const bodyText = "font-sans text-[14px] leading-6 tracking-[-0.128px] text-text-primary";
+// Body copy shares one style throughout: 14px/24px line-height, 0%
+// letter-spacing (reported live as wrong at -0.128px), in Geist.
+export const bodyText = "font-sans text-[14px] leading-6 tracking-normal text-text-primary";
 
 // Headings use Gentium Basic (serif) at 20px, matching Figma's own size
 // (an earlier revision had briefly overridden this to 16px, since reverted

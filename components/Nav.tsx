@@ -46,28 +46,39 @@ function isActiveHref(pathname: string, activeMatch: string) {
 // the file itself changed back to a full pill, the same corner
 // treatment the old floating-pill nav always used.
 //
-// px-3.5 (14px) on the active state, not the inactive state's own
-// px-2 (8px) — Figma's own export gives the *active* "Home" instance an
-// explicit 66.667px width, wider than "Home" actually needs at 8px
-// padding (confirmed live: it measures 54px at 8px padding, not
-// 66.667). A first pass here tried reproducing that gap as a bare
-// min-w-[66.667px] instead of real padding, which happened to fix
-// "Home" (its own text is short enough to hit that floor) but did
-// nothing for "Playground" once *it* was the active item — its own
-// text is already wider than 66.667px at 8px padding, so the min-width
-// floor never engaged and it kept rendering at the plain inactive
-// padding, reported live as still wrong. The fix is the padding itself,
-// not a width floor that only happens to help short labels: solving
-// 54px-wide "Home" at 8px padding for the padding that actually
-// produces Figma's own 66.667px (66.667 = "Home"'s own 38.43px-wide
-// text + 2×padding) gives ~14px — Tailwind's px-3.5 — a real, symmetric
-// boost that widens *either* item's own active pill by the same
-// amount, "Playground" included, rather than a floor only "Home" ever
-// reaches.
+// px-2 (8px), uniformly, for every item in every state — including
+// active. Two earlier passes at this file tried to explain away "Home"'s
+// own explicit 66.667px width in its active instance (175:4049) as a
+// general "active state gets extra padding" rule: first as a bare
+// min-w-[66.667px] on the active class (which happened to widen "Home",
+// since its own text is short enough to hit that floor, but silently
+// did nothing once "Playground" became the active item instead), then
+// as a flat px-3.5 boost applied to *any* active item (which did widen
+// "Playground" too — but reported live as still wrong, because nothing
+// ever asked it to widen at all). What actually settles this: Figma's
+// own generic "Nav Item" component set (37:10089, Default/Hover/
+// Selected) gives all three states the identical plain 8px/6px padding
+// — no state-based width rule exists anywhere in this component.
+// 175:4049's own 66.667px is a one-off override on that specific
+// instance, not a systematic "selected" behavior; re-checking what
+// "Playground" itself measures as the active item *without* any of
+// these padding hacks (86px, Medium-weight text at plain 8px padding)
+// lines up almost exactly with Figma's own *inactive* Playground
+// instance (83px, Regular weight, same 8px padding) — a few px of
+// difference from the heavier font weight alone, nothing more. Home's
+// own extra width is handled separately, directly on that one link, not
+// smuggled into a state-based rule every other item was never asked to
+// share.
 const navItemBase =
-  "relative flex items-center justify-center gap-[3px] overflow-hidden rounded-full border py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,border-color,padding,color] duration-150";
-const navItemActive = "px-3.5 border-border-disabled bg-bg-tertiary font-medium text-text-primary";
-const navItemInactive = "px-2 border-transparent font-normal text-text-subtle hover:border-border-subtle hover:bg-bg-tertiary hover:text-text-primary";
+  "relative flex items-center justify-center gap-[3px] overflow-hidden rounded-full border px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,border-color,color] duration-150";
+const navItemActive = "border-border-disabled bg-bg-tertiary font-medium text-text-primary";
+const navItemInactive = "border-transparent font-normal text-text-subtle hover:border-border-subtle hover:bg-bg-tertiary hover:text-text-primary";
+// "Home"'s own explicit 66.667px (175:4049) — unconditional, not just
+// while active: Figma never shows this instance in an inactive state to
+// confirm whether it would shrink back down, and pinning it constant
+// avoids the segmented control's own width jumping by ~13px depending
+// on which page is current, which no fetch ever asked for either.
+const HOME_MIN_WIDTH = "min-w-[66.667px]";
 
 // Figma 177:4238 (light) / 177:4203 (dark) / 178:4288 (mobile) — a fresh
 // re-fetch of the case-study variant of this same component, superseding
@@ -169,7 +180,11 @@ export default function Nav({ label }: { label?: string } = {}) {
           links.map((link) => {
             const active = isActiveHref(pathname, link.activeMatch);
             return (
-              <Link key={link.href} href={link.href} className={`${navItemBase} ${active ? navItemActive : navItemInactive}`}>
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`${navItemBase} ${active ? navItemActive : navItemInactive} ${link.href === "/" ? HOME_MIN_WIDTH : ""}`}
+              >
                 {link.label}
               </Link>
             );

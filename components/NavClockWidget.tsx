@@ -6,12 +6,18 @@ import { ClockArtwork } from "@/components/ClockArtwork";
 import { useTheme } from "@/components/ThemeContext";
 import { getBudapestTime, getBudapestTzAbbr, getTimeOfDayMessage, DIGITAL_TIME_FORMAT } from "@/components/budapestClock";
 
-// Same accent pair as AnalogClock.tsx/ClockArtwork.tsx's own
-// ACCENT_COLOR — kept as one more literal copy here rather than an
-// import specifically because it's read through a CSS custom property
-// (`--clock-accent`, set inline below) for the location row's own dot,
-// not passed as a React prop like the SVGs' own fill colors are.
-const ACCENT_COLOR = { light: "#FFA000", dark: "#F75C03" } as const;
+// Same accent pair as ClockArtwork.tsx's own ACCENT_COLOR — kept as one
+// more literal copy here rather than an import specifically because
+// it's read through a CSS custom property (`--clock-accent`, set
+// inline below) for the location row's own dot, not passed as a React
+// prop like the SVG's own fill colors are. Figma's own exported asset
+// for this specific dot happens to reuse one fixed hex (#F75C03) in
+// both theme nodes rather than swapping — but the brief is explicit
+// that this dot "should match the orange accent used inside the
+// abstract artwork," which DOES swap per theme (confirmed via the
+// artwork's own two node fetches), so this stays synced to that rather
+// than reproducing what reads as a one-off oversight in the source file.
+const ACCENT_COLOR = { light: "#F75C03", dark: "#FFA50A" } as const;
 
 // Figma 187:4688 (dark) / 182:4527 (light) — the compact "watch widget"
 // (AnalogClock.tsx, next to today's weekday/date) now unfolds into a

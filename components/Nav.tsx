@@ -40,16 +40,18 @@ function isActiveHref(pathname: string, activeMatch: string) {
   return pathname === activeMatch || pathname.startsWith(`${activeMatch}/`);
 }
 
-// rounded-sm (this project's own --radius-sm, 8px — see globals.css's
-// own renaming note), not the pill version's rounded-full: this export's
-// own Nav Item corners are square-ish now. No shared fixed width across
-// both items either (the old pill's own w-[66.667px] on navItemBase,
-// "sized for Home/Play specifically") — this export only constrains
-// "Home"'s own active-state width explicitly and leaves "Playground"
-// (a longer word) to its own natural content width, so each item just
-// sizes to its own padding + text now.
+// rounded-full — re-confirmed against a fresh re-fetch of this same
+// node: an earlier fetch had these at rounded-sm (this project's own
+// --radius-sm, 8px), corrected live ("corners should be rounded") once
+// the file itself changed back to a full pill, the same corner
+// treatment the old floating-pill nav always used. No shared fixed
+// width across both items either (the old pill's own w-[66.667px] on
+// navItemBase, "sized for Home/Play specifically") — this export only
+// constrains "Home"'s own active-state width explicitly and leaves
+// "Playground" (a longer word) to its own natural content width, so
+// each item just sizes to its own padding + text now.
 const navItemBase =
-  "relative flex items-center justify-center gap-[3px] overflow-hidden rounded-sm border px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,border-color,color] duration-150";
+  "relative flex items-center justify-center gap-[3px] overflow-hidden rounded-full border px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,border-color,color] duration-150";
 const navItemActive = "border-border-disabled bg-bg-tertiary font-medium text-text-primary";
 const navItemInactive = "border-transparent font-normal text-text-subtle hover:border-border-subtle hover:bg-bg-tertiary hover:text-text-primary";
 
@@ -58,7 +60,7 @@ const navItemInactive = "border-transparent font-normal text-text-subtle hover:b
 // for a single plain project-name label instead: not a link (there's
 // nowhere else for it to go), not styled like an active segment either,
 // just text-primary at the segment's own regular weight.
-const projectLabel = "flex items-center justify-center gap-[3px] rounded-sm px-2 py-1.5 text-[14px] font-normal leading-4 tracking-[-0.112px] text-text-primary";
+const projectLabel = "flex items-center justify-center gap-[3px] rounded-full px-2 py-1.5 text-[14px] font-normal leading-4 tracking-[-0.112px] text-text-primary";
 
 export default function Nav({ label }: { label?: string } = {}) {
   const pathname = usePathname();
@@ -69,17 +71,23 @@ export default function Nav({ label }: { label?: string } = {}) {
     // spare ancestor height for `sticky` to hold position within.
     // top-0/inset-x-0, not top-6/px-4: this bar now runs flush to the
     // viewport's own top edge and both side edges, not inset from them
-    // the way the floating pill was. --nav-bg (globals.css): a
-    // translucent wash over whatever scrolls underneath, not one of
-    // this file's own opaque bg-* tokens — see that variable's own
-    // comment for why it isn't just bg-bg-default at some opacity.
+    // the way the floating pill was. bg-bg-default/60 — re-confirmed
+    // against a fresh re-fetch of the dark variant: its own literal
+    // background moved from an earlier rgba(21,21,21,0.6) (a genuinely
+    // distinct nav-only surface, which is why this originally lived as
+    // its own --nav-bg custom property) to rgba(13,13,13,0.6), which
+    // *does* exactly match --color-bg-default here — and light's own
+    // rgba(244,244,244,0.6) always did too. Both themes now cleanly
+    // reduce to this token at 60% opacity, so the one-off --nav-bg
+    // variable is gone rather than kept as a second, now-redundant
+    // source of truth alongside it.
     // backdrop-blur-[4px], not the bare backdrop-blur-sm utility —
     // Tailwind v4's own backdrop-blur scale starts at 8px for "sm" (no
     // smaller named step below it), confirmed live against the computed
     // style rather than assumed from memory of v3's scale, which had a
     // 4px "sm". An arbitrary value is what actually matches Figma's own
     // literal backdrop-blur-[4px] here.
-    <div className="fixed inset-x-0 top-0 z-20 flex items-center gap-4 bg-[var(--nav-bg)] px-6 py-3 backdrop-blur-[4px]">
+    <div className="fixed inset-x-0 top-0 z-20 flex items-center gap-4 bg-bg-default/60 px-6 py-3 backdrop-blur-[4px]">
       {/* Left slot: flex-1 so it grows/shrinks to fill exactly as much
           space as the mirrored right slot, which is what actually keeps
           the center nav-items group sitting at the bar's true horizontal

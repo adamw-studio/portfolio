@@ -68,14 +68,6 @@
   --radius-m: 10px;
   --radius-lg: 12px;
 
-  /* Nav.tsx's own full-bleed bar background (Figma 175:4031 light /
-     175:3994 dark) — a translucent wash over whatever scrolls underneath
-     it, not one of this file's own opaque bg-* tokens: Figma's literal
-     dark value (rgba(21,21,21,0.6)) doesn't match --color-bg-default's
-     own #0d0d0d here, close but genuinely a different, nav-specific
-     surface rather than that token at some opacity. */
-  --nav-bg: rgba(244, 244, 244, 0.6);
-
   /* The site's one shared text-reveal system (components/Reveal.tsx) —
      every Reveal-wrapped element reads its transform distance,
      transition duration, and easing from here, keyed by `tier`, rather
@@ -145,7 +137,6 @@
   --dot-color: rgba(244, 244, 244, 0.08);
   --icon-cream: #fff1b5;
   --tag-icon-bg: #a16ea9;
-  --nav-bg: rgba(21, 21, 21, 0.6);
 }
 
 @theme inline {

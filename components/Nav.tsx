@@ -44,16 +44,30 @@ function isActiveHref(pathname: string, activeMatch: string) {
 // node: an earlier fetch had these at rounded-sm (this project's own
 // --radius-sm, 8px), corrected live ("corners should be rounded") once
 // the file itself changed back to a full pill, the same corner
-// treatment the old floating-pill nav always used. No shared fixed
-// width across both items either (the old pill's own w-[66.667px] on
-// navItemBase, "sized for Home/Play specifically") — this export only
-// constrains "Home"'s own active-state width explicitly and leaves
-// "Playground" (a longer word) to its own natural content width, so
-// each item just sizes to its own padding + text now.
+// treatment the old floating-pill nav always used.
+//
+// px-3.5 (14px) on the active state, not the inactive state's own
+// px-2 (8px) — Figma's own export gives the *active* "Home" instance an
+// explicit 66.667px width, wider than "Home" actually needs at 8px
+// padding (confirmed live: it measures 54px at 8px padding, not
+// 66.667). A first pass here tried reproducing that gap as a bare
+// min-w-[66.667px] instead of real padding, which happened to fix
+// "Home" (its own text is short enough to hit that floor) but did
+// nothing for "Playground" once *it* was the active item — its own
+// text is already wider than 66.667px at 8px padding, so the min-width
+// floor never engaged and it kept rendering at the plain inactive
+// padding, reported live as still wrong. The fix is the padding itself,
+// not a width floor that only happens to help short labels: solving
+// 54px-wide "Home" at 8px padding for the padding that actually
+// produces Figma's own 66.667px (66.667 = "Home"'s own 38.43px-wide
+// text + 2×padding) gives ~14px — Tailwind's px-3.5 — a real, symmetric
+// boost that widens *either* item's own active pill by the same
+// amount, "Playground" included, rather than a floor only "Home" ever
+// reaches.
 const navItemBase =
-  "relative flex items-center justify-center gap-[3px] overflow-hidden rounded-full border px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,border-color,color] duration-150";
-const navItemActive = "border-border-disabled bg-bg-tertiary font-medium text-text-primary";
-const navItemInactive = "border-transparent font-normal text-text-subtle hover:border-border-subtle hover:bg-bg-tertiary hover:text-text-primary";
+  "relative flex items-center justify-center gap-[3px] overflow-hidden rounded-full border py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,border-color,padding,color] duration-150";
+const navItemActive = "px-3.5 border-border-disabled bg-bg-tertiary font-medium text-text-primary";
+const navItemInactive = "px-2 border-transparent font-normal text-text-subtle hover:border-border-subtle hover:bg-bg-tertiary hover:text-text-primary";
 
 // Figma 164:2274 ("Segmented Control," the case-study variant of this
 // same component) — a case-study page swaps the Home/Playground links

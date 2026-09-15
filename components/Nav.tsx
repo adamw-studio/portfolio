@@ -152,12 +152,7 @@ export default function Nav({ label }: { label?: string } = {}) {
           next to it (24px, never the problem): that text column now
           hides itself internally below `sm` (see NavDateWidget.tsx's
           own comment), leaving just the icon in this slot at every
-          width. That's a deliberate reversal of an earlier version of
-          this same comment, which hid the icon along with the text —
-          the clock widget's own hover/tap-to-expand interaction needs
-          to stay reachable on a phone ("do not make the interaction
-          inaccessible on touch devices"), which hiding the icon
-          entirely would have broken outright. */}
+          width. */}
       <div className="flex flex-1 items-center gap-3">
         {label && (
           <Link href="/" aria-label="Back to home" className={backButtonClasses}>

@@ -50,8 +50,8 @@ const TICKS: { cx: number; cy: number; r: number; accent?: boolean }[] = [
 // going from "degrees clockwise from 12 o'clock" to this transform.
 //
 // Budapest's own wall-clock time, not the visitor's local time: this
-// clock (and the expanded widget it grows into, NavClockWidget.tsx) is
-// "MY local clock / portfolio identity, not the visitor's location" —
+// clock is "MY local clock / portfolio identity, not the visitor's
+// location" —
 // getBudapestTime resolves the real instant `date` represents into
 // Budapest's own hour/minute/second via Intl, correctly tracking CET/
 // CEST across DST changes rather than a fixed offset. Milliseconds

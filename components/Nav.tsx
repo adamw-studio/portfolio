@@ -119,23 +119,24 @@ export default function Nav({ label }: { label?: string } = {}) {
     // spare ancestor height for `sticky` to hold position within.
     // top-0/inset-x-0, not top-6/px-4: this bar now runs flush to the
     // viewport's own top edge and both side edges, not inset from them
-    // the way the floating pill was. bg-bg-default/60 — re-confirmed
-    // against a fresh re-fetch of the dark variant: its own literal
-    // background moved from an earlier rgba(21,21,21,0.6) (a genuinely
-    // distinct nav-only surface, which is why this originally lived as
-    // its own --nav-bg custom property) to rgba(13,13,13,0.6), which
-    // *does* exactly match --color-bg-default here — and light's own
-    // rgba(244,244,244,0.6) always did too. Both themes now cleanly
-    // reduce to this token at 60% opacity, so the one-off --nav-bg
-    // variable is gone rather than kept as a second, now-redundant
-    // source of truth alongside it.
+    // the way the floating pill was. No bg-bg-default/60 tint anymore —
+    // a fresh re-fetch of both nodes (175:4031 light, 175:3994 dark)
+    // dropped it: get_variable_defs on the light node lists every
+    // color token this frame actually uses (bg-tertiary, the various
+    // border/text tokens for its children) and bg-default/text-default
+    // simply isn't among them, and the node's own exported background
+    // asset — a blurred snapshot of whatever sits behind the bar in
+    // Figma's canvas — still shows real tonal variation through the
+    // blur rather than the much flatter, more uniform wash a 60%-opacity
+    // solid tint on top of it would produce. A plain glass blur now,
+    // not a tinted one.
     // backdrop-blur-[4px], not the bare backdrop-blur-sm utility —
     // Tailwind v4's own backdrop-blur scale starts at 8px for "sm" (no
     // smaller named step below it), confirmed live against the computed
     // style rather than assumed from memory of v3's scale, which had a
     // 4px "sm". An arbitrary value is what actually matches Figma's own
     // literal backdrop-blur-[4px] here.
-    <div className="fixed inset-x-0 top-0 z-20 flex items-center gap-4 bg-bg-default/60 px-6 py-3 backdrop-blur-[4px]">
+    <div className="fixed inset-x-0 top-0 z-20 flex items-center gap-4 px-6 py-3 backdrop-blur-[4px]">
       {/* Left slot: flex-1 so it grows/shrinks to fill exactly as much
           space as the mirrored right slot, which is what actually keeps
           the center nav-items group sitting at the bar's true horizontal

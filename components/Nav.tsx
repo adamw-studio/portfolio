@@ -44,35 +44,33 @@ function isActiveHref(pathname: string, activeMatch: string) {
 // node: an earlier fetch had these at rounded-sm (this project's own
 // --radius-sm, 8px), corrected live ("corners should be rounded") once
 // the file itself changed back to a full pill, the same corner
-// treatment the old floating-pill nav always used.
+// treatment the old floating-pill nav always used. This latest re-fetch
+// itself now says rounded-[20px], not rounded-full — the same shape
+// either way at this pill's own real height (28px, under 20px's own
+// double), so rounded-full stays rather than swapping to a literal that
+// renders identically here.
 //
-// px-2 (8px), uniformly, for every item in every state — including
-// active. Two earlier passes at this file tried to explain away "Home"'s
-// own explicit 66.667px width in its active instance (175:4049) as a
-// general "active state gets extra padding" rule: first as a bare
-// min-w-[66.667px] on the active class (which happened to widen "Home",
-// since its own text is short enough to hit that floor, but silently
-// did nothing once "Playground" became the active item instead), then
-// as a flat px-3.5 boost applied to *any* active item (which did widen
-// "Playground" too — but reported live as still wrong, because nothing
-// ever asked it to widen at all). What actually settles this: Figma's
-// own generic "Nav Item" component set (37:10089, Default/Hover/
-// Selected) gives all three states the identical plain 8px/6px padding
-// — no state-based width rule exists anywhere in this component.
-// 175:4049's own 66.667px is a one-off override on that specific
-// instance, not a systematic "selected" behavior; re-checking what
-// "Playground" itself measures as the active item *without* any of
-// these padding hacks (86px, Medium-weight text at plain 8px padding)
-// lines up almost exactly with Figma's own *inactive* Playground
-// instance (83px, Regular weight, same 8px padding) — a few px of
-// difference from the heavier font weight alone, nothing more. Home's
-// own extra width is handled separately, directly on that one link, not
-// smuggled into a state-based rule every other item was never asked to
-// share.
+// px-3 (12px), not the 8px an earlier pass had — re-confirmed against
+// this same node re-fetched again: Default/Hover/Selected all specify
+// the identical px-[12px] py-[6px], still one shared box model across
+// every state (that part of the earlier fix stands), just a different
+// shared number. Home's own explicit 66.667px width (175:4049,
+// HOME_MIN_WIDTH below) is unaffected by this — it's still a one-off
+// override on that specific instance, not derived from this padding.
 const navItemBase =
-  "relative flex items-center justify-center gap-[3px] overflow-hidden rounded-full border px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,border-color,color] duration-150";
+  "relative flex items-center justify-center gap-[3px] overflow-hidden rounded-full border px-3 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,border-color,color] duration-150";
 const navItemActive = "border-border-disabled bg-bg-tertiary font-medium text-text-primary";
-const navItemInactive = "border-transparent font-normal text-text-subtle hover:border-border-subtle hover:bg-bg-tertiary hover:text-text-primary";
+// Hover reported live as still wrong alongside the padding: this same
+// re-fetch's own Hover state carries no border class at all (just
+// bg-tertiary) and bumps the label to Medium weight/text-primary — the
+// *same* text treatment Selected gets, border aside. An earlier version
+// of this file had hover add a border-subtle border instead, sourced
+// from a different, older fetch (57:24571) of this same component;
+// this newer one supersedes it, confirmed live rather than assumed
+// still current. No hover:border-* at all now, matching that Hover
+// really does stay borderless here — only Selected ever shows one.
+const navItemInactive =
+  "border-transparent font-normal text-text-subtle hover:bg-bg-tertiary hover:font-medium hover:text-text-primary";
 // "Home"'s own explicit 66.667px (175:4049) — unconditional, not just
 // while active: Figma never shows this instance in an inactive state to
 // confirm whether it would shrink back down, and pinning it constant

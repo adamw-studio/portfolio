@@ -5,26 +5,28 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/components/ThemeContext";
 import { themedIcon } from "@/components/themedIcon";
+import { NavDateWidget } from "@/components/NavDateWidget";
 
-// Figma 41:10445 — back to a top-pinned nav (the bottom-center pill this
-// briefly shipped as is retired).
+// Figma 175:4031 (light) / 175:3994 (dark) — a full-bleed, edge-to-edge
+// top bar now, not the floating centered pill (41:10445) this replaces:
+// that pill's own solid bg-bg-default + rounded-full + inset-x px-4
+// treatment is gone outright, along with the single shared border that
+// used to wrap the nav items AND the theme toggle together as one
+// group. This export's own three groups — a date widget, the nav items,
+// the theme toggle — sit independently across the bar's own full width
+// instead, each its own flex-1/shrink-0 slot (see the outer flex
+// below), not one pill.
 //
-// Two segments now (Home/Play), not three — Figma 51:10930's own export
-// of this nav drops "Works" outright, confirmed live rather than assumed
-// (it could have just been an artifact of that particular frame). A
-// case-study page still reads as "on Works" via its own back-link, not
-// this nav; SelectedWorks.tsx's own #selected-works id is left in place
-// as a legitimate target for that and any other future deep link, even
-// with no nav entry pointing at it anymore.
-//
-// Just the segmented control now — no logo, no separate "Get in touch"
-// pill either side of it (both removed on live direction). Nothing here
-// was reused only by them (the contact-reveal panel, its copy-to-
-// clipboard state, the logo's own solidPill wrapper) — all of it is
-// gone with them rather than left dead in the file.
+// New in this fetch: NavDateWidget on the left (nothing occupied this
+// slot before) — see that file's own doc comment for why it shows the
+// real current date rather than Figma's own literal "Monday, 14
+// September" text.
 const links: { href: string; label: string; activeMatch: string }[] = [
   { href: "/", label: "Home", activeMatch: "/" },
-  { href: "/playground", label: "Play", activeMatch: "/playground" },
+  // "Playground," not "Play" — this export's own text, a real content
+  // change from the pill version's abbreviated label, not a typo left
+  // uncorrected.
+  { href: "/playground", label: "Playground", activeMatch: "/playground" },
 ];
 
 // Generic prefix match, kept even though neither current entry actually
@@ -38,57 +40,85 @@ function isActiveHref(pathname: string, activeMatch: string) {
   return pathname === activeMatch || pathname.startsWith(`${activeMatch}/`);
 }
 
-// Figma 57:24571 (Nav Item states) — Default carries no fill or border at
-// all (just dim text-subtle); Hover adds bg-tertiary and a border that's
-// a shade MORE visible (border-subtle) than the already-active segment's
-// own (border-disabled) — a deliberate, subtle distinction confirmed
-// against the export's own states, not a simplification down to one
-// shared "elevated" look. No shadow on either state anymore — an earlier
-// fetch of this same component (37:10089) had one on both Active and
-// Hover; this later, more specific fetch of just the nav item drops it
-// outright, confirmed live rather than assumed dropped by accident.
+// rounded-sm (this project's own --radius-sm, 8px — see globals.css's
+// own renaming note), not the pill version's rounded-full: this export's
+// own Nav Item corners are square-ish now. No shared fixed width across
+// both items either (the old pill's own w-[66.667px] on navItemBase,
+// "sized for Home/Play specifically") — this export only constrains
+// "Home"'s own active-state width explicitly and leaves "Playground"
+// (a longer word) to its own natural content width, so each item just
+// sizes to its own padding + text now.
 const navItemBase =
-  "relative flex w-[66.667px] items-center justify-center gap-[3px] overflow-hidden rounded-[20px] border px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,border-color,color] duration-150";
+  "relative flex items-center justify-center gap-[3px] overflow-hidden rounded-sm border px-2 py-1.5 text-[14px] leading-4 tracking-[-0.112px] transition-[background-color,border-color,color] duration-150";
 const navItemActive = "border-border-disabled bg-bg-tertiary font-medium text-text-primary";
 const navItemInactive = "border-transparent font-normal text-text-subtle hover:border-border-subtle hover:bg-bg-tertiary hover:text-text-primary";
 
-// The segmented-control bar is genuinely solid (bg-bg-default, this
-// site's own ordinary opaque page background), matching Figma's own
-// export exactly — no backdrop-blur despite the export listing a small
-// 5px value: blur only has anything to reveal through an element that's
-// not fully opaque, and a redundant one sitting on an already-solid
-// background was the confirmed cause of a live-reported text-bleed bug
-// the last time this exact mistake was made (see globals.css's own
-// glass-border history). This export also drops the gradient "glass"
-// border entirely in favor of a plain solid one (border-border-disabled)
-// — simpler, and there's no gradient token on this node to reproduce
-// even if it were wanted.
-const solidPill = "border border-border-disabled bg-bg-default";
-
 // Figma 164:2274 ("Segmented Control," the case-study variant of this
-// same component) — a case-study page swaps the Home/Play links for a
-// single plain project-name label instead: not a link (there's nowhere
-// else for it to go), not styled like an active segment either (no
-// bg-tertiary/border-disabled pill behind it — this export's own Nav
-// Item has neither), just text-primary at the segment's own regular
-// weight. `w-[66.667px]` (navItemBase's own fixed width, sized for
-// "Home"/"Play" specifically) is dropped here too — a project name is
-// a different length on every case study and Figma's own export never
-// constrains this node's width at all.
-const projectLabel = "flex items-center justify-center gap-[3px] rounded-[20px] px-2 py-1.5 text-[14px] font-normal leading-4 tracking-[-0.112px] text-text-primary";
+// same component) — a case-study page swaps the Home/Playground links
+// for a single plain project-name label instead: not a link (there's
+// nowhere else for it to go), not styled like an active segment either,
+// just text-primary at the segment's own regular weight.
+const projectLabel = "flex items-center justify-center gap-[3px] rounded-sm px-2 py-1.5 text-[14px] font-normal leading-4 tracking-[-0.112px] text-text-primary";
 
 export default function Nav({ label }: { label?: string } = {}) {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
 
   return (
-    // Fixed, not sticky — same reasoning as the bottom-nav version this
-    // replaces: nothing here has spare ancestor height for `sticky` to
-    // hold position within, so it would just scroll away with the first
-    // pixel of scroll. top-6 mirrors the old bottom-6 offset, now at the
-    // opposite edge.
-    <div className="fixed inset-x-0 top-6 z-20 flex justify-center px-4">
-      <div className={`relative flex items-center gap-1 overflow-hidden rounded-full p-1 ${solidPill}`}>
+    // Fixed, not sticky — same reasoning as before: nothing here has
+    // spare ancestor height for `sticky` to hold position within.
+    // top-0/inset-x-0, not top-6/px-4: this bar now runs flush to the
+    // viewport's own top edge and both side edges, not inset from them
+    // the way the floating pill was. --nav-bg (globals.css): a
+    // translucent wash over whatever scrolls underneath, not one of
+    // this file's own opaque bg-* tokens — see that variable's own
+    // comment for why it isn't just bg-bg-default at some opacity.
+    // backdrop-blur-[4px], not the bare backdrop-blur-sm utility —
+    // Tailwind v4's own backdrop-blur scale starts at 8px for "sm" (no
+    // smaller named step below it), confirmed live against the computed
+    // style rather than assumed from memory of v3's scale, which had a
+    // 4px "sm". An arbitrary value is what actually matches Figma's own
+    // literal backdrop-blur-[4px] here.
+    <div className="fixed inset-x-0 top-0 z-20 flex items-center gap-4 bg-[var(--nav-bg)] px-6 py-3 backdrop-blur-[4px]">
+      {/* Left slot: flex-1 so it grows/shrinks to fill exactly as much
+          space as the mirrored right slot, which is what actually keeps
+          the center nav-items group sitting at the bar's true horizontal
+          center regardless of how wide the date widget or theme toggle
+          naturally render — the same flex-[1_0_0]-on-both-ends technique
+          Figma's own export uses, rather than a fixed pixel gap that
+          only happened to work at one specific canvas width. Always
+          `flex` (never `hidden`), even where the widget it holds is
+          invisible below — a flex-basis-0 flex-1 child's own share of
+          the row is purely a function of the flex algorithm, not its
+          content, so keeping this wrapper in flow (just with invisible
+          content) is what keeps the center label truly centered; making
+          the *wrapper itself* hidden would remove it from the flex row
+          entirely and drag the center label off toward the left edge
+          instead.
+
+          invisible (not hidden) below lg when `label` is set, on the
+          widget itself: a case-study page also renders its own
+          BackButton (a separate, `fixed`-positioned sibling, not part of
+          this flex row) over this same top-left corner. BackButton's own
+          left offset is max(1rem, (100vw-columnWidth)/2) — on anything
+          narrower than roughly columnWidth+280px that collapses to a
+          flat 1rem, landing it directly on top of this widget's own
+          icon+text (confirmed live: overlapping, not just visually
+          close, on a 375px viewport). BackButton's formula only clears
+          this widget's own ~130px natural footprint once the viewport is
+          wide enough that (100vw-columnWidth)/2 alone exceeds that —
+          comfortably true by the lg breakpoint (1024px) for every
+          columnWidth this site actually uses (512/688), confirmed live
+          at exactly 1024px showing a clean gap, not a near-miss. The
+          home page's own Nav (no `label`, no BackButton) has nothing to
+          collide with, so its widget stays visible at every width. */}
+      <div className="flex flex-1 items-center">
+        <div className={label ? "invisible lg:visible" : ""}>
+          <NavDateWidget />
+        </div>
+      </div>
+
+      <div className="flex shrink-0 items-center gap-1">
         {label ? (
           <span className={projectLabel}>{label}</span>
         ) : (
@@ -101,15 +131,17 @@ export default function Nav({ label }: { label?: string } = {}) {
             );
           })
         )}
+      </div>
 
+      <div className="flex flex-1 items-center justify-end">
         {/* Theme segment: both icons always visible (Figma's own two-
             state segmented control), the *inner* icon's own bg-bg-
-            tertiary marking whichever theme is *current* — there's no
-            "next state" to hint at since both options are always on
-            screen. This whole group also gets bg-bg-tertiary + its own
-            border, the same "elevated" treatment as an active nav
-            segment. */}
-        <div className={`relative flex items-center gap-1 overflow-hidden rounded-full border border-border-disabled bg-bg-tertiary p-0.5`}>
+            tertiary marking whichever theme is *current*. border-subtle
+            on the outer wrapper now, not border-disabled — this export's
+            own value, a shade more visible than the pill version's —
+            and no bg-bg-tertiary on the outer wrapper itself either
+            (only the active inner Mode Item carries that, unchanged). */}
+        <div className="relative flex items-center gap-1 overflow-hidden rounded-full border border-border-subtle p-0.5">
           <button
             type="button"
             aria-label="Switch to dark mode"

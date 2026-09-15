@@ -1,0 +1,14 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="watch widget">
+<circle id="Ellipse 1" cx="12" cy="12" r="11.8" fill="#F2F2F5" stroke="#DADADD" stroke-width="0.4"/>
+<g id="watch">
+<rect id="Watch 1" x="4.35449" y="9.34847" width="2.97626" height="9.01593" rx="1.48813" transform="rotate(-54.4564 4.35449 9.34847)" fill="#262626"/>
+<path id="Watch " d="M18.6545 6.34941C18.8944 6.1559 19.2457 6.19349 19.4393 6.43337C19.6328 6.67325 19.5952 7.02459 19.3553 7.2181L12.2776 12.9277C12.0378 13.1212 11.6864 13.0836 11.4929 12.8437C11.2994 12.6038 11.337 12.2525 11.5769 12.059L18.6545 6.34941Z" fill="#DADADD"/>
+</g>
+<circle id="Ellipse 2" cx="12" cy="21.514" r="0.464879" fill="#DADADD"/>
+<circle id="Ellipse 3" cx="2.85843" cy="12.0009" r="0.464879" fill="#DADADD"/>
+<circle id="Ellipse 6" cx="4.16002" cy="7.34814" r="0.836782" fill="#FFA000"/>
+<circle id="Ellipse 5" cx="21.1416" cy="12.0009" r="0.464879" fill="#DADADD"/>
+<circle id="Ellipse 4" cx="12" cy="2.48588" r="0.464879" fill="#DADADD"/>
+</g>
+</svg>

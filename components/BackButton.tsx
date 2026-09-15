@@ -15,23 +15,21 @@ import { insetBorder } from "@/components/typography";
 // definition removes the risk of the four quietly drifting apart instead
 // of adding one.
 //
-// top-6, not top-[30px]: matches Nav's own `top-6` offset, so as long
-// as the two are also the same real height, their vertical centers
-// align. top-[30px] was correct for the *previous* 24px-tall button
-// (its center landed on the same line purely because 30 + 24/2 happens
-// to equal 6 + 36/2), but silently stopped being once the button grew —
-// a coincidence of the old size, not a value to carry forward.
+// top-1.5 (6px), not top-6: Nav.tsx's own redesign (Figma 175:4031/
+// 175:3994) replaced the floating centered pill this used to align
+// against with a full-bleed bar running flush to the viewport's own top
+// edge — py-3 (12px) top and bottom around a 28px-tall content row, 52px
+// total. Centering this button's own h-10 (40px) pill within that same
+// 52px band is (52-40)/2 = 6px, not the old pill's own top-6 (24px)
+// offset, which centered against a *floating*, inset bar this one no
+// longer is.
 //
 // h-10 (40px), not left to this button's own py-2.5 padding math (which
-// only adds up to 36px, 10+16+10): reported live as visibly sitting
-// higher than Nav's own pill despite that hand-calculation — Nav's pill
-// actually renders at 40px, 4px taller than its own padding math also
-// suggests (a flex sub-pixel rounding quirk in its theme-toggle segment,
-// confirmed by measuring the live DOM rather than trusting either
-// component's padding arithmetic a second time). Forcing this button to
-// that same real, measured 40px — instead of chasing the exact source
-// of Nav's own 4px — is what actually keeps the two aligned regardless
-// of which one's math was "supposed" to be right.
+// only adds up to 36px, 10+16+10): confirmed against Nav's own segments
+// — its Mode Item icons render at a real, measured 40px start-to-end
+// too. Forcing this button to that same real 40px, rather than trusting
+// either component's padding arithmetic on its own, is what actually
+// keeps the two aligned.
 //
 // fixed, not absolute: this should stay put while the page scrolls, the
 // same as Nav — absolute only pinned it to its starting spot in the
@@ -66,7 +64,7 @@ export function BackButton({ columnWidth = 688 }: { columnWidth?: number } = {})
     <Link
       href="/"
       aria-label="Back to home"
-      className={`fixed top-6 z-20 flex h-10 items-center justify-center rounded-full bg-bg-default/80 px-4 backdrop-blur-[23px] transition-transform duration-100 active:scale-95 ${insetBorder}`}
+      className={`fixed top-1.5 z-20 flex h-10 items-center justify-center rounded-full bg-bg-default/80 px-4 backdrop-blur-[23px] transition-transform duration-100 active:scale-95 ${insetBorder}`}
       style={{ left: `max(1rem, calc((100vw - ${columnWidth}px) / 2))` }}
     >
       <Image src="/images/home/work-back-arrow.svg" alt="" width={16} height={16} className={themedIcon} />

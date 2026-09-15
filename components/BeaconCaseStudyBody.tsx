@@ -1,5 +1,4 @@
 import Nav from "@/components/Nav";
-import { BackButton } from "@/components/BackButton";
 import BottomEdgeFade from "@/components/BottomEdgeFade";
 import BeaconLongForm from "@/components/case-study/beacon/BeaconLongForm";
 
@@ -17,17 +16,19 @@ import BeaconLongForm from "@/components/case-study/beacon/BeaconLongForm";
 // chrome) — this rebuild has no page-level Prev/Next of its own, only
 // the two in-page CardRow browsers BeaconLongForm's own sections render.
 //
-// <Nav label="Beacon"/> + <BackButton/> — Figma 164:2274/164:2279:
-// this page's own nav swaps the sitewide Home/Play segments for a
-// single "Beacon" label (there's nothing else to navigate to from
-// inside a case study), and gets its own back-to-home button, on
-// direct instruction — this rebuild's own first pass re-added Nav but
-// dropped the back button CaseStudy.tsx used to render for the old
-// page-by-page version, unnoticed until reported live.
-// `columnWidth={512}` — this page's own narrative column (matching
-// QuickReviewRow/KeyFindingsRow's own ALIGN_INSET), not the 688px
-// column BackButton's own default aligns against on every other
-// case-study page, which Beacon's long-scroll rebuild no longer uses.
+// <Nav label="Beacon"/> — Figma 177:4238/177:4203/178:4288: this page's
+// own nav swaps the sitewide Home/Playground segments for a single
+// "Beacon" label (there's nothing else to navigate to from inside a
+// case study). No separate <BackButton/> here any more — that same
+// re-fetch folded the back button *into* Nav itself (a normal flex
+// child in its own left slot now, not an independently `fixed`
+// component this page had to also remember to render and align by
+// hand) — Nav renders it on its own whenever `label` is passed. See
+// Nav.tsx's own doc comment for the fuller history: this rebuild's own
+// first pass re-added Nav but dropped the back button entirely,
+// unnoticed until reported live; a later pass gave it its own
+// `columnWidth`-aligned floating component; this is the third and
+// current shape.
 //
 // <BottomEdgeFade/> — the same fixed bottom-of-viewport blur/gradient
 // strip the home page uses (app/page.tsx), added here on direct
@@ -42,7 +43,6 @@ export default function BeaconCaseStudyBody() {
   return (
     <>
       <Nav label="Beacon" />
-      <BackButton columnWidth={512} />
       <BeaconLongForm />
       <BottomEdgeFade />
     </>

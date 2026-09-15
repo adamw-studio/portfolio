@@ -3,26 +3,26 @@ import Link from "next/link";
 import { themedIcon } from "@/components/themedIcon";
 import { insetBorder } from "@/components/typography";
 
-// Figma 325:241 ("Back Button") — a generously padded pill (16px
-// horizontal, 10px vertical) around the single reply-arrow icon, not the
-// tight 24px circle (size-6 + p-1) this used to be modeled as. Same icon
-// asset as before (verified byte-identical against the Figma export), so
-// only the button's own shape/padding changed here, not the glyph.
+// Figma 325:241 ("Back Button") — the last remaining standalone use of
+// this component is PasswordGate.tsx's own locked screen, which renders
+// no Nav at all (there's nothing to navigate to until it unlocks) and so
+// still needs its own independently `fixed`-positioned back button.
+// Every other case-study page's own back button moved *into* Nav.tsx
+// itself (a normal flex child there now, in the same row as the date
+// widget — see that file's own doc comment) once its own redesign
+// (Figma 177:4238/177:4203/178:4288) put the back button inside the nav
+// bar rather than floating independently over the page — this file used
+// to be shared by four identical call sites (Beacon/Documentary/
+// Robotics/PasswordGate) for exactly that positioning math, and now only
+// has the one left.
 //
-// Pulled into one shared component instead of the four identical copies
-// this was duplicated as (Beacon, Documentary, Robotics, PasswordGate) —
-// same position and same classes at every call site, so a shared
-// definition removes the risk of the four quietly drifting apart instead
-// of adding one.
-//
-// top-1.5 (6px), not top-6: Nav.tsx's own redesign (Figma 175:4031/
-// 175:3994) replaced the floating centered pill this used to align
-// against with a full-bleed bar running flush to the viewport's own top
-// edge — py-3 (12px) top and bottom around a 28px-tall content row, 52px
-// total. Centering this button's own h-10 (40px) pill within that same
-// 52px band is (52-40)/2 = 6px, not the old pill's own top-6 (24px)
-// offset, which centered against a *floating*, inset bar this one no
-// longer is.
+// top-1.5 (6px): chosen to sit at the same height Nav.tsx's own bar
+// would occupy if it were rendered here too (py-3 top/bottom around a
+// 28px content row, centering a 40px pill needs 6px) — PasswordGate's
+// own locked screen never renders Nav at all, but keeping this button at
+// the same height every *other* page's chrome sits at keeps the site's
+// own top-left rhythm consistent even on the one screen with no nav bar
+// to literally align against.
 //
 // h-10 (40px), not left to this button's own py-2.5 padding math (which
 // only adds up to 36px, 10+16+10): confirmed against Nav's own segments

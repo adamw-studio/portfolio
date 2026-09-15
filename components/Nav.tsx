@@ -69,12 +69,37 @@ const navItemBase =
 const navItemActive = "px-3.5 border-border-disabled bg-bg-tertiary font-medium text-text-primary";
 const navItemInactive = "px-2 border-transparent font-normal text-text-subtle hover:border-border-subtle hover:bg-bg-tertiary hover:text-text-primary";
 
-// Figma 164:2274 ("Segmented Control," the case-study variant of this
-// same component) — a case-study page swaps the Home/Playground links
-// for a single plain project-name label instead: not a link (there's
-// nowhere else for it to go), not styled like an active segment either,
-// just text-primary at the segment's own regular weight.
-const projectLabel = "flex items-center justify-center gap-[3px] rounded-full px-2 py-1.5 text-[14px] font-normal leading-4 tracking-[-0.112px] text-text-primary";
+// Figma 177:4238 (light) / 177:4203 (dark) / 178:4288 (mobile) — a fresh
+// re-fetch of the case-study variant of this same component, superseding
+// an earlier one (164:2274) this project name label was first built
+// from: that export had this rendered like an (unstyled) active segment
+// — text-primary, regular weight, no background. All three of this
+// newer fetch agree on something different: text-subtle (dimmed) at
+// Medium weight, and no pill/border/background at all in any of the
+// three — a plain, quiet label now, closer to a breadcrumb than a nav
+// segment (which tracks: unlike Home/Playground, this was never really
+// a toggleable "active" state — the current page always *is* this
+// project). px-2 py-1.5 kept even though nothing paints on it — the
+// light fetch's own node still reserves that same padding as an
+// (invisible) box, which keeps this label's own line vertically
+// centered against Home/Playground's real padded boxes instead of
+// sitting a few px off from them.
+const projectLabel = "flex items-center justify-center gap-[3px] rounded-full px-2 py-1.5 text-[14px] font-medium leading-4 tracking-[-0.112px] text-text-subtle";
+
+// Figma 325:241 ("Back Button"), now folded directly into Nav.tsx rather
+// than staying its own always-`fixed`, independently-positioned
+// component (components/BackButton.tsx, deleted) — this same re-fetch
+// (177:4238/177:4203/178:4288) moves the back button *into* the nav bar
+// itself, sitting in the same flex row as the date widget rather than
+// floating over the page on its own. That's a real layout change, not
+// just a restyle: the old component had to reconstruct the content
+// column's own left edge by hand (`columnWidth` prop, a `left: max(...)`
+// formula) purely because it was positioned independently of
+// everything else on the bar; once it's a normal flex child here, the
+// bar's own flex layout places it for free and none of that math is
+// needed anymore.
+const backButtonClasses =
+  "flex shrink-0 items-center justify-center rounded-full border border-border-subtle px-2.5 py-1.5 transition-transform duration-100 active:scale-95";
 
 export default function Nav({ label }: { label?: string } = {}) {
   const pathname = usePathname();
@@ -108,34 +133,31 @@ export default function Nav({ label }: { label?: string } = {}) {
           center regardless of how wide the date widget or theme toggle
           naturally render — the same flex-[1_0_0]-on-both-ends technique
           Figma's own export uses, rather than a fixed pixel gap that
-          only happened to work at one specific canvas width. Always
-          `flex` (never `hidden`), even where the widget it holds is
-          invisible below — a flex-basis-0 flex-1 child's own share of
-          the row is purely a function of the flex algorithm, not its
-          content, so keeping this wrapper in flow (just with invisible
-          content) is what keeps the center label truly centered; making
-          the *wrapper itself* hidden would remove it from the flex row
-          entirely and drag the center label off toward the left edge
-          instead.
-
-          invisible (not hidden) below lg when `label` is set, on the
-          widget itself: a case-study page also renders its own
-          BackButton (a separate, `fixed`-positioned sibling, not part of
-          this flex row) over this same top-left corner. BackButton's own
-          left offset is max(1rem, (100vw-columnWidth)/2) — on anything
-          narrower than roughly columnWidth+280px that collapses to a
-          flat 1rem, landing it directly on top of this widget's own
-          icon+text (confirmed live: overlapping, not just visually
-          close, on a 375px viewport). BackButton's formula only clears
-          this widget's own ~130px natural footprint once the viewport is
-          wide enough that (100vw-columnWidth)/2 alone exceeds that —
-          comfortably true by the lg breakpoint (1024px) for every
-          columnWidth this site actually uses (512/688), confirmed live
-          at exactly 1024px showing a clean gap, not a near-miss. The
-          home page's own Nav (no `label`, no BackButton) has nothing to
-          collide with, so its widget stays visible at every width. */}
-      <div className="flex flex-1 items-center">
-        <div className={label ? "invisible lg:visible" : ""}>
+          only happened to work at one specific canvas width.
+          gap-3 (12px): the back button's own gap from the date widget
+          next to it, matching this fetch's own Frame 2147204721.
+          NavDateWidget itself is `hidden sm:flex` when `label` is set
+          (case-study pages only), not the earlier `invisible lg:visible`
+          this file used before the back button moved into this same
+          flex row: that older trick was working around the OLD back
+          button's own `fixed` position colliding with this widget below
+          a certain width; now that both live in one normal flex row
+          there's nothing left to collide with — this hides the widget
+          below `sm` because Figma's own mobile export (178:4288) drops
+          it outright at that width, leaving only the back button in
+          this slot, not because of any remaining overlap risk. The home
+          page's own Nav (no `label`, no back button competing for this
+          slot) keeps its widget visible at every width — Figma's own
+          mobile export is specifically the *case-study* variant, not
+          the site index nav, so there's no reason to shrink that one
+          too. */}
+      <div className="flex flex-1 items-center gap-3">
+        {label && (
+          <Link href="/" aria-label="Back to home" className={backButtonClasses}>
+            <Image src="/images/home/work-back-arrow.svg" alt="" width={16} height={16} className={themedIcon} />
+          </Link>
+        )}
+        <div className={label ? "hidden sm:flex" : "flex"}>
           <NavDateWidget />
         </div>
       </div>

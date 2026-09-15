@@ -1,5 +1,4 @@
 import Nav from "@/components/Nav";
-import { BackButton } from "@/components/BackButton";
 import BottomEdgeFade from "@/components/BottomEdgeFade";
 import RoboticsLongForm from "@/components/case-study/robotics/RoboticsLongForm";
 
@@ -15,16 +14,16 @@ import RoboticsLongForm from "@/components/case-study/robotics/RoboticsLongForm"
 // directly (no PasswordGate, no next/dynamic ssr:false wrapper) — see
 // RoboticsCaseStudy.tsx's own doc comment for what that simplifies.
 //
-// <Nav label="Revolution Robotics"/> + <BackButton columnWidth={512}/> —
-// same Figma 164:2274/164:2279 nav treatment as Beacon's own page, this
-// project's own name in the pill instead. <BottomEdgeFade/> for the same
-// reason Beacon's own page has it: a long-scrolling page reading
-// consistently with the home page's own fixed bottom blur strip.
+// <Nav label="Revolution Robotics"/> — same Figma nav treatment as
+// Beacon's own page (see BeaconCaseStudyBody.tsx's own doc comment for
+// why this no longer also renders a separate <BackButton/> here — Nav
+// owns that now). <BottomEdgeFade/> for the same reason Beacon's own
+// page has it: a long-scrolling page reading consistently with the
+// home page's own fixed bottom blur strip.
 export default function RoboticsCaseStudyBody() {
   return (
     <>
       <Nav label="Revolution Robotics" />
-      <BackButton columnWidth={512} />
       <RoboticsLongForm />
       <BottomEdgeFade />
     </>

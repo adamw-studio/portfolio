@@ -154,19 +154,27 @@ export default function Nav({ label }: { label?: string } = {}) {
           there's nothing left to collide with — this hides the widget
           below `sm` because Figma's own mobile export (178:4288) drops
           it outright at that width, leaving only the back button in
-          this slot, not because of any remaining overlap risk. The home
-          page's own Nav (no `label`, no back button competing for this
-          slot) keeps its widget visible at every width — Figma's own
-          mobile export is specifically the *case-study* variant, not
-          the site index nav, so there's no reason to shrink that one
-          too. */}
+          this slot.
+          Now unconditional (every Nav, `label` or not), not just the
+          case-study variant: the home page's own Nav was left showing
+          its widget at every width on the reasoning that nothing there
+          competes for the same space the way a case-study page's back
+          button does — true, but incomplete. Checked live at 375px: the
+          date widget's own fixed-width text column (NavDateWidget's own
+          w-[71px]) can't shrink at all, so once the segmented control's
+          own padding grew (12px, up from 8px), the *theme toggle* on
+          the opposite flex-1 side absorbed the entire deficit instead
+          and rendered visibly crushed (28px wide, half its own 56px
+          natural size) — a real, if less obvious, overflow bug on the
+          one Nav variant this hidden-below-sm treatment hadn't reached
+          yet. */}
       <div className="flex flex-1 items-center gap-3">
         {label && (
           <Link href="/" aria-label="Back to home" className={backButtonClasses}>
             <Image src="/images/home/work-back-arrow.svg" alt="" width={16} height={16} className={themedIcon} />
           </Link>
         )}
-        <div className={label ? "hidden sm:flex" : "flex"}>
+        <div className="hidden sm:flex">
           <NavDateWidget />
         </div>
       </div>
@@ -197,8 +205,15 @@ export default function Nav({ label }: { label?: string } = {}) {
             on the outer wrapper now, not border-disabled — this export's
             own value, a shade more visible than the pill version's —
             and no bg-bg-tertiary on the outer wrapper itself either
-            (only the active inner Mode Item carries that, unchanged). */}
-        <div className="relative flex items-center gap-1 overflow-hidden rounded-full border border-border-subtle p-0.5">
+            (only the active inner Mode Item carries that, unchanged).
+            shrink-0: a defense-in-depth safety net, not the actual fix
+            for the crushed-toggle overflow bug above (hiding the date
+            widget below sm is) — without a hard min-content floor of
+            its own the way that widget's fixed-width text column has,
+            this was the one flex-1 child with nothing stopping it from
+            being squeezed below its own real 56px size if the bar ever
+            runs short on room again for some other reason. */}
+        <div className="relative flex shrink-0 items-center gap-1 overflow-hidden rounded-full border border-border-subtle p-0.5">
           <button
             type="button"
             aria-label="Switch to dark mode"

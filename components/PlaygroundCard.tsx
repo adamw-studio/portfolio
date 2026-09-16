@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Chip } from "@/components/Chip";
 import { themedIcon } from "@/components/themedIcon";
 import { YouTubeFacade } from "@/components/YouTubeFacade";
+import { PlaygroundArchiveBall } from "@/components/PlaygroundArchiveBall";
 import { KICKER_ICON, type PlaygroundProject } from "@/content/playground-projects";
 
 const IMAGE_HOVER =
@@ -150,30 +151,16 @@ function FramedBody({ project, clickable }: { project: PlaygroundProject; clicka
 // real project: never clickable (PlaygroundCard's own `clickable` check
 // already keeps it non-interactive since this entry has no href), so
 // unlike the other two bodies this one takes no `clickable` prop at all.
-// The speaker-orb graphic is its own two exported SVGs (a radial-
-// gradient circle with an inner-shadow bevel, plus a smaller dark
-// "center port" dot) rather than hand-redrawn shapes — both carry real
-// gradient/filter detail a flat CSS circle would lose.
+// The pill's own two SVGs (a radial-gradient circle with an inner-
+// shadow bevel, plus a smaller dark "center port" dot) now live inside
+// PlaygroundArchiveBall, which turns that static pair into a tiny
+// foosball bouncing around the pill's own capsule shape — see that
+// file's own doc comment for the physics.
 function ArchiveBody({ project }: { project: PlaygroundProject }) {
   const { title, subtitle } = project;
   return (
     <div className="flex h-full w-full flex-col gap-7 rounded-3xl bg-bg-tertiary p-4">
-      <div className="relative h-[114px] w-full shrink-0 overflow-hidden rounded-full bg-gradient-to-b from-[#38383d] via-[#2e2e33] to-[#242429] shadow-[inset_0px_0.5px_0.5px_0px_rgba(255,255,255,0.06)]">
-        <Image
-          src="/images/playground/archive-speaker-cone.svg"
-          alt=""
-          width={18}
-          height={18}
-          className="absolute left-[81px] top-[48px]"
-        />
-        <Image
-          src="/images/playground/archive-center-port.svg"
-          alt=""
-          width={4}
-          height={4}
-          className="absolute left-[88px] top-[55px]"
-        />
-      </div>
+      <PlaygroundArchiveBall className="relative h-[114px] w-full shrink-0 touch-none overflow-hidden rounded-full bg-gradient-to-b from-[#38383d] via-[#2e2e33] to-[#242429] shadow-[inset_0px_0.5px_0.5px_0px_rgba(255,255,255,0.06)]" />
       <div className="flex shrink-0 flex-col gap-[2px] font-sans text-[16px] leading-[18px] tracking-[-0.128px] text-text-primary">
         <p className="italic font-extrabold">{title}</p>
         <p className="italic">{subtitle}</p>

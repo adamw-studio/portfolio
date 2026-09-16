@@ -52,8 +52,11 @@ function HeadingFlourish() {
 // component under it. Six labels now, not seven — "Craft in canvas &
 // code" is dropped outright (confirmed live, not a truncation artifact),
 // and two are renamed ("System thinking" → "System Thinking", "Product &
-// design strategy" → "Design Strategy").
-const whatIDo = ["Research", "System Thinking", "Design Strategy", "Design system", "Brand Identity", "Stakeholder management"];
+// design strategy" → "Design Strategy"). "Design system" and
+// "Stakeholder management" capitalized to "Design System"/"Stakeholder
+// Management" too, reported live — title case throughout, not just on
+// the first word of a label.
+const whatIDo = ["Research", "System Thinking", "Design Strategy", "Design System", "Brand Identity", "Stakeholder Management"];
 
 function WhatIDoTag({ label }: { label: string }) {
   return (

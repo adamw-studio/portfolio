@@ -1,5 +1,5 @@
-import CaseStudyPage from "@/components/CaseStudyPage";
+import MondayCaseStudy from "@/components/MondayCaseStudy";
 
 export default function MondayPage() {
-  return <CaseStudyPage />;
+  return <MondayCaseStudy />;
 }

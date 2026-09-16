@@ -94,7 +94,6 @@ const PROJECTS: Project[] = [
     backdropSrc: "/images/home/selected-work-4-cover.jpg",
     backdropAlt: "Red tote bag printed with the Monday wordmark, held up against a blue sky",
     linked: true,
-    comingSoon: true,
   },
   {
     // Figma 55:11891 — a genuinely new project with no case-study page

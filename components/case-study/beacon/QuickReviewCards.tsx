@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import Image from "next/image";
 
 // This project statically pre-renders every route — useLayoutEffect
 // warns on that server pass even though nothing here depends on running
@@ -27,23 +26,27 @@ const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffec
 // AboutCardStack's own doc comment already flags for two of its cards,
 // not a real per-state difference worth a second color field).
 //
-// `image` (one static JPEG per card, not a shared looping video the
-// way this file's first pass had it): both the 158:1066 resting fetch
-// and each card's own 109:35xx expanded fetch render this area as an
-// empty placeholder frame, but their own flat PNG exports make the
-// real intent unambiguous — six distinct abstract textures (halftone
-// maps, a dot field, wavy stripes), not six repeats of one brand clip.
-// Sourced via download_assets' own rawImages on the resting node at
-// their full 1280x960 export size, then re-encoded to JPEG (they're
-// fully opaque, no alpha channel in use) since the halftone/noise
-// patterns compress far worse as PNG than the site's other imagery.
+// `video` (one looping clip per card) — reverses an earlier pass's own
+// conclusion here: both the 158:1066 resting fetch and each card's own
+// 109:35xx expanded fetch render this area as an empty placeholder
+// frame in Figma, which that pass read (via each node's own flat PNG
+// export) as "six distinct static textures, not a shared video clip"
+// and built static JPEGs from. Reported live as wrong — the real
+// intent is six per-card looping videos (matching how AboutCardStack.tsx's
+// own cards already work on the home page), supplied directly rather
+// than derivable from Figma's own placeholder-frame export either way.
+// Filenames live under public/videos/beacon-review-cards/, one per
+// card, matching AboutCardStack.tsx's own "filename under public/
+// videos/<section>/, video field optional" convention so a card still
+// renders as just its flat color if one's ever missing rather than
+// breaking.
 type CardData = {
   id: string;
   color: string;
   textColor: string;
   text: string;
   description: string;
-  image: string;
+  video?: string;
   /** Pre-rotation top-left position (px), within this component's own
    * fixed 705x196 reference frame — see the width/height note below. */
   x: number;
@@ -121,7 +124,7 @@ const CARDS: CardData[] = [
     textColor: "#544831",
     text: "Joining Orchestro",
     description: "Became the first full-time designer, after 1.5 years building client projects at McKinsey.",
-    image: "/images/home/beacon-review-joining-orchestro.jpg",
+    video: "beacon-review-joining-orchestro.mp4",
     x: 18.75,
     y: 14.06,
     rotate: -15,
@@ -137,7 +140,7 @@ const CARDS: CardData[] = [
     // check against).
     description: "Inherited Beacon with no consistent design direction across the experience.",
     text: "A fragmented product",
-    image: "/images/home/beacon-review-fragmented-product.jpg",
+    video: "beacon-review-fragmented-product.mp4",
     x: 118.75,
     y: 16.51,
     rotate: 11.02,
@@ -148,7 +151,7 @@ const CARDS: CardData[] = [
     textColor: "#eceaf8",
     text: "Listening to users",
     description: "Interviews revealed people liked the concept, but didn’t trust the AI outputs.",
-    image: "/images/home/beacon-review-listening-users.jpg",
+    video: "beacon-review-listening-users.mp4",
     x: 179.55,
     y: 9.1,
     rotate: -8.28,
@@ -159,7 +162,7 @@ const CARDS: CardData[] = [
     textColor: "#004f00",
     text: "A vision workshop",
     description: "Led leadership in London to rethink what the next generation of Beacon should be.",
-    image: "/images/home/beacon-review-vision-workshop.jpg",
+    video: "beacon-review-vision-workshop.mp4",
     x: 279.55,
     y: 19.1,
     rotate: 0,
@@ -170,7 +173,7 @@ const CARDS: CardData[] = [
     textColor: "#f8ecd7",
     text: "Meet Beam",
     description: "Reimagined Beacon as a conversational, chat-led experience with an AI companion.",
-    image: "/images/home/beacon-review-meet-beam.jpg",
+    video: "beacon-review-meet-beam.mp4",
     x: 393.32,
     y: 19.1,
     rotate: 4.88,
@@ -181,7 +184,7 @@ const CARDS: CardData[] = [
     textColor: "#0d0d0d",
     text: "Designing what’s next",
     description: "Now prototyping how AI speed and human judgment work together in ideation.",
-    image: "/images/home/beacon-review-designing-next.jpg",
+    video: "beacon-review-designing-next.mp4",
     x: 493.32,
     y: 19.06,
     rotate: 15,
@@ -532,14 +535,16 @@ function Card({
             transition: reducedMotion ? undefined : `height ${transitionMs}ms ${EASE_OUT}`,
           }}
         >
-          <Image
-            src={card.image}
-            alt=""
-            aria-hidden
-            fill
-            sizes="(min-width: 480px) 301px, 130px"
-            className="object-cover"
-          />
+          {card.video && (
+            <video
+              src={`/videos/beacon-review-cards/${card.video}`}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="size-full object-cover"
+            />
+          )}
         </div>
         {selected && (
           <p

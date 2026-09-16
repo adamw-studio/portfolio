@@ -10,13 +10,15 @@
 // roughly inside that rectangle form the opening composition, and anything
 // placed outside it sits off the first screenful, reachable by dragging.
 //
-// PLAYGROUND_PROJECTS is empty on direct instruction ("remove the cards
-// from the Playground canvas") — the canvas itself (pan/zoom/inertia/
-// reset-view/dot-grid) is untouched and still fully functional with
-// nothing on it; computeContentBounds in PlaygroundCanvas.tsx already
-// has an explicit fallback for exactly this empty-array case. Add
-// entries back here, matching the PlaygroundProject shape below, to
-// repopulate it.
+// PLAYGROUND_PROJECTS held every real project card until a later
+// instruction cleared it ("remove the cards from the Playground
+// canvas") — the canvas itself (pan/zoom/inertia/reset-view/dot-grid)
+// stayed untouched and fully functional with nothing on it;
+// computeContentBounds in PlaygroundCanvas.tsx already had an explicit
+// fallback for exactly that empty-array case. The one entry below
+// (Figma 202:5118, "Add this in the center") is the first thing back
+// in it — a fixed signpost, not a real project, hence variant
+// "archive" and no href.
 
 export type PlaygroundProject = {
   id: string;
@@ -59,11 +61,15 @@ export type PlaygroundProject = {
    * rounded-2xl, image then a plain title/subtitle text block below it.
    * "framed": Figma 319:xxxx's card — no padding, edge-to-edge sections
    * (a kicker bar, the image, optionally a description bar) each divided
-   * by a real border rather than a text block under the image. The two
-   * are visually distinct enough that forcing one card component to fake
-   * both via a pile of conditional props would be harder to read than
-   * branching once on this. */
-  variant?: "framed";
+   * by a real border rather than a text block under the image. "archive":
+   * Figma 202:5118's fixed "Archive <Coming Soon>" signpost — a dark
+   * speaker-orb graphic (its own gradient/inner-shadow SVGs, not a photo)
+   * above title/subtitle styled as extrabold-italic/italic rather than
+   * the default variant's plain pair. Three genuinely distinct enough
+   * layouts that forcing one card component to fake all three via a pile
+   * of conditional props would be harder to read than branching once on
+   * this. */
+  variant?: "framed" | "archive";
   /** "framed" only — the small label bar's text (every current card says
    * "Beyond The Box", but a future project's cards won't). */
   kicker?: string;
@@ -79,4 +85,23 @@ export type PlaygroundProject = {
 
 export const KICKER_ICON = "/images/playground/btb-wordmark.svg";
 
-export const PLAYGROUND_PROJECTS: PlaygroundProject[] = [];
+export const PLAYGROUND_PROJECTS: PlaygroundProject[] = [
+  {
+    // Figma 202:5118 — x/y are that node's own absolute canvas position
+    // (614, 434), used directly rather than translated: unlike the
+    // Beyond The Box cluster (translated because it was drawn elsewhere
+    // on Figma's own infinite canvas), this node's own position already
+    // centers it exactly inside the 1440x1080 reference rectangle
+    // PlaygroundCanvas.tsx's own REFERENCE_W/H opens on — 614 + 212/2 =
+    // 720 = 1440/2, 434 + 212/2 = 540 = 1080/2 — which is what "add this
+    // in the center" asked for.
+    id: "archive-coming-soon",
+    title: "Archive",
+    subtitle: "<Coming Soon>",
+    variant: "archive",
+    x: 614,
+    y: 434,
+    width: 212,
+    height: 212,
+  },
+];

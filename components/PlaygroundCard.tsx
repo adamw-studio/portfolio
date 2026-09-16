@@ -20,7 +20,14 @@ const IMAGE_HOVER =
 export function PlaygroundCard({ project }: { project: PlaygroundProject }) {
   const { href, variant } = project;
   const clickable = Boolean(href);
-  const body = variant === "framed" ? <FramedBody project={project} clickable={clickable} /> : <DefaultBody project={project} clickable={clickable} />;
+  const body =
+    variant === "framed" ? (
+      <FramedBody project={project} clickable={clickable} />
+    ) : variant === "archive" ? (
+      <ArchiveBody project={project} />
+    ) : (
+      <DefaultBody project={project} clickable={clickable} />
+    );
 
   if (!clickable) {
     // Still visually part of the wall (same hover-ready markup either
@@ -135,6 +142,42 @@ function FramedBody({ project, clickable }: { project: PlaygroundProject; clicka
           <p className="font-sans text-[14px] leading-6 tracking-[-0.112px] text-text-subtle">{description}</p>
         </div>
       )}
+    </div>
+  );
+}
+
+// Figma 202:5118 — a fixed signpost ("Add this in the center"), not a
+// real project: never clickable (PlaygroundCard's own `clickable` check
+// already keeps it non-interactive since this entry has no href), so
+// unlike the other two bodies this one takes no `clickable` prop at all.
+// The speaker-orb graphic is its own two exported SVGs (a radial-
+// gradient circle with an inner-shadow bevel, plus a smaller dark
+// "center port" dot) rather than hand-redrawn shapes — both carry real
+// gradient/filter detail a flat CSS circle would lose.
+function ArchiveBody({ project }: { project: PlaygroundProject }) {
+  const { title, subtitle } = project;
+  return (
+    <div className="flex h-full w-full flex-col gap-7 rounded-3xl bg-bg-tertiary p-4">
+      <div className="relative h-[114px] w-full shrink-0 overflow-hidden rounded-full bg-gradient-to-b from-[#38383d] via-[#2e2e33] to-[#242429] shadow-[inset_0px_0.5px_0.5px_0px_rgba(255,255,255,0.06)]">
+        <Image
+          src="/images/playground/archive-speaker-cone.svg"
+          alt=""
+          width={18}
+          height={18}
+          className="absolute left-[81px] top-[48px]"
+        />
+        <Image
+          src="/images/playground/archive-center-port.svg"
+          alt=""
+          width={4}
+          height={4}
+          className="absolute left-[88px] top-[55px]"
+        />
+      </div>
+      <div className="flex shrink-0 flex-col gap-[2px] font-sans text-[16px] leading-[18px] tracking-[-0.128px] text-text-primary">
+        <p className="italic font-extrabold">{title}</p>
+        <p className="italic">{subtitle}</p>
+      </div>
     </div>
   );
 }

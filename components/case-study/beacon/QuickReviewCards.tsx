@@ -17,14 +17,20 @@ const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffec
 // wholesale (stagger reveal, hover lift/neighbor-nudge, click-to-expand
 // with a settled row for the other five, outside-click/Escape to
 // close), not just its resting layout the way QualityTiles.tsx
-// deliberately left the click interaction out. The six colors/text-
-// colors below came back an exact match for five of AboutCardStack's
-// own six pairs (same brand palette, different cards wearing it) —
-// "Listening to users" is the one genuine new pair (#6458c3/#eceaf8 at
-// rest — its own expanded node says #ede3e9 instead, close enough to
-// read as the same "not yet refreshed on every node" situation
-// AboutCardStack's own doc comment already flags for two of its cards,
-// not a real per-state difference worth a second color field).
+// deliberately left the click interaction out.
+//
+// Colors: re-fetched directly from each card's own resting node
+// (158:1067/1072/1077/1082/1092/1087, not just 158:1066's own
+// composite) on direct instruction — an earlier pass had these
+// borrowing AboutCardStack's own brand palette on the reasoning that
+// five of six pairs matched it; this new fetch is its own distinct
+// palette instead (confirmed against 158:1066's own screenshot, not
+// just its generated code — "Listening to users" comes back
+// #0d99ff, which happens to be Figma's own default unset-fill blue,
+// worth treating with suspicion on principle, but the screenshot
+// shows a genuinely bright blue card in context among the other five,
+// not an obviously-broken placeholder). All six now share one
+// textColor, #211f1e, rather than each picking its own.
 //
 // `video` (one looping clip per card) — reverses an earlier pass's own
 // conclusion here: both the 158:1066 resting fetch and each card's own
@@ -120,8 +126,8 @@ const CARD_RADIUS = 10; // --radius-m
 const CARDS: CardData[] = [
   {
     id: "joining-orchestro",
-    color: "#f8ecd7",
-    textColor: "#544831",
+    color: "#e04d79",
+    textColor: "#211f1e",
     text: "Joining Orchestro",
     description: "Became the first full-time designer, after 1.5 years building client projects at McKinsey.",
     video: "beacon-review-joining-orchestro.mp4",
@@ -131,8 +137,8 @@ const CARDS: CardData[] = [
   },
   {
     id: "fragmented-product",
-    color: "#ee3334",
-    textColor: "#ede3e9",
+    color: "#00a4c6",
+    textColor: "#211f1e",
     // Figma 109:3526's own expanded node — genuinely different copy
     // from this card's earlier "Took ownership of a product suite with
     // no consistent design direction across it." (that line was this
@@ -147,8 +153,8 @@ const CARDS: CardData[] = [
   },
   {
     id: "listening-to-users",
-    color: "#6458c3",
-    textColor: "#eceaf8",
+    color: "#0d99ff",
+    textColor: "#211f1e",
     text: "Listening to users",
     description: "Interviews revealed people liked the concept, but didn’t trust the AI outputs.",
     video: "beacon-review-listening-users.mp4",
@@ -158,8 +164,8 @@ const CARDS: CardData[] = [
   },
   {
     id: "vision-workshop",
-    color: "#00f790",
-    textColor: "#004f00",
+    color: "#cbe261",
+    textColor: "#211f1e",
     text: "A vision workshop",
     description: "Led leadership in London to rethink what the next generation of Beacon should be.",
     video: "beacon-review-vision-workshop.mp4",
@@ -169,8 +175,8 @@ const CARDS: CardData[] = [
   },
   {
     id: "meet-beam",
-    color: "#211f1e",
-    textColor: "#f8ecd7",
+    color: "#feb873",
+    textColor: "#211f1e",
     text: "Meet Beam",
     description: "Reimagined Beacon as a conversational, chat-led experience with an AI companion.",
     video: "beacon-review-meet-beam.mp4",
@@ -180,8 +186,8 @@ const CARDS: CardData[] = [
   },
   {
     id: "designing-whats-next",
-    color: "#00a4c6",
-    textColor: "#0d0d0d",
+    color: "#7cbec4",
+    textColor: "#211f1e",
     text: "Designing what’s next",
     description: "Now prototyping how AI speed and human judgment work together in ideation.",
     video: "beacon-review-designing-next.mp4",

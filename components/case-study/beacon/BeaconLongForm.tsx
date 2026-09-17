@@ -8,6 +8,7 @@ import Reflection from "@/components/case-study/beacon/Reflection";
 import WorkshopQuestionsExhibit from "@/components/case-study/beacon/WorkshopQuestionsExhibit";
 import TurningPoint from "@/components/case-study/beacon/TurningPoint";
 import SoWhereAreWeNow from "@/components/case-study/beacon/SoWhereAreWeNow";
+import Footer from "@/components/case-study/beacon/Footer";
 
 // Figma 136:5703 ("Beacon-Project-Page") — rebuilt as one long scrolling
 // page again, not the page-by-page card carousel Beacon shipped with
@@ -66,7 +67,13 @@ export default function BeaconLongForm() {
     // close. Ideation flow is no longer a sibling here — a later fetch
     // (158:1354) folded it back into SoWhereAreWeNow.tsx as that
     // section's own final subsection; see that file's own doc comment.
-    <div className="mx-auto flex w-full flex-col items-center gap-11 pb-32 pt-32 sm:pt-36">
+    // pb-16, not the pb-32 this carried while Footer didn't exist yet —
+    // every other case study with a real Footer (Robotics/Documentary/
+    // Monday) uses pb-16 below it; the extra 64px here was standing in
+    // for a missing "end of page" cue, not a deliberate value of its
+    // own, and doubling up now that Footer is real would just leave it
+    // floating with an oversized gap under it.
+    <div className="mx-auto flex w-full flex-col items-center gap-11 pb-16 pt-32 sm:pt-36">
       <Hero />
       <QuickReviewRow />
       <div className="flex w-full max-w-[512px] flex-col gap-16">
@@ -82,6 +89,16 @@ export default function BeaconLongForm() {
       <div className="flex w-full max-w-[512px] flex-col gap-16">
         <TurningPoint />
         <SoWhereAreWeNow />
+      </div>
+      {/* Beacon was the one case study with no Footer at all — reported
+          live ("the footer should always be displayed across the
+          website, except the Playground"). Same local Footer pattern
+          every other case study already uses (its own file, not the
+          shared HomeFooter — see that component's own doc comment for
+          why), wrapped at this page's own 512px narrative width like
+          Robotics'/Documentary's/Monday's own. */}
+      <div className="w-full max-w-[512px]">
+        <Footer />
       </div>
     </div>
   );

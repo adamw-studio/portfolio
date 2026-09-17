@@ -91,8 +91,12 @@ const PROJECTS: Project[] = [
     description: "Designing a visual system for Monday, creative collective.",
     role: "Brand Designer",
     year: "2026",
-    backdropSrc: "/images/home/selected-work-4-cover.jpg",
-    backdropAlt: "Red tote bag printed with the Monday wordmark, held up against a blue sky",
+    // Figma 133:5531 replaces the red-tote-bag cover with this same
+    // back-view tee shot GalleryE's own first slide already uses
+    // (identical asset — same Figma export, re-fetched here rather than
+    // re-downloaded) — reused, not duplicated.
+    backdropSrc: "/images/home/monday-tee-back.jpg",
+    backdropAlt: "Back view of a person wearing a white t-shirt printed with the Monday wordmark, in front of a wall of Korean signage",
     linked: true,
   },
   {

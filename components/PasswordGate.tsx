@@ -124,20 +124,35 @@ export function PasswordGate({
                       // text-transparent + an explicit caret-color: the real
                       // input still owns focus, typing, paste and a11y — only
                       // its own native masked-dot rendering is hidden, so the
-                      // decorative dot row below (Figma's Frame 154, 14 fixed
-                      // dots — not a per-character count) is the only masking
-                      // the visitor actually sees, matching the Figma node
-                      // exactly instead of doubling up two different dot styles.
+                      // decorative dot row below (one dot per character, see
+                      // its own comment) is the only masking the visitor
+                      // actually sees, matching the geometry of Figma's Frame
+                      // 154 (6px circles, 8px apart) without its fixed count.
                       className="w-full min-w-0 bg-transparent font-sans text-[14px] leading-6 tracking-[-0.112px] text-transparent placeholder:text-text-disabled focus:outline-none"
                       style={{ caretColor: "var(--color-text-secondary)" }}
                     />
-                    {/* Figma's dot row (Frame 154: 14 fixed 6px circles, 8px
-                        apart) is built with real elements, not a shipped SVG —
-                        it's simple, exact geometry, and text-text-primary lets
-                        it theme-swap the same way the rest of this card does. */}
+                    {/* Figma's Frame 154 is a fixed 14-dot image — a static
+                        mockup of "some password is typed", not a literal
+                        14-character example. Rendered as a static 14 dots
+                        regardless of length, this read as broken live ("it
+                        shows the dots even when I start typing" — one
+                        keystroke jumping straight to 14 dots looks like the
+                        input ignored what was actually typed). One dot per
+                        character instead — real per-keystroke feedback, and
+                        still Figma's own dot geometry/spacing. Capped at 24
+                        (the input's own ~280px content width fits about
+                        that many before the row would overflow the field)
+                        and clipped by the row's own overflow-hidden past
+                        that, the same way a real input's text would scroll/
+                        truncate rather than blow out the field's width.
+                        aria-hidden throughout — the real <input>'s value is
+                        what a screen reader (and password managers) sees. */}
                     {value && (
-                      <div aria-hidden className="pointer-events-none absolute left-2 flex items-center gap-[2px]">
-                        {Array.from({ length: 14 }, (_, i) => (
+                      <div
+                        aria-hidden
+                        className="pointer-events-none absolute left-2 right-1 flex items-center gap-[2px] overflow-hidden"
+                      >
+                        {Array.from({ length: Math.min(value.length, 24) }, (_, i) => (
                           <span key={i} className="size-[6px] shrink-0 rounded-full bg-text-primary" />
                         ))}
                       </div>

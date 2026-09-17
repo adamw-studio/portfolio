@@ -14,6 +14,7 @@ export function GalleryCard({
   alt,
   bordered,
   content,
+  video = false,
 }: {
   src?: string;
   /** Dark-theme counterpart for artwork with its own light/dark exports
@@ -25,15 +26,24 @@ export function GalleryCard({
   alt: string;
   bordered?: boolean;
   content?: ReactNode;
+  /** Renders a looping, autoplaying, muted <video> instead of an
+   * <Image> — same autoPlay/loop/muted/playsInline convention as
+   * primitives.tsx's own Exhibit and InsightsVideo.tsx use elsewhere on
+   * this page. `src` is the video's own path in this mode (darkSrc is
+   * meaningless here — no theme-paired video was supplied). */
+  video?: boolean;
 }) {
   const { theme } = useTheme();
-  const resolvedSrc = darkSrc && theme === "dark" ? darkSrc : src;
+  const resolvedSrc = !video && darkSrc && theme === "dark" ? darkSrc : src;
   return (
     <div
       className={`relative w-full overflow-hidden rounded-[20px] bg-bg-tertiary ${bordered ? "border border-border-subtle" : ""}`}
       style={{ aspectRatio: "512 / 300" }}
     >
-      {content ?? (resolvedSrc && <Image src={resolvedSrc} alt={alt} fill className="object-cover" sizes="512px" />)}
+      {content ??
+        (video
+          ? src && <video src={src} autoPlay loop muted playsInline aria-label={alt} className="absolute inset-0 size-full object-cover" />
+          : resolvedSrc && <Image src={resolvedSrc} alt={alt} fill className="object-cover" sizes="512px" />)}
     </div>
   );
 }

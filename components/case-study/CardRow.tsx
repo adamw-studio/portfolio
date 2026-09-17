@@ -40,7 +40,7 @@ import { themedIcon } from "@/components/themedIcon";
 // aligns to (`alignInset`), matching whatever inset centers the page's
 // own narrow text column — is unchanged from before; see each card
 // row's own caller for why.
-const GAP_PX = 12; // Figma's own gap on both the Quick review (136:5942) and Key findings (138:6709) rows
+const DEFAULT_GAP_PX = 12; // Figma's own gap on both the Quick review (136:5942) and Key findings (138:6709) rows — every existing caller's own default, unchanged
 const SETTLE_MS = 120;
 const ACTIVE_SCALE = 1.04; // a smaller step than the page-level stage's 1.06 — these cards sit inside a page that's already scrolling vertically, so a lighter emphasis reads as consistent rather than competing for attention
 const INACTIVE_BRIGHTNESS = { dark: 0.7, light: 0.96 } as const; // gentler than CaseStudyStage's own 0.6/0.94 — same reasoning: a secondary in-page row, not the page's own single focus
@@ -51,6 +51,8 @@ export function CardRow({
   cardWidth,
   ariaLabel,
   alignInset,
+  gap = DEFAULT_GAP_PX,
+  centered = false,
 }: {
   items: { id: string; content: ReactNode }[];
   /** Card width in px, matching each card's own fixed Figma width (301/300) — clamped down on narrow viewports the same way LANE_WIDTH is. */
@@ -58,6 +60,24 @@ export function CardRow({
   ariaLabel: string;
   /** CSS length — the shared left edge every card's own left side aligns to, matching whatever inset centers the page's own narrow text column (see this file's own top comment). */
   alignInset: string;
+  /** Gap between cards in px — defaults to DEFAULT_GAP_PX (Figma's own
+   * Quick review/Key findings value). A caller with its own different
+   * Figma gap (Monday's own galleries: 16px) passes it explicitly
+   * rather than this file's own default changing for every existing
+   * row. */
+  gap?: number;
+  /** false (default, every existing caller): the row's own right edge
+   * gets a small fixed END_PEEK_PX gutter regardless of alignInset — a
+   * deliberate asymmetry (Beacon/Robotics' own "aligned with the text
+   * column on the left, breaking out toward the right edge" look).
+   * true: the right edge gets the *same* alignInset as the left instead,
+   * so on a wide viewport where several cards are visible at once, the
+   * whole visible set reads as centered (equal peek both sides) rather
+   * than flush-left with a long single-sided overhang to the right —
+   * reported live as "should start from the middle" once this row's
+   * own content (Monday's last two galleries) was wide enough for that
+   * asymmetry to actually show. */
+  centered?: boolean;
 }) {
   const { theme } = useTheme();
   const [index, setIndex] = useState(0);
@@ -129,7 +149,7 @@ export function CardRow({
     if (!scroller) return;
     const reference = alignmentX();
     const slide = slideRefs.current.find((el): el is HTMLDivElement => el !== null);
-    const unit = (slide?.offsetWidth ?? 0) + GAP_PX || 1;
+    const unit = (slide?.offsetWidth ?? 0) + gap || 1;
     const inactiveBrightness = INACTIVE_BRIGHTNESS[theme];
 
     // When the row has no real scroll distance (forcedIndex is set —
@@ -191,7 +211,7 @@ export function CardRow({
       // to move rather than snap.
       el.style.transition = forcedIndex !== null && !reducedMotion ? "transform 350ms cubic-bezier(0.23, 1, 0.32, 1)" : "";
     });
-  }, [theme, alignmentX, slidePosition, forcedIndex, reducedMotion]);
+  }, [theme, alignmentX, slidePosition, forcedIndex, reducedMotion, gap]);
 
   // Purely reactive to the container's own real scroll position — updates
   // the active-card scale/brightness every frame while scrolling
@@ -299,7 +319,7 @@ export function CardRow({
       return;
     }
     const slide = slideRefs.current.find((el): el is HTMLDivElement => el !== null);
-    const step = (slide?.offsetWidth ?? cardWidth) + GAP_PX;
+    const step = (slide?.offsetWidth ?? cardWidth) + gap;
     scroller.scrollBy({ left: direction * step, behavior: reducedMotion ? "auto" : "smooth" });
   };
 
@@ -363,11 +383,11 @@ export function CardRow({
           // padding visually places it — the position this row actually
           // rests at instead of fighting it.
           style={{
-            gap: GAP_PX,
+            gap,
             paddingLeft: alignInset,
-            paddingRight: `${END_PEEK_PX}px`,
+            paddingRight: centered ? alignInset : `${END_PEEK_PX}px`,
             scrollPaddingLeft: alignInset,
-            scrollPaddingRight: `${END_PEEK_PX}px`,
+            scrollPaddingRight: centered ? alignInset : `${END_PEEK_PX}px`,
           }}
         >
           {items.map((item, i) => (

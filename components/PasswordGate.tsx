@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import Image from "next/image";
-import { BackButton } from "@/components/BackButton";
+import Nav from "@/components/Nav";
 import { PlaygroundArchiveBall } from "@/components/PlaygroundArchiveBall";
 
 // Figma 221:6748 (card) + 221:6903 (Input-Password's 3 states: Default,
@@ -27,10 +27,17 @@ import { PlaygroundArchiveBall } from "@/components/PlaygroundArchiveBall";
 export function PasswordGate({
   password,
   storageKey,
+  label,
   children,
 }: {
   password: string;
   storageKey: string;
+  // The locked screen's own Nav — reported live: it should show the
+  // same project navbar the unlocked page does, not a bare back button
+  // with no project label/date/theme toggle. Optional only so a future
+  // gate with no natural project label still compiles; every current
+  // call site passes one.
+  label?: string;
   children: ReactNode;
 }) {
   // Same reasoning as ThemeContext's theme default: window/sessionStorage
@@ -71,16 +78,22 @@ export function PasswordGate({
   if (unlocked) return <>{children}</>;
 
   return (
-    // pt-[100px]: Nav is fixed and bottom-anchored now (see Nav.tsx), so
-    // this column no longer needs the 140px top reservation the old
-    // top-center pill required — 100px matches this site's own
-    // section-gap rhythm as plain top breathing room. BackButton stays
-    // `fixed top-6` itself (see BackButton.tsx), independent of this
-    // padding either way.
-    <div className="relative mx-auto flex w-full max-w-[688px] flex-1 flex-col pb-[60px] pt-[100px]">
-      {/* Same back button as every case study page (see BackButton) — the
-          gate replaces the case study's content, not its chrome. */}
-      <BackButton />
+    // pt-32 sm:pt-36: the same top reservation every other Nav-topped
+    // page's own content column uses below the fixed full-bleed bar
+    // (e.g. BeaconLongForm.tsx) — this used to be a bare 100px tailored
+    // to a standalone BackButton with no Nav at all; now that Nav
+    // actually renders here too, its content sits at the same height
+    // Nav's own bar implies everywhere else, not a one-off value.
+    <div className="relative mx-auto flex w-full max-w-[688px] flex-1 flex-col pb-[60px] pt-32 sm:pt-36">
+      {/* Same project navbar every unlocked case-study page renders —
+          reported live: the locked screen should show it too, not a
+          bare back button with no project label/date/theme toggle.
+          Nav owns its own back-to-home link whenever `label` is passed,
+          so this replaces BackButton.tsx's last remaining call site
+          outright (that file is now dead code, deleted alongside this
+          change — see its own git history for why it used to need to
+          exist here specifically). */}
+      <Nav label={label} />
 
       <div className="flex flex-1 flex-col items-center justify-center">
         {/* 336px: Figma 221:6748's own card width, and — unlike that

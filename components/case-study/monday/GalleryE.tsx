@@ -16,6 +16,11 @@ import { GalleryCard } from "@/components/case-study/monday/GalleryCard";
 // posters render here as four separate full slides instead, the same
 // "one image, one full legible card" shape every other slide on this
 // page already uses.
+//
+// Wrapped in a plain <div className="w-full"> — see GalleryD.tsx's own
+// doc comment for the real bug this fixes (CardRow's full-bleed root
+// landing at the wrong X entirely once it's a direct child of an
+// `items-center` flex column, not just this file's own concern).
 const ALIGN_INSET = "max(1rem, calc((100vw - 512px) / 2))";
 
 const SLIDES: { id: string; alt: string; src: string }[] = [
@@ -29,13 +34,15 @@ const SLIDES: { id: string; alt: string; src: string }[] = [
 
 export default function GalleryE() {
   return (
-    <CardRow
-      ariaLabel="Monday identity in use, set two"
-      cardWidth={512}
-      gap={16}
-      alignInset={ALIGN_INSET}
-      centered
-      items={SLIDES.map(({ id, alt, src }) => ({ id, content: <GalleryCard alt={alt} src={src} bordered /> }))}
-    />
+    <div className="w-full">
+      <CardRow
+        ariaLabel="Monday identity in use, set two"
+        cardWidth={512}
+        gap={16}
+        alignInset={ALIGN_INSET}
+        centered
+        items={SLIDES.map(({ id, alt, src }) => ({ id, content: <GalleryCard alt={alt} src={src} bordered /> }))}
+      />
+    </div>
   );
 }

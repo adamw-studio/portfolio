@@ -1,114 +1,91 @@
-import { Heading, BodyCopy, Eyebrow, Exhibit } from "@/components/case-study/primitives";
+import { Heading, BodyCopy } from "@/components/case-study/primitives";
+import LandscapeExhibit from "@/components/case-study/beacon/LandscapeExhibit";
 
-// Figma 158:1354 — a full restructure of this section, folding what
-// used to be its own separate top-level page section (IdeationFlow.tsx,
-// "Next up: Ideation flow") back into THIS one as its own final
-// subsection, not a sibling of it — this fetch's own single frame
-// contains both, back to back, with a hairline divider between them
-// (and a second one further up), not two independently-spaced page
-// sections. IdeationFlow.tsx is removed outright; BeaconLongForm.tsx no
-// longer renders it separately.
+// Figma 239:549 — a full redesign of this section, not a restyle: the
+// interview-feedback paragraph, its two quotes, "What we changed" and
+// both hairline dividers that used to sit between them are gone outright
+// (confirmed against this node directly, not carried over on
+// assumption — it goes straight from the intro paragraphs to the first
+// exhibit row). "Next up: Ideation flow" is also gone as a muted-prefix
+// subheading; its own copy now sits under a plain "Still tackling:
+// ideation" heading, the same size/weight as the section's own "So
+// where are we now?" title, not CardBody's old SUBHEADING treatment.
 //
-// Real content changes from the version this replaces, confirmed
-// directly against this node rather than carried over on assumption:
-// - The Nike value-pools hero screenshot (beacon-ideation-nike-value-
-//   pools.jpg) is gone. Not relocated — this node has no third exhibit
-//   in the intro at all.
-// - "Insights gained" is gone as its own heading, and so is the NotesIcon-
-//   bordered-panel / LoopIcon treatment the two findings used to have.
-//   In its place: one flowing paragraph ending in the same two
-//   interview quotes, now plain italic text-subtle (not text-secondary,
-//   not boxed).
-// - Two hairline dividers (Figma "Vector 52/53", a 1px border-subtle
-//   line) now separate the page's own three real beats here: the
-//   interview-feedback paragraph, "What we changed", and "Next up:
-//   Ideation flow" — a structural device this section didn't have
-//   before.
-// - The Ideation subsection gained a third exhibit slot ahead of the
-//   two it already had: Figma's own "Frame 2147204703" child has no
-//   fill at all (an intentionally still-empty spot, not an asset this
-//   fetch failed to surface), labeled with the same bracketed Eyebrow
-//   style "[ Quick review ]" already uses elsewhere on this page.
-//   Filled directly with a real screen recording supplied afterward
-//   (the author's own Figma canvas working the Ideation problem space)
-//   — compressed from a 150MB/3022x1790 source via avconvert
-//   (Preset960x540, no ffmpeg in this environment) down to a real web
-//   asset, with a first-frame poster extracted the same way this site's
-//   other video exhibits already use one.
-// - The gallery video's own caption text is unchanged, and this node's
-//   own flat export of that same beat is a raw 1920x1080 GIF (1000+
-//   frames, ~400MB) rather than a video — reused as-is (beacon-
-//   gallery-1.mp4 + its poster) rather than importing that GIF
-//   verbatim; it's the same screen recording, just exported differently,
-//   and the site's own already-optimized loop is the better asset.
-function Divider() {
-  return <div className="h-px w-full bg-border-subtle" />;
-}
-
-const SUBHEADING = "font-sans text-[16px] font-semibold leading-6 text-text-primary";
-
+// New second beat — "Giving users back the wheel" — came out of a live
+// copy pass on an earlier draft of this same redesign (see this
+// commit's own message): the raw draft read "Voice control" as an
+// unrelated feature note with no connection to the page's own
+// "driver's seat, not passenger" thread from TurningPoint.tsx. Renamed
+// and rewritten to make that connection explicit instead of coincidental,
+// and "Value pool generation with Beam by your side" (which overclaimed
+// a solved feature the paragraph underneath was actually describing as
+// still unsolved) became "Still tackling: ideation", matching every
+// other heading on this page in naming a story beat, not a capability.
+//
+// Exhibit imagery is new throughout — LandscapeExhibit.tsx (own doc
+// comment has the full visual reasoning): five product screenshots
+// (Beacon's own "Create new workspace" onboarding flow, and the new
+// voice-control composer in its idle/listening states) floating over
+// two shared landscape illustrations, Beacon's own painterly onboarding
+// art reused as this section's own backdrop. The one black, unfilled
+// exhibit between the two headings and the final image row matches this
+// node's own "1 1" child with no asset at all (234:530) — an
+// intentionally empty slot in the Figma file itself, not a fetch
+// failure, reserved for a video this redesign doesn't supply yet.
 export default function SoWhereAreWeNow() {
   return (
-    <div className="flex w-full max-w-[512px] flex-col gap-6">
-      <div className="flex w-full flex-col gap-2">
-        <Heading size="section" className="tracking-[-0.8px]">
-          So where are we now?
-        </Heading>
-        <div className="flex w-full flex-col">
+    <div className="flex w-full flex-col items-center gap-[60px]">
+      <div className="flex w-full max-w-[512px] flex-col gap-6">
+        <div className="flex w-full flex-col gap-2">
+          <Heading size="section" className="tracking-[-0.8px]">
+            So where are we now?
+          </Heading>
           <BodyCopy>
-            Since the workshop, I’ve been continuously iterating on the new direction for Beacon together with my PM,
-            Milan.
+            Since the workshop, I’ve been continuously iterating on the new direction for Beacon together with our
+            Product Manager and working closely with our engineering team.
           </BodyCopy>
-          <div className="flex flex-col">
-            <BodyCopy>We’re now approaching implementation of the first increment: Workspace generation.</BodyCopy>
-            <BodyCopy>
-              To get here, we explored multiple concepts, tested them with users, and used their feedback to refine
-              the experience along the way.
-            </BodyCopy>
+        </div>
+        <div className="flex flex-col">
+          <BodyCopy>We’re now approaching implementation of the first increment: Workspace generation.</BodyCopy>
+          <BodyCopy>
+            To get here, we explored multiple concepts, tested them with users, and used their feedback to refine
+            the experience along the way.
+          </BodyCopy>
+        </div>
+      </div>
+
+      <div className="flex w-full max-w-[688px] flex-col gap-4">
+        <LandscapeExhibit
+          bg="/images/home/beacon-sowhere-landscape-brush.jpg"
+          src="/images/home/beacon-sowhere-workspace-create.jpg"
+          alt="Beacon's 'Create new workspace' onboarding screen, asking for a company name, workspace name, and whether the user wants to discover new venture ideas or validate an existing one"
+          width={512}
+        />
+        <div className="flex w-full items-center gap-4">
+          <div className="min-w-0 flex-1">
+            <LandscapeExhibit
+              bg="/images/home/beacon-sowhere-landscape-brush.jpg"
+              src="/images/home/beacon-sowhere-workspace-objectives.jpg"
+              alt="The onboarding flow's next step, asking for the company's objectives and any supporting documents"
+              width={336}
+            />
+          </div>
+          <div className="min-w-0 flex-1">
+            <LandscapeExhibit
+              bg="/images/home/beacon-sowhere-landscape-brush.jpg"
+              src="/images/home/beacon-sowhere-workspace-loading.jpg"
+              alt="A loading screen reading 'Now, it's time to explore ideas...' as Beacon sets up the new workspace"
+              width={336}
+            />
           </div>
         </div>
       </div>
 
-      <div className="flex w-full flex-col gap-4">
-        <div className="flex w-full flex-col">
-          <BodyCopy>
-            Conducting usability testing sessions throughout the process highlighted areas for improvement. Several
-            users noted that the canvas and chat interactions felt disjointed.
-          </BodyCopy>
-          <BodyCopy className="italic" muted>
-            “ Now what I struggle is like, I am looking my problem here, but the conversation is far away, is on the
-            other side”
-          </BodyCopy>
-          <BodyCopy className="italic" muted>
-            “ I kind of have to mentally bounce between left and right for my actions...”
-          </BodyCopy>
-        </div>
-        <Divider />
-        <div className="flex w-full flex-col gap-4">
-          <div className="flex w-full flex-col">
-            <p className={SUBHEADING}>What we changed</p>
-            <BodyCopy>
-              In the next iteration, we brought guidance and actions closer to where users were already working and
-              moved the chat composer to the center of the creation flow, keeping the conversation and user’s
-              attention in one place.
-            </BodyCopy>
-          </div>
-          <Exhibit
-            src="/images/home/beacon-ideation-question-exhibit.jpg"
-            alt="A structured guided question ('Starting fresh or validating something you already have?') surfaced inline with the chat composer at the center of the workspace, with Skip and Continue actions"
-            caption="We moved the chat composer to the center of the creation flow, keeping the conversation and users’ attention in one place."
-            height={350}
-          />
-        </div>
-      </div>
-
-      <Divider />
-
-      <div className="flex w-full flex-col gap-4">
-        <div className="flex w-full flex-col">
-          <p className={SUBHEADING}>
-            <span className="text-text-subtle">Next up:</span> Ideation flow
-          </p>
+      <div className="flex w-full max-w-[512px] flex-col gap-6">
+        <div className="flex w-full flex-col gap-2">
+          <Heading size="section" className="tracking-[-0.8px]">
+            Still tackling: ideation
+          </Heading>
           <BodyCopy>
             The ideation phase has been one of our most challenging areas yet. Today, Beacon can generate multiple
             value pools to give users a head start, but our research showed that this isn’t enough. Users want to be
@@ -116,40 +93,40 @@ export default function SoWhereAreWeNow() {
             simply receive AI-generated suggestions.
           </BodyCopy>
         </div>
-
+        <BodyCopy>
+          That’s the problem we’re currently tackling: how might we combine the speed and intelligence of AI with
+          the user’s own expertise and judgment? Below are a few snapshots of where that exploration is taking us.
+        </BodyCopy>
         <div className="flex w-full flex-col gap-2">
-          <Eyebrow>[ My creative process &amp; thinking through the problem space for Ideation phase ]</Eyebrow>
-          <Exhibit
-            video
-            src="/images/home/beacon-ideation-process.mp4"
-            poster="/images/home/beacon-ideation-process-poster.jpg"
-            alt="Screen recording of the author's own Figma canvas working through the Ideation phase's problem space, sketching and annotating as the thinking develops"
-            height={350}
-          />
-        </div>
-
-        <div className="flex w-full flex-col gap-2">
+          <Heading size="section" className="tracking-[-0.8px]">
+            Giving users back the wheel
+          </Heading>
           <BodyCopy>
-            That’s the problem we’re currently tackling: how might we combine the speed and intelligence of AI with
-            the user’s own expertise and judgment? Below are a few snapshots of where that exploration is taking us.
+            That same “driver’s seat, not passenger” thinking is shaping another change: a UI/UX refresh introducing
+            voice control. Leadership leaned toward keeping the current structure, so this became the way to address
+            it without a rebuild, a feature users had already asked for, and one that puts the sense of control back
+            in their hands rather than the interface’s.
           </BodyCopy>
-          <div className="py-3">
-            <Exhibit
-              src="/images/home/beacon-value-pool-compare-exhibit.jpg"
-              alt="Close-up of the Beacon Ideation detail panel's Get Started and Compare actions, letting a user weigh one value pool against another before committing"
-              caption="Allow a more collaborative approach when users need to make a decision on which Value Pool they want to continue"
-              height={350}
+        </div>
+      </div>
+
+      <div className="flex w-full max-w-[688px] flex-col gap-4">
+        <div className="relative w-full overflow-hidden rounded-lg bg-black" style={{ aspectRatio: "512 / 400" }} />
+        <div className="flex w-full items-center gap-4">
+          <div className="min-w-0 flex-1">
+            <LandscapeExhibit
+              bg="/images/home/beacon-sowhere-landscape-cliff.jpg"
+              src="/images/home/beacon-sowhere-voice-idle.jpg"
+              alt="Beacon's chat composer at rest, reading 'Ask Beam anything...' with a microphone icon for voice input"
+              width={336}
             />
           </div>
-          <Eyebrow>Prototype:</Eyebrow>
-          <div className="py-3">
-            <Exhibit
-              video
-              src="/images/home/beacon-gallery-1.mp4"
-              poster="/images/home/beacon-gallery-1-poster.jpg"
-              alt="Looping screen recording of the Beacon workspace: navigating between a company's profile sections while a generated value-pool card and its supporting research stay open alongside"
-              caption="Assisting users in gaining a clearer understanding of the current situation, the next steps, and the overall process they will follow"
-              height={350}
+          <div className="min-w-0 flex-1">
+            <LandscapeExhibit
+              bg="/images/home/beacon-sowhere-landscape-brush.jpg"
+              src="/images/home/beacon-sowhere-voice-listening.jpg"
+              alt="The same composer actively listening to a voice note, showing a live waveform and timer"
+              width={336}
             />
           </div>
         </div>

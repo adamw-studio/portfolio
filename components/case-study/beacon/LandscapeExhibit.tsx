@@ -19,9 +19,23 @@ import Image from "next/image";
 // no responsive equivalent (a 488px fixed inset would blow out a phone-
 // width card entirely). This keeps the same two-layer idea (bleeding
 // background + inset screenshot) but sizes the inset proportionally
-// (92% width, vertically centered) so it scales down the same way
-// every other exhibit on this page already does, rather than copying
-// one canvas's own fixed pixel offsets.
+// instead of copying one canvas's own fixed pixel offsets.
+//
+// The inset screenshot is object-contain, not object-cover — reported
+// live as "these images are not rendered well": every screenshot here
+// is the same wide 4096x2765 capture (a sidebar + form on the left,
+// the landscape's own right half), and object-cover was filling the
+// fixed 92%x82% box by cropping to that box's own (noticeably more
+// square, on the two narrower 336px-wide cards) shape — cutting the
+// sidebar off the left edge to do it. object-contain scales the whole
+// screenshot down to fit inside that same box instead, so nothing is
+// ever cropped — it letterboxes top/bottom on the narrow cards rather
+// than losing content, and lands within a px of Figma's own 488x329
+// inset on the 512-wide hero card since that one's box ratio already
+// happens to be close to the screenshot's own. bg-black on the inset
+// box itself (not transparent) is what makes that letterbox read as a
+// deliberate dark bar, not a gap — it also nearly disappears in
+// practice since Beacon's own UI chrome is itself near-black.
 export default function LandscapeExhibit({
   bg,
   bgAlt = "",
@@ -44,8 +58,8 @@ export default function LandscapeExhibit({
     >
       <Image src={bg} alt={bgAlt} fill className="object-cover" sizes="(min-width: 688px) 688px, 100vw" />
       <div className="absolute inset-0 flex items-center justify-center p-[4%]">
-        <div className="relative h-[82%] w-[92%] overflow-hidden rounded-sm shadow-[0px_8px_24px_0px_rgba(0,0,0,0.35)]">
-          <Image src={src} alt={alt} fill className="object-cover" sizes="(min-width: 688px) 633px, 92vw" />
+        <div className="relative h-[82%] w-[92%] overflow-hidden rounded-sm bg-black shadow-[0px_8px_24px_0px_rgba(0,0,0,0.35)]">
+          <Image src={src} alt={alt} fill className="object-contain" sizes="(min-width: 688px) 633px, 92vw" />
         </div>
       </div>
     </div>

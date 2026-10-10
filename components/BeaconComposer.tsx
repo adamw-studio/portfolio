@@ -204,12 +204,37 @@ export function BeaconComposer() {
             </span>
           </div>
 
-          {/* AI - Send: the one non-transparent control in this panel —
-              Figma's own primary-button treatment (brand blue fill,
-              matching drop + inset shadow pair), not derived from any of
-              the composer's other rgba(255,255,255,*) glass surfaces. */}
-          <div className="relative flex size-6 shrink-0 items-center justify-center rounded-full bg-[#007bff] p-1.5 shadow-[0px_2px_3px_0px_rgba(31,71,205,0.14),inset_2px_2px_2px_0px_rgba(86,189,255,0.4)]">
-            <span className="relative block size-4">
+          {/* AI - Send: the one non-transparent control in this panel.
+              Re-fetched live (node-id=247-1080) after a report of "update
+              the elements within this blurred chat" turned up a real
+              change: Figma's own button-primary-bg-default token is now
+              #2e2e2e, a flat dark gray, not the bright blue + drop/inset
+              shadow pair this button shipped with before — confirmed by
+              sampling the node's own screenshot directly (a flat, uniform
+              46,46,46 across the whole fill, no shadow to pick up), not
+              just the text export (which can drop shadows it doesn't have
+              a direct Tailwind translation for, same caveat as this
+              component's own backdrop-blur above — this time there
+              genuinely isn't one to miss).
+
+              shrink-0 on the icon span below — reported live as "the arrow
+              icon is a weird [shape]": this button's own 24px size with
+              6px padding only leaves a 12px content box, smaller than the
+              icon's real 16px size, and without shrink-0 a flex child
+              defaults to shrinking to fit (flex-shrink:1), squishing the
+              icon's WIDTH down to 12px while its height stayed 16px —
+              confirmed live (the <img> rendered at 12x16, not the
+              square 16x16 its own file actually is), a real distortion,
+              not a display artifact. Figma's own layout has this identical
+              "icon bigger than its nominal padding" relationship (16px
+              icon, 6px padding, 24px box: 24-6*2=12 < 16) and still
+              renders it undistorted, because Figma's auto-layout doesn't
+              shrink a fixed-size child by default — shrink-0 is what
+              makes this div do the same: the icon overflows the nominal
+              padding by 2px a side instead of being squeezed into it,
+              matching Figma exactly rather than fighting its own math. */}
+          <div className="relative flex size-6 shrink-0 items-center justify-center rounded-full bg-[#2e2e2e] p-1.5">
+            <span className="relative block size-4 shrink-0">
               <Image src="/images/home/composer-arrow-up.svg" alt="" fill />
             </span>
           </div>

@@ -50,8 +50,15 @@ const PROJECTS: Project[] = [
     description: "Designing how agentic AI helps founders research, validate and turn ideas into ventures.",
     role: "Lead designer",
     year: "2026",
-    backdropSrc: "/images/home/selected-work-1-backdrop.jpg",
-    backdropAlt: "",
+    // Figma 247:1046 ("Beacon Project Thumbnail") replaces the old
+    // backdrop photo with Beacon's own painterly onboarding landscape —
+    // the same background art the case study's own "So where are we
+    // now?" carousels already use (identical asset). BeaconComposer
+    // (rendered just below, keyed off project.id === "beacon") already
+    // matches this node's glass "Let's create a new workspace" panel —
+    // only the backdrop itself needed to change, not that component.
+    backdropSrc: "/images/home/beacon-home-cover.jpg",
+    backdropAlt: "A painterly coastal landscape, the same backdrop Beacon's own onboarding flow uses",
     linked: true,
   },
   {
